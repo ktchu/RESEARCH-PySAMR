@@ -1,0 +1,2 @@
+# Install package (as editable) and its development dependencies (from setup.py)
+-e .[dev]
