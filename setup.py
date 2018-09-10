@@ -10,6 +10,7 @@ from setuptools.command.test import test as TestCommand
 
 INSTALL_REQUIREMENTS = [
     'click',
+    'numpy',
     ]
 
 TESTING_REQUIREMENTS = [
