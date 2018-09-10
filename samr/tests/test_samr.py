@@ -29,3 +29,11 @@ def test_attributes():
     assert samr.__copyright__
 
     assert not hasattr(samr, '_PKG_INFO')
+
+
+def test_subpackages():
+    """
+   Test for expected sub-packages.
+    """
+    assert samr.geometry
+    assert samr.mesh
