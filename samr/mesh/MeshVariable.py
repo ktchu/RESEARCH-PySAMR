@@ -82,10 +82,3 @@ class MeshVariable:
             self._dtype = numpy.float64
         else:
             self._dtype = numpy.float32
-
-
-# --- Main program
-
-if __name__ == '__main__':
-    # Run doctests
-    doctest.testmod()

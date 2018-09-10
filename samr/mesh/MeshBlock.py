@@ -96,10 +96,3 @@ class MeshBlock:
         # --- Return data
 
         return self.data[mesh_variable]
-
-
-# --- Main program
-
-if __name__ == '__main__':
-    # Run doctests
-    doctest.testmod()

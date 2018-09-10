@@ -57,10 +57,3 @@ class MeshLevel:
 
         # PYLINT: eliminate 'defined outside __init__' error
         self._blocks = None
-
-
-# --- Main program
-
-if __name__ == '__main__':
-    # Run doctests
-    doctest.testmod()
