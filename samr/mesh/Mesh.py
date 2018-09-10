@@ -17,6 +17,7 @@ contained in the LICENSE file.
 import doctest
 
 # XYZ
+from samr.geometry import MeshGeometry
 from samr.mesh import MeshLevel
 
 # --- Constants
@@ -53,13 +54,14 @@ class Mesh:
 
     # --- Public methods
 
-    def __init__(self):
+    def __init__(self, geometry):
         """
         TODO
 
         Parameters
         ----------
-        TODO
+        geometry: MeshGeometry object
+            TODO
 
         Examples
         --------
@@ -67,14 +69,12 @@ class Mesh:
         """
         # --- Check arguments
 
+        if not isinstance(geometry, MeshGeometry):
+            raise ValueError("'geometry' must be a MeshGeometry object")
+
         # --- Set property and attribute values
 
         # PYLINT: eliminate 'defined outside __init__' error
-        self._levels = None
+        self._levels = []
 
-
-# --- Main program
-
-if __name__ == '__main__':
-    # Run doctests
-    doctest.testmod()
+        self.geometry = geometry
