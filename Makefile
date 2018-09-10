@@ -8,8 +8,11 @@ NPROCS=auto
 
 # --- Internal Parameters
 
+# Code directories
+CODE_DIRS=${PKG_DIR}
+
 # Testing parameters
-PYTEST_SEARCH_PATHS=${PKG_DIR} bin
+PYTEST_SEARCH_PATHS=${CODE_DIRS}
 PYTEST_OPTIONS=-n ${NPROCS} --cov=${PKG_DIR}
 PYTEST_PYLINT_OPTIONS=
 
@@ -29,7 +32,6 @@ full-test full-check:
 	make test PYTEST_PYLINT_OPTIONS="--pylint --pylint-error-types=EF";
 
 test check:
-	if [ -d bin ]; then pycodestyle bin; fi
 	pycodestyle setup.py
 	py.test ${PYTEST_SEARCH_PATHS} ${PYTEST_OPTIONS} ${PYTEST_PYLINT_OPTIONS}
 
@@ -44,13 +46,13 @@ coverage-html: .coverage
 
 # Code quality
 radon-cc:
-	radon cc ${PKG_DIR} bin -a
+	radon cc ${CODE_DIRS} -a
 radon-mi:
-	radon mi ${PKG_DIR} bin -s
+	radon mi ${CODE_DIRS} -s
 radon-mi-fail:
-	radon mi ${PKG_DIR} bin -nb -s
+	radon mi ${CODE_DIRS} -nb -s
 radon-raw:
-	radon raw ${PKG_DIR} bin -s
+	radon raw ${CODE_DIRS} -s
 
 # Package distribution
 dist: clean
