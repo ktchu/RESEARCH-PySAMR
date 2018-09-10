@@ -65,7 +65,7 @@ clean:
 	rm -rf dist *.egg-info  # distribution
 
 # Phony Targets
-.PHONY: all clean erd dist \
+.PHONY: all clean dist \
         test fast-test full-test \
         check fast-check full-check \
         coverage-report coverage-html
