@@ -50,10 +50,3 @@ class MeshGeometry:
 
         # PYLINT: eliminate 'defined outside __init__' error
         pass
-
-
-# --- Main program
-
-if __name__ == '__main__':
-    # Run doctests
-    doctest.testmod()
