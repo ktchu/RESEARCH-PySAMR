@@ -29,7 +29,7 @@ DEV_REQUIREMENTS = TESTING_REQUIREMENTS + [
     'radon',
     'sphinx',
     # TODO: review following packages
-    # 'numba',
+    'numba',
     ]
 
 
