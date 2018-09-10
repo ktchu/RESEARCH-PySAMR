@@ -18,13 +18,11 @@ import os.path
 from pkg_resources import get_distribution, DistributionNotFound
 
 
-# --- Package-level API
+# --- Package API
 
-# Package-level types
-from .MeshVariable import MeshVariable
-
-# Package-level API
-# TODO
+# Sub-packages
+from . import mesh
+from . import geometry
 
 
 # --- Package information
