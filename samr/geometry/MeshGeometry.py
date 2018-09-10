@@ -24,7 +24,7 @@ import doctest
 
 # --- Class definition
 
-class Geometry:
+class MeshGeometry:
     """
     TODO
     """
