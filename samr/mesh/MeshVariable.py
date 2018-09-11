@@ -14,7 +14,6 @@ contained in the LICENSE file.
 # --- Imports
 
 # Standard library
-import doctest
 
 # External packages
 import numpy
@@ -72,7 +71,7 @@ class MeshVariable:
             raise ValueError("'mesh' is not a Mesh object")
 
         if precision not in ['double', 'single']:
-            raise ValueError("'precision' must be set to 'double' or 'single'")
+            raise ValueError("'precision' does not equal 'double' or 'single'")
 
         # --- Set property and attribute values
 

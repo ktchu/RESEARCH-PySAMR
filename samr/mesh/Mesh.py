@@ -14,7 +14,6 @@ contained in the LICENSE file.
 # --- Imports
 
 # Standard library
-import doctest
 
 # XYZ
 from samr.geometry import MeshGeometry
@@ -70,7 +69,7 @@ class Mesh:
         # --- Check arguments
 
         if not isinstance(geometry, MeshGeometry):
-            raise ValueError("'geometry' must be a MeshGeometry object")
+            raise ValueError("'geometry' is not a MeshGeometry object")
 
         # --- Set property and attribute values
 
