@@ -42,14 +42,14 @@ class BlockGeometry:
     @property
     def x_lower(self):
         """
-        numpy.array: lower corner of MeshBlock
+        numpy.ndarray: lower corner of MeshBlock
         """
         return self._x_lower
 
     @property
     def dx(self):
         """
-        numpy.array: grid spacing on MeshBlock
+        numpy.ndarray: grid spacing on MeshBlock
         """
         return self._dx
 
@@ -64,10 +64,10 @@ class BlockGeometry:
         num_dimensions: int
             number of spatial dimensions
 
-        x_lower: numpy.array
+        x_lower: numpy.ndarray
             lower corner of MeshBlock
 
-        dx: numpy.array
+        dx: numpy.ndarray
             grid spacing on MeshBlock
 
         Examples
@@ -84,16 +84,16 @@ class BlockGeometry:
             raise ValueError("'num_dimensions' is not a positive integer")
 
         # x_lower
-        if not isinstance(x_lower, numpy.array):
-            raise ValueError("'x_lower' is not a numpy.array")
+        if not isinstance(x_lower, numpy.ndarray):
+            raise ValueError("'x_lower' is not a numpy.ndarray")
 
         if len(x_lower) != num_dimensions:
             err_msg = "'x_lower' does not have 'num_dimensions' components"
             raise ValueError(err_msg)
 
         # dx
-        if not isinstance(dx, numpy.array):
-            raise ValueError("'dx' is not a numpy.array")
+        if not isinstance(dx, numpy.ndarray):
+            raise ValueError("'dx' is not a numpy.ndarray")
 
         if len(dx) != num_dimensions:
             err_msg = "'dx' does not have 'num_dimensions' components"
@@ -102,5 +102,5 @@ class BlockGeometry:
         # --- Set property and attribute values
 
         self._num_dimensions = num_dimensions
-        self._x_lower = x_lower
-        self._dx = dx
+        self._x_lower = x_lower.astype('float64')
+        self._dx = dx.astype('float64')
