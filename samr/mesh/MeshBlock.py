@@ -14,7 +14,6 @@ contained in the LICENSE file.
 # --- Imports
 
 # Standard library
-import doctest
 
 # External packages
 import numpy
