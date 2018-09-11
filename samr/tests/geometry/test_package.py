@@ -23,4 +23,3 @@ def test_attributes():
     """
     # Package information
     assert geometry.MeshGeometry
-    assert geometry.BlockGeometry

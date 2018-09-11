@@ -11,4 +11,3 @@ contained in the LICENSE file.
 """
 # Package types
 from .MeshGeometry import MeshGeometry
-from .BlockGeometry import BlockGeometry
