@@ -102,6 +102,9 @@ class MeshGeometry:
             err_msg = "'dx' does not have 'num_dimensions' components"
             raise ValueError(err_msg)
 
+        if not numpy.all(numpy.greater(dx, numpy.zeros(num_dimensions))):
+            raise ValueError("'dx' contains a non-positive value")
+
         # --- Set property and attribute values
 
         self._num_dimensions = num_dimensions
