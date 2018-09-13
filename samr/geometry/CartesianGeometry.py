@@ -19,14 +19,14 @@ contained in the LICENSE file.
 import numpy
 
 # XYZ
-# TODO
+from . import Geometry
 
 # --- Constants
 
 
 # --- Class definition
 
-class MeshGeometry:
+class CartesianGeometry(Geometry):
     """
     TODO
 
@@ -77,14 +77,11 @@ class MeshGeometry:
         --------
         TODO
         """
+        # --- Call super()
+
+        super().__init__(num_dimensions)
+
         # --- Check arguments
-
-        # num_dimensions
-        if not isinstance(num_dimensions, int):
-            raise ValueError("'num_dimensions' is not an integer")
-
-        if num_dimensions <= 0:
-            raise ValueError("'num_dimensions' is not a positive integer")
 
         # x_lower
         if not isinstance(x_lower, numpy.ndarray):

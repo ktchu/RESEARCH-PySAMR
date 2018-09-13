@@ -1,5 +1,5 @@
 """
-Unit tests MeshGeometry class
+Unit tests CartesianGeometry class
 
 ------------------------------------------------------------------------------
 COPYRIGHT/LICENSE.  This file is part of the XYZ package.  It is subject
@@ -21,14 +21,14 @@ import numpy
 import pytest
 
 # XYZ
-from samr.geometry import MeshGeometry
+from samr.geometry import CartesianGeometry
 
 
 # --- Tests
 
-class MeshGeometryTests(unittest.TestCase):
+class CartesianGeometryTests(unittest.TestCase):
     """
-    Unit tests for MeshGeometry class.
+    Unit tests for CartesianGeometry class.
     """
     # --- Test cases
 
@@ -38,20 +38,20 @@ class MeshGeometryTests(unittest.TestCase):
         Test for expected attributes.
         """
         # Properties
-        assert hasattr(MeshGeometry, 'num_dimensions')
-        assert hasattr(MeshGeometry, 'x_lower')
-        assert hasattr(MeshGeometry, 'dx')
+        assert hasattr(CartesianGeometry, 'num_dimensions')
+        assert hasattr(CartesianGeometry, 'x_lower')
+        assert hasattr(CartesianGeometry, 'dx')
 
     @staticmethod
     def test_init_1():
         """
-        Test construction of MeshGeometry object with valid parameters.
+        Test construction of CartesianGeometry object with valid parameters.
         """
         # Exercise functionality
         num_dimensions = 3
         x_lower = numpy.zeros(num_dimensions)
         dx = 0.1 * numpy.ones(num_dimensions)
-        geometry = MeshGeometry(num_dimensions, x_lower, dx)
+        geometry = CartesianGeometry(num_dimensions, x_lower, dx)
 
         # Check results
         assert geometry.num_dimensions == num_dimensions
@@ -63,7 +63,7 @@ class MeshGeometryTests(unittest.TestCase):
     @staticmethod
     def test_init_2():
         """
-        Test construction of MeshGeometry object. Invalid 'num_dimensions'
+        Test construction of CartesianGeometry object. Invalid 'num_dimensions'
         """
         # --- Preparations
 
@@ -75,9 +75,9 @@ class MeshGeometryTests(unittest.TestCase):
 
         # num_dimensions not an int
         with pytest.raises(ValueError) as exc_info:
-            _ = MeshGeometry(num_dimensions='not an int',
-                             x_lower=x_lower,
-                             dx=dx)
+            _ = CartesianGeometry(num_dimensions='not an int',
+                                  x_lower=x_lower,
+                                  dx=dx)
 
         if exc_info:
             expected_error = "'num_dimensions' is not an integer"
@@ -85,9 +85,9 @@ class MeshGeometryTests(unittest.TestCase):
 
         # num_dimensions = 0
         with pytest.raises(ValueError) as exc_info:
-            _ = MeshGeometry(num_dimensions=0,
-                             x_lower=x_lower,
-                             dx=dx)
+            _ = CartesianGeometry(num_dimensions=0,
+                                  x_lower=x_lower,
+                                  dx=dx)
 
         if exc_info:
             expected_error = "'num_dimensions' is not a positive integer"
@@ -95,9 +95,9 @@ class MeshGeometryTests(unittest.TestCase):
 
         # num_dimensions < 0
         with pytest.raises(ValueError) as exc_info:
-            _ = MeshGeometry(num_dimensions=-1,
-                             x_lower=x_lower,
-                             dx=dx)
+            _ = CartesianGeometry(num_dimensions=-1,
+                                  x_lower=x_lower,
+                                  dx=dx)
 
         if exc_info:
             expected_error = "'num_dimensions' is not a positive integer"
@@ -106,7 +106,7 @@ class MeshGeometryTests(unittest.TestCase):
     @staticmethod
     def test_init_3():
         """
-        Test construction of MeshGeometry object. Invalid 'x_lower'
+        Test construction of CartesianGeometry object. Invalid 'x_lower'
         """
         # --- Preparations
 
@@ -117,9 +117,9 @@ class MeshGeometryTests(unittest.TestCase):
 
         # x_lower not a numpy.ndarray
         with pytest.raises(ValueError) as exc_info:
-            _ = MeshGeometry(num_dimensions=num_dimensions,
-                             x_lower=3,
-                             dx=dx)
+            _ = CartesianGeometry(num_dimensions=num_dimensions,
+                                  x_lower=3,
+                                  dx=dx)
 
         if exc_info:
             expected_error = "'x_lower' is not a numpy.ndarray"
@@ -127,9 +127,9 @@ class MeshGeometryTests(unittest.TestCase):
 
         # len(x_lower) != num_dimensions
         with pytest.raises(ValueError) as exc_info:
-            _ = MeshGeometry(num_dimensions=num_dimensions,
-                             x_lower=numpy.zeros(num_dimensions-1),
-                             dx=dx)
+            _ = CartesianGeometry(num_dimensions=num_dimensions,
+                                  x_lower=numpy.zeros(num_dimensions-1),
+                                  dx=dx)
 
         if exc_info:
             expected_error = "'x_lower' does not have 'num_dimensions' " \
@@ -139,7 +139,7 @@ class MeshGeometryTests(unittest.TestCase):
     @staticmethod
     def test_init_4():
         """
-        Test construction of MeshGeometry object. Invalid 'x_lower'
+        Test construction of CartesianGeometry object. Invalid 'x_lower'
         """
         # --- Preparations
 
@@ -150,9 +150,9 @@ class MeshGeometryTests(unittest.TestCase):
 
         # dx not a numpy.ndarray
         with pytest.raises(ValueError) as exc_info:
-            _ = MeshGeometry(num_dimensions=num_dimensions,
-                             x_lower=x_lower,
-                             dx='not a numpy.ndarray')
+            _ = CartesianGeometry(num_dimensions=num_dimensions,
+                                  x_lower=x_lower,
+                                  dx='not a numpy.ndarray')
 
         if exc_info:
             expected_error = "'dx' is not a numpy.ndarray"
@@ -160,9 +160,9 @@ class MeshGeometryTests(unittest.TestCase):
 
         # len(dx) != num_dimensions
         with pytest.raises(ValueError) as exc_info:
-            _ = MeshGeometry(num_dimensions=num_dimensions,
-                             x_lower=x_lower,
-                             dx=numpy.ones(num_dimensions+1))
+            _ = CartesianGeometry(num_dimensions=num_dimensions,
+                                  x_lower=x_lower,
+                                  dx=numpy.ones(num_dimensions+1))
 
         if exc_info:
             expected_error = "'dx' does not have 'num_dimensions' " \
@@ -173,9 +173,9 @@ class MeshGeometryTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             invalid_dx = numpy.ones(num_dimensions)
             invalid_dx[0] = 0
-            _ = MeshGeometry(num_dimensions=num_dimensions,
-                             x_lower=x_lower,
-                             dx=invalid_dx)
+            _ = CartesianGeometry(num_dimensions=num_dimensions,
+                                  x_lower=x_lower,
+                                  dx=invalid_dx)
 
         if exc_info:
             expected_error = "'dx' contains a non-positive value"
@@ -185,9 +185,9 @@ class MeshGeometryTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             invalid_dx = numpy.ones(num_dimensions)
             invalid_dx[-1] = -0.1
-            _ = MeshGeometry(num_dimensions=num_dimensions,
-                             x_lower=x_lower,
-                             dx=invalid_dx)
+            _ = CartesianGeometry(num_dimensions=num_dimensions,
+                                  x_lower=x_lower,
+                                  dx=invalid_dx)
 
         if exc_info:
             expected_error = "'dx' contains a non-positive value"

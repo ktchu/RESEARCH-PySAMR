@@ -10,4 +10,5 @@ contained in the LICENSE file.
 ------------------------------------------------------------------------------
 """
 # Package types
-from .MeshGeometry import MeshGeometry
+from .Geometry import Geometry
+from .CartesianGeometry import CartesianGeometry
