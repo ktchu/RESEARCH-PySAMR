@@ -20,7 +20,7 @@ import numpy
 
 # XYZ
 # TODO
-from samr.geometry import MeshGeometry
+from samr.geometry import Geometry
 
 # --- Constants
 
@@ -105,8 +105,8 @@ class MeshBlock:
         # --- Check arguments
 
         # geometry
-        if not isinstance(geometry, MeshGeometry):
-            raise ValueError("'geometry' is not MeshGeometry object")
+        if not isinstance(geometry, Geometry):
+            raise ValueError("'geometry' is not Geometry object")
 
         # get dimensionality of geometry
         num_dimensions = geometry.num_dimensions

@@ -22,4 +22,5 @@ def test_attributes():
    Test for expected package attributes.
     """
     # Package information
-    assert geometry.MeshGeometry
+    assert geometry.Geometry
+    assert geometry.CartesianGeometry

@@ -21,7 +21,7 @@ import numpy
 import pytest
 
 # XYZ
-from samr.geometry import MeshGeometry
+from samr.geometry import CartesianGeometry
 from samr.mesh import MeshBlock
 
 
@@ -40,9 +40,9 @@ class MeshBlockTests(unittest.TestCase):
         self.num_dimensions = 3
         self.x_lower = numpy.zeros(self.num_dimensions)
         self.dx = 0.1*numpy.ones(self.num_dimensions)
-        self.geometry = MeshGeometry(self.num_dimensions,
-                                     self.x_lower,
-                                     self.dx)
+        self.geometry = CartesianGeometry(self.num_dimensions,
+                                          self.x_lower,
+                                          self.dx)
 
     # --- Test cases
 
@@ -85,11 +85,11 @@ class MeshBlockTests(unittest.TestCase):
 
         # num_dimensions not an int
         with pytest.raises(ValueError) as exc_info:
-            _ = MeshBlock(geometry='not a MeshGeometry object',
+            _ = MeshBlock(geometry='not a Geometry object',
                           lower=lower, upper=upper)
 
         if exc_info:
-            expected_error = "'geometry' is not MeshGeometry object"
+            expected_error = "'geometry' is not Geometry object"
         assert expected_error in str(exc_info)
 
     def test_init_3(self):
