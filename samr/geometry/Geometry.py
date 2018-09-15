@@ -28,15 +28,15 @@ contained in the LICENSE file.
 class Geometry:
     """
     Base class for classes that relate rectangular regions of index space
-    to the continuous space TODO: better word choice.
+    to regions of coordinate space.
 
     The base Geometry class manages properties that are common to all
-    geometries:
+    coordinate spaces:
 
     - num_dimensions: dimensionality of space
 
     Subclasses of Geometry should manage properties that are specific
-    to the mapping of index space to ?? space.
+    to the mapping of index space to coordinate space.
     """
     # --- Properties
 
