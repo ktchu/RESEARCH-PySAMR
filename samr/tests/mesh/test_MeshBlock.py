@@ -1,5 +1,5 @@
 """
-Unit tests MeshBlock class
+Unit tests for MeshBlock class
 
 ------------------------------------------------------------------------------
 COPYRIGHT/LICENSE.  This file is part of the XYZ package.  It is subject
