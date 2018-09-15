@@ -85,7 +85,7 @@ class MeshBlock:
 
     def __init__(self, geometry, lower, upper):
         """
-        TODO
+        Initialize MeshBlock.
 
         Parameters
         ----------
@@ -133,6 +133,12 @@ class MeshBlock:
 
         if upper.dtype not in _NUMPY_INT_DTYPES:
             err_msg = "'upper' does not have an integer dtype"
+            raise ValueError(err_msg)
+
+        # upper > lower
+        if not numpy.all(numpy.greater(upper, lower)):
+            err_msg = "Some components of 'upper' are less than or equal " \
+                      "to components of 'lower'"
             raise ValueError(err_msg)
 
         # --- Set property and attribute values
