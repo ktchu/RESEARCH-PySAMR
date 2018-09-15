@@ -28,7 +28,8 @@ from . import Geometry
 
 class CartesianGeometry(Geometry):
     """
-    TODO
+    CartesianGeometry provides support for relating rectangular regions of
+    index space to regions of a Cartesian coordinate space.
 
     * logically rectangular region of space
     * uniform grid spacing in each direction
@@ -45,14 +46,14 @@ class CartesianGeometry(Geometry):
     @property
     def x_lower(self):
         """
-        numpy.ndarray: lower corner of mesh on coarsest level
+        numpy.ndarray: lower corner of mesh
         """
         return self._x_lower
 
     @property
     def dx(self):
         """
-        numpy.ndarray: grid spacing on coarsest level
+        numpy.ndarray: grid spacing of mesh
         """
         return self._dx
 
@@ -68,14 +69,23 @@ class CartesianGeometry(Geometry):
             number of spatial dimensions
 
         x_lower: numpy.ndarray
-            lower corner of mesh on coarsest level
+            lower corner of mesh
 
         dx: numpy.ndarray
-            grid spacing on coarsest level
+            grid spacing of mesh
 
         Examples
         --------
-        TODO
+        >>> num_dimensions = 3
+        >>> x_lower = numpy.array([1, 2, 3])
+        >>> dx = 0.1 * numpy.ones(num_dimensions)
+        >>> geometry = CartesianGeometry(num_dimensions, x_lower, dx)
+        >>> geometry.num_dimensions
+        3
+        >>> geometry.x_lower
+        array([1., 2., 3.])
+        >>> geometry.dx
+        array([0.1, 0.1, 0.1])
         """
         # --- Call super()
 
