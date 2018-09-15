@@ -1,5 +1,5 @@
 """
-Unit tests Geometry class
+Unit tests for Geometry class
 
 ------------------------------------------------------------------------------
 COPYRIGHT/LICENSE.  This file is part of the XYZ package.  It is subject

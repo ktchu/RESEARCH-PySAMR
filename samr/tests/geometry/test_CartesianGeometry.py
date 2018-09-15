@@ -1,5 +1,5 @@
 """
-Unit tests CartesianGeometry class
+Unit tests for CartesianGeometry class
 
 ------------------------------------------------------------------------------
 COPYRIGHT/LICENSE.  This file is part of the XYZ package.  It is subject
