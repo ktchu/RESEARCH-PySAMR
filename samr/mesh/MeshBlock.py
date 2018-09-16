@@ -22,11 +22,11 @@ import numpy
 # TODO
 from samr.geometry import Geometry
 
+
 # --- Constants
 
 # numpy integer data types
-_NUMPY_INT_DTYPES = [numpy.int_, numpy.intc, numpy.intp,
-                     numpy.int8, numpy.int16, numpy.int32, numpy.int64]
+from .constants import NUMPY_INT_DTYPES
 
 
 # --- Class definition
@@ -126,7 +126,7 @@ class MeshBlock:
             err_msg = "'lower' does not have 'num_dimensions' components"
             raise ValueError(err_msg)
 
-        if lower.dtype not in _NUMPY_INT_DTYPES:
+        if lower.dtype not in NUMPY_INT_DTYPES:
             err_msg = "'lower' does not have an integer dtype"
             raise ValueError(err_msg)
 
@@ -138,7 +138,7 @@ class MeshBlock:
             err_msg = "'upper' does not have 'num_dimensions' components"
             raise ValueError(err_msg)
 
-        if upper.dtype not in _NUMPY_INT_DTYPES:
+        if upper.dtype not in NUMPY_INT_DTYPES:
             err_msg = "'upper' does not have an integer dtype"
             raise ValueError(err_msg)
 
