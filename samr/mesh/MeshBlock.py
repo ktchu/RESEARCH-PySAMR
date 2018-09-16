@@ -42,7 +42,7 @@ class MeshBlock:
         """
         int: dimensionality of index space
         """
-        return self._geometry.num_dimensions
+        return self.geometry.num_dimensions
 
     @property
     def lower(self):
