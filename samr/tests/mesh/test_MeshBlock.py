@@ -55,6 +55,10 @@ class MeshBlockTests(unittest.TestCase):
         assert hasattr(MeshBlock, 'num_dimensions')
         assert hasattr(MeshBlock, 'lower')
         assert hasattr(MeshBlock, 'upper')
+        assert hasattr(MeshBlock, 'shape')
+
+        assert hasattr(MeshBlock, 'geometry')
+        assert hasattr(MeshBlock, 'data')
 
     def test_init_1(self):
         """
@@ -71,6 +75,12 @@ class MeshBlockTests(unittest.TestCase):
         assert block.lower.dtype == numpy.int64
         assert numpy.array_equal(block.upper, upper)
         assert block.upper.dtype == numpy.int64
+
+        assert numpy.array_equal(block.shape,
+                                 numpy.array([100]*self.num_dimensions))
+
+        assert block.geometry == self.geometry
+        assert block.data == {}
 
     def test_init_2(self):
         """
@@ -178,3 +188,35 @@ class MeshBlockTests(unittest.TestCase):
                 "Some components of 'upper' are less than or equal " \
                 "to components of 'lower'"
         assert expected_error in str(exc_info)
+
+    @unittest.skip('TODO')
+    def test_add_variable(self):
+        """
+        Test addition of MeshVariable to MeshBlock.
+        """
+        # Preparations
+        lower = numpy.ones(self.num_dimensions, dtype='int')
+        upper = 100 * numpy.ones(self.num_dimensions, dtype='int')
+        block = MeshBlock(self.geometry, lower, upper)
+
+        # Exercise functionality
+        # TODO
+
+        # Check results
+        # TODO
+
+    @unittest.skip('TODO')
+    def test_get_data(self):
+        """
+        Test addition of MeshVariable to MeshBlock.
+        """
+        # Preparations
+        lower = numpy.ones(self.num_dimensions, dtype='int')
+        upper = 100 * numpy.ones(self.num_dimensions, dtype='int')
+        block = MeshBlock(self.geometry, lower, upper)
+
+        # Exercise functionality
+        # TODO
+
+        # Check results
+        # TODO

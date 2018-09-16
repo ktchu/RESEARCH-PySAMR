@@ -67,9 +67,16 @@ class MeshBlock:
         return self._upper
 
     @property
+    def shape(self):
+        """
+        tuple: number of cells in each coordinate direction
+        """
+        return self.upper - self.lower + numpy.ones(self.num_dimensions)
+
+    @property
     def geometry(self):
         """
-        BlockGeometry: geometry of MeshBlock
+        Geometry: geometry of MeshBlock
         """
         return self._geometry
 
@@ -89,7 +96,7 @@ class MeshBlock:
 
         Parameters
         ----------
-        geometry: BlockGeometry
+        geometry: Geometry
             geometry of MeshBlock
 
         lower: numpy.ndarray of integers
@@ -153,12 +160,21 @@ class MeshBlock:
         # geometry
         self._geometry = geometry
 
-    def add_variable(self, mesh_variable):
+    def add_variable(self, variable):
         """
-        TODO
+        Add MeshVariable to MeshBlock.
+
+        Parameters
+        ----------
+        variable: MeshVariable
+            MeshVariable to add to MeshBlock
+
+        Return value
+        ------------
+        None
         """
         # Construct data array for variable
-        data = numpy.array(1)
+        data = numpy.array(self.shape, dtype=variable.dtype)
 
         # Set data for variable
         self._data[mesh_variable] = data
