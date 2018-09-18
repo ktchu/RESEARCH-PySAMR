@@ -19,14 +19,8 @@ contained in the LICENSE file.
 import numpy
 
 # XYZ
-# TODO
 from samr.geometry import Geometry
-
-
-# --- Constants
-
-# numpy integer data types
-from .constants import NUMPY_INT_DTYPES
+from samr.mesh import Box
 
 
 # --- Class definition
@@ -38,40 +32,11 @@ class MeshBlock:
     # --- Properties
 
     @property
-    def num_dimensions(self):
+    def box(self):
         """
         int: dimensionality of index space
         """
-        return self.geometry.num_dimensions
-
-    @property
-    def lower(self):
-        """
-        numpy.ndarray: lower corner of index space covered by MeshBlock
-
-        Notes
-        -----
-        * lower.dtype = 'int64'
-        """
-        return self._lower
-
-    @property
-    def upper(self):
-        """
-        numpy.ndarray: upper corner of index space covered by MeshBlock
-
-        Notes
-        -----
-        * upper.dtype = 'int64'
-        """
-        return self._upper
-
-    @property
-    def shape(self):
-        """
-        tuple: number of cells in each coordinate direction
-        """
-        return self.upper - self.lower + numpy.ones(self.num_dimensions)
+        return self._box
 
     @property
     def geometry(self):
@@ -79,6 +44,41 @@ class MeshBlock:
         Geometry: geometry of MeshBlock
         """
         return self._geometry
+
+    @property
+    def lower(self):
+        """
+        numpy.ndarray: lower corner of index space covered by MeshBlock
+        """
+        return self.box.lower
+
+    @property
+    def upper(self):
+        """
+        numpy.ndarray: upper corner of index space covered by MeshBlock
+        """
+        return self.box.upper
+
+    @property
+    def num_dimensions(self):
+        """
+        int: dimensionality of index space
+        """
+        return self.box.num_dimensions
+
+    @property
+    def shape(self):
+        """
+        tuple: number of cells in each coordinate direction
+        """
+        return self.box.shape
+
+    @property
+    def size(self):
+        """
+        int: number of cells in MeshBlock
+        """
+        return self.box.size
 
     @property
     def data(self):
@@ -90,20 +90,17 @@ class MeshBlock:
 
     # --- Public methods
 
-    def __init__(self, geometry, lower, upper):
+    def __init__(self, box, geometry):
         """
         Initialize MeshBlock.
 
         Parameters
         ----------
+        box: Box
+            box that defines region of index space covered by MeshBlock
+
         geometry: Geometry
             geometry of MeshBlock
-
-        lower: numpy.ndarray of integers
-            lower corner of index space covered by MeshBlock
-
-        upper: numpy.ndarray of integers
-            upper corner of index space covered by MeshBlock
 
         Examples
         --------
@@ -111,54 +108,34 @@ class MeshBlock:
         """
         # --- Check arguments
 
+        # box
+        if not isinstance(box, Box):
+            raise ValueError("'box' is not Box object")
+
         # geometry
         if not isinstance(geometry, Geometry):
             raise ValueError("'geometry' is not Geometry object")
 
-        # get dimensionality of geometry
-        num_dimensions = geometry.num_dimensions
-
-        # lower
-        if not isinstance(lower, numpy.ndarray):
-            raise ValueError("'lower' is not a numpy.ndarray")
-
-        if len(lower) != num_dimensions:
-            err_msg = "'lower' does not have 'num_dimensions' components"
-            raise ValueError(err_msg)
-
-        if lower.dtype not in NUMPY_INT_DTYPES:
-            err_msg = "'lower' does not have an integer dtype"
-            raise ValueError(err_msg)
-
-        # upper
-        if not isinstance(upper, numpy.ndarray):
-            raise ValueError("'upper' is not a numpy.ndarray")
-
-        if len(upper) != num_dimensions:
-            err_msg = "'upper' does not have 'num_dimensions' components"
-            raise ValueError(err_msg)
-
-        if upper.dtype not in NUMPY_INT_DTYPES:
-            err_msg = "'upper' does not have an integer dtype"
-            raise ValueError(err_msg)
-
-        # upper > lower
-        if not numpy.all(numpy.greater(upper, lower)):
-            err_msg = "Some components of 'upper' are less than or equal " \
-                      "to components of 'lower'"
-            raise ValueError(err_msg)
+        # box.num_dimensions == geometry.num_dimensions
+        if box.num_dimensions != geometry.num_dimensions:
+            error_message = "'box' and 'geometry' do not have the same " \
+                            "number of dimensions"
+            raise ValueError(error_message)
 
         # --- Set property and attribute values
 
         # PYLINT: eliminate 'defined outside __init__' error
         self._data = {}
 
-        # index space
-        self._lower = lower.astype('int64')
-        self._upper = upper.astype('int64')
+        # box
+        self._box = box
 
         # geometry
         self._geometry = geometry
+
+        # index space
+        # self._lower = lower.astype('int64')
+        # self._upper = upper.astype('int64')
 
     def add_variable(self, variable):
         """
@@ -177,19 +154,19 @@ class MeshBlock:
         data = numpy.array(self.shape, dtype=variable.dtype)
 
         # Set data for variable
-        self._data[mesh_variable] = data
+        self._data[variable] = data
 
-    def get_data(self, mesh_variable):
+    def get_data(self, variable):
         """
         TODO
         """
         # --- Check arguments
 
-        if mesh_variable not in self.data:
-            err_msg = "'mesh_variable' (={}) not defined on MeshBlock". \
-                format(mesh_variable)
-            raise ValueError(err_msg)
+        if variable not in self.data:
+            error_message = "'variable' (={}) not defined on MeshBlock". \
+                format(variable)
+            raise ValueError(error_message)
 
         # --- Return data
 
-        return self.data[mesh_variable]
+        return self.data[variable]

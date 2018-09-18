@@ -22,6 +22,7 @@ import pytest
 
 # XYZ
 from samr.geometry import CartesianGeometry
+from samr.mesh import Box
 from samr.mesh import MeshBlock
 
 
@@ -38,11 +39,17 @@ class MeshBlockTests(unittest.TestCase):
         Set up test fixtures.
         """
         self.num_dimensions = 3
+
+        # box
+        self.lower = [1] * self.num_dimensions
+        self.upper = [100] * self.num_dimensions
+        self.box = Box(self.lower, self.upper)
+
+        # geometry
         self.x_lower = numpy.zeros(self.num_dimensions)
-        self.dx = 0.1*numpy.ones(self.num_dimensions)
+        self.dx = 0.1 * numpy.ones(self.num_dimensions)
         self.geometry = CartesianGeometry(self.num_dimensions,
-                                          self.x_lower,
-                                          self.dx)
+                                          self.x_lower, self.dx)
 
     # --- Test cases
 
@@ -52,12 +59,15 @@ class MeshBlockTests(unittest.TestCase):
         Test for expected attributes.
         """
         # Properties
-        assert hasattr(MeshBlock, 'num_dimensions')
+        assert hasattr(MeshBlock, 'box')
+        assert hasattr(MeshBlock, 'geometry')
+
         assert hasattr(MeshBlock, 'lower')
         assert hasattr(MeshBlock, 'upper')
+        assert hasattr(MeshBlock, 'num_dimensions')
         assert hasattr(MeshBlock, 'shape')
+        assert hasattr(MeshBlock, 'size')
 
-        assert hasattr(MeshBlock, 'geometry')
         assert hasattr(MeshBlock, 'data')
 
     def test_init_1(self):
@@ -65,128 +75,54 @@ class MeshBlockTests(unittest.TestCase):
         Test construction of MeshBlock object with valid parameters.
         """
         # Exercise functionality
-        lower = numpy.ones(self.num_dimensions, dtype='int')
-        upper = 100 * numpy.ones(self.num_dimensions, dtype='int')
-        block = MeshBlock(self.geometry, lower, upper)
+
+        block = MeshBlock(self.box, self.geometry)
 
         # Check results
+
         assert block.num_dimensions == self.num_dimensions
-        assert numpy.array_equal(block.lower, lower)
+
+        assert block.box == self.box
+
+        assert numpy.array_equal(block.lower, self.lower)
         assert block.lower.dtype == numpy.int64
-        assert numpy.array_equal(block.upper, upper)
+
+        assert numpy.array_equal(block.upper, self.upper)
         assert block.upper.dtype == numpy.int64
 
-        assert numpy.array_equal(block.shape,
-                                 numpy.array([100]*self.num_dimensions))
+        assert numpy.array_equal(block.shape, self.box.shape)
+        assert block.size == self.box.size
 
         assert block.geometry == self.geometry
+
         assert block.data == {}
 
     def test_init_2(self):
         """
-        Test construction of MeshBlock object. Invalid 'geometry'
+        Test construction of MeshBlock object. Invalid 'box'
         """
-        # --- Preparations
-
-        lower = numpy.ones(self.num_dimensions, dtype='int')
-        upper = 100 * numpy.ones(self.num_dimensions, dtype='int')
-
         # --- Exercise functionality and check results
 
         # num_dimensions not an int
         with pytest.raises(ValueError) as exc_info:
-            _ = MeshBlock(geometry='not a Geometry object',
-                          lower=lower, upper=upper)
+            _ = MeshBlock(box='not a Box object', geometry=self.geometry)
 
         if exc_info:
-            expected_error = "'geometry' is not Geometry object"
+            expected_error = "'box' is not Box object"
         assert expected_error in str(exc_info)
 
     def test_init_3(self):
         """
-        Test construction of MeshBlock object. Invalid 'lower'
+        Test construction of MeshBlock object. Invalid 'geometry'
         """
-        # --- Preparations
-
-        upper = numpy.ones(self.num_dimensions)
-
         # --- Exercise functionality and check results
 
-        # lower not a numpy.ndarray
+        # num_dimensions not an int
         with pytest.raises(ValueError) as exc_info:
-            _ = MeshBlock(geometry=self.geometry,
-                          lower=3,
-                          upper=upper)
+            _ = MeshBlock(self.box, geometry='not a Geometry object')
 
         if exc_info:
-            expected_error = "'lower' is not a numpy.ndarray"
-        assert expected_error in str(exc_info)
-
-        # len(lower) != num_dimensions
-        with pytest.raises(ValueError) as exc_info:
-            _ = MeshBlock(geometry=self.geometry,
-                          lower=numpy.zeros(self.num_dimensions-1,
-                                            dtype='int'),
-                          upper=upper)
-
-        if exc_info:
-            expected_error = "'lower' does not have 'num_dimensions' " \
-                             "components"
-        assert expected_error in str(exc_info)
-
-    def test_init_4(self):
-        """
-        Test construction of MeshBlock object. Invalid 'upper'
-        """
-        # --- Preparations
-
-        lower = numpy.zeros(self.num_dimensions, dtype='int')
-
-        # --- Exercise functionality and check results
-
-        # upper not a numpy.ndarray
-        with pytest.raises(ValueError) as exc_info:
-            _ = MeshBlock(geometry=self.geometry,
-                          lower=lower,
-                          upper='not a numpy.ndarray')
-
-        if exc_info:
-            expected_error = "'upper' is not a numpy.ndarray"
-        assert expected_error in str(exc_info)
-
-        # len(upper) != num_dimensions
-        with pytest.raises(ValueError) as exc_info:
-            _ = MeshBlock(geometry=self.geometry,
-                          lower=lower,
-                          upper=numpy.ones(self.num_dimensions+1,
-                                           dtype='int'))
-
-        if exc_info:
-            expected_error = "'upper' does not have 'num_dimensions' " \
-                             "components"
-        assert expected_error in str(exc_info)
-
-    def test_init_5(self):
-        """
-        Test construction of MeshBlock object. 'upper' not greater than 'lower'
-        """
-        # --- Preparations
-
-        lower = numpy.ones(self.num_dimensions, dtype='int')
-        upper = 10 * numpy.ones(self.num_dimensions, dtype='int')
-        upper[1] = 0
-
-        # --- Exercise functionality and check results
-
-        # upper not a numpy.ndarray
-        with pytest.raises(ValueError) as exc_info:
-            _ = MeshBlock(geometry=self.geometry,
-                          lower=lower, upper=upper)
-
-        if exc_info:
-            expected_error = \
-                "Some components of 'upper' are less than or equal " \
-                "to components of 'lower'"
+            expected_error = "'geometry' is not Geometry object"
         assert expected_error in str(exc_info)
 
     @unittest.skip('TODO')
@@ -195,9 +131,7 @@ class MeshBlockTests(unittest.TestCase):
         Test addition of MeshVariable to MeshBlock.
         """
         # Preparations
-        lower = numpy.ones(self.num_dimensions, dtype='int')
-        upper = 100 * numpy.ones(self.num_dimensions, dtype='int')
-        block = MeshBlock(self.geometry, lower, upper)
+        block = MeshBlock(self.box, self.geometry)
 
         # Exercise functionality
         # TODO
@@ -211,9 +145,7 @@ class MeshBlockTests(unittest.TestCase):
         Test addition of MeshVariable to MeshBlock.
         """
         # Preparations
-        lower = numpy.ones(self.num_dimensions, dtype='int')
-        upper = 100 * numpy.ones(self.num_dimensions, dtype='int')
-        block = MeshBlock(self.geometry, lower, upper)
+        block = MeshBlock(self.box, self.geometry)
 
         # Exercise functionality
         # TODO
