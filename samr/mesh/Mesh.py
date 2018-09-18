@@ -137,30 +137,30 @@ class Mesh:
             raise ValueError("'lower' is not a numpy.ndarray")
 
         if len(lower) != num_dimensions:
-            err_msg = "'lower' does not have 'num_dimensions' components"
-            raise ValueError(err_msg)
+            error_message = "'lower' does not have 'num_dimensions' components"
+            raise ValueError(error_message)
 
         if lower.dtype not in NUMPY_INT_DTYPES:
-            err_msg = "'lower' does not have an integer dtype"
-            raise ValueError(err_msg)
+            error_message = "'lower' does not have an integer dtype"
+            raise ValueError(error_message)
 
         # upper
         if not isinstance(upper, numpy.ndarray):
             raise ValueError("'upper' is not a numpy.ndarray")
 
         if len(upper) != num_dimensions:
-            err_msg = "'upper' does not have 'num_dimensions' components"
-            raise ValueError(err_msg)
+            error_message = "'upper' does not have 'num_dimensions' components"
+            raise ValueError(error_message)
 
         if upper.dtype not in NUMPY_INT_DTYPES:
-            err_msg = "'upper' does not have an integer dtype"
-            raise ValueError(err_msg)
+            error_message = "'upper' does not have an integer dtype"
+            raise ValueError(error_message)
 
         # upper > lower
         if not numpy.all(numpy.greater(upper, lower)):
-            err_msg = "Some components of 'upper' are less than or equal " \
-                      "to components of 'lower'"
-            raise ValueError(err_msg)
+            error_message = "Some components of 'upper' are less than or " \
+                            "equal to components of 'lower'"
+            raise ValueError(error_message)
 
         # --- Set property and attribute values
 

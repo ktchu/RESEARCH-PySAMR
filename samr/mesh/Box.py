@@ -104,8 +104,8 @@ class Box:
 
         # lower contains only integer values
         if not Box._contains_only_integers(lower):
-            err_msg = "'lower' contains non-integer values"
-            raise ValueError(err_msg)
+            error_message = "'lower' contains non-integer values"
+            raise ValueError(error_message)
 
         # upper
         if not isinstance(upper, (list, tuple, numpy.ndarray)):
@@ -113,20 +113,20 @@ class Box:
 
         # upper contains only integer values
         if not Box._contains_only_integers(upper):
-            err_msg = "'upper' contains non-integer values"
-            raise ValueError(err_msg)
+            error_message = "'upper' contains non-integer values"
+            raise ValueError(error_message)
 
         # len(lower) == len(upper)
         if len(lower) != len(upper):
-            err_msg = "'lower' and 'upper' do not have the same number of " \
-                      "components"
-            raise ValueError(err_msg)
+            error_message = "'lower' and 'upper' do not have the same " \
+                            "number of components"
+            raise ValueError(error_message)
 
         # upper >= lower
         if not numpy.all(numpy.greater_equal(upper, lower)):
-            err_msg = "Some components of 'upper' are less than components " \
-                      "of 'lower'"
-            raise ValueError(err_msg)
+            error_message = "Some components of 'upper' are less than " \
+                            "components of 'lower'"
+            raise ValueError(error_message)
 
         # --- Set property and attribute values
 
