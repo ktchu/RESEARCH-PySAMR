@@ -70,6 +70,10 @@ class MeshBlockTests(unittest.TestCase):
 
         assert hasattr(MeshBlock, 'data')
 
+        # Methods
+        assert hasattr(MeshBlock, 'add_variable')
+        assert hasattr(MeshBlock, 'get_data')
+
     def test_init_1(self):
         """
         Test construction of MeshBlock object with valid parameters.
