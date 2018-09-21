@@ -20,14 +20,9 @@ import numpy
 
 # XYZ
 from samr.geometry import Geometry
+from .Box import Box
 from .MeshBlock import MeshBlock
 from .MeshLevel import MeshLevel
-
-
-# --- Constants
-
-# numpy integer data types
-from .constants import NUMPY_INT_DTYPES
 
 
 # --- Class definition
@@ -39,35 +34,33 @@ class Mesh:
     # --- Properties
 
     @property
+    def domain(self):
+        """
+        list: boxes that define the index space covered by Mesh on the
+              coarsest level
+        """
+        return self._domain
+
+    @property
+    def bounding_box(self):
+        """
+        Box: smallest Box on coarsest level of mesh that covers domain
+        """
+        return self._bounding_box
+
+    @property
+    def geometry(self):
+        """
+        Geometry: geometry for Mesh on the coarsest level
+        """
+        return self._geometry
+
+    @property
     def num_dimensions(self):
         """
         int: dimensionality of index space
         """
         return self.geometry.num_dimensions
-
-    @property
-    def geometry(self):
-        """
-        Geometry: geometry for coarsest level of mesh
-        """
-        return self._geometry
-
-    @property
-    def domain(self):
-        """
-        MeshLevel: union of blocks on coarsest level of mesh
-        """
-        if not self.levels:
-            return None
-
-        return self.levels[0]
-
-    @property
-    def domain_block(self):
-        """
-        MeshBlock: block on coarsest level of mesh that covers domain
-        """
-        return self._domain_block
 
     @property
     def levels(self):
@@ -77,35 +70,52 @@ class Mesh:
         return self._levels
 
     @property
+    def num_levels(self):
+        """
+        int: number of MeshLevels in Mesh
+        """
+        return len(self._levels)
+
+    @property
     def blocks(self):
         """
         list: MeshBlocks in Mesh
+
+        Notes
+        -----
+        * 'blocks' property is only available for single-level meshes
         """
         if not self.levels:
             raise RuntimeError("Mesh contains no blocks.")
         elif len(self.levels) > 1:
-            raise RuntimeError("'blocks' is unavailable when for "
-                               "multi-level meshes")
+            raise RuntimeError("'blocks' is only available for "
+                               "single-level meshes")
 
         return self.levels[0].blocks
 
+    @property
+    def num_blocks(self):
+        """
+        int: number of MeshBlocks in Mesh
+        """
+        return len(self.blocks)
+
     # --- Public methods
 
-    def __init__(self, geometry, lower, upper,
+    def __init__(self, domain, geometry,
                  single_level=False, single_block=False):
         """
-        TODO
+        Initialize Mesh.
 
         Parameters
         ----------
+        domain: Box or list of Boxes
+            list of boxes that define the index space covered by Mesh on the
+            coarsest level
+
         geometry: Geometry
-            geometry for coarsest level of mesh
-
-        lower: numpy.ndarray of integers
-            lower corner of index space for coarsest level of mesh
-
-        upper: numpy.ndarray of integers
-            upper corner of index space for coarsest level of mesh
+            geometry for Mesh on the coarsest level. Geometry parameters
+            provided by 'geometry' apply to the bounding box for 'domain'.
 
         single_level: boolean
             True if Mesh will contain at most one level; False otherwise
@@ -113,78 +123,64 @@ class Mesh:
         single_block: boolean
             True if Mesh will contain at most one block; False otherwise
 
+        Notes
+        -----
+        * When 'single_block' is set to True, 'single_level' is ignored.
+
         Examples
         --------
         TODO
         """
-        # TODO
-        # - consider replacing (lower, upper) parameters with
-        #   domain_boxes = list of (lower, upper) tuples.
-        #
-        # - add validation of domain boxes
-
         # --- Check arguments
+
+        # domain
+        if not isinstance(domain, (Box, list, tuple)):
+            raise ValueError("'domain' is not a Box object or a list of "
+                             "Box objects")
+
+        if isinstance(domain, (list, tuple)):
+            for box in domain:
+                if not isinstance(box, Box):
+                    raise ValueError("'domain' contains a non-Box object")
+        else:
+            # Ensure that domain is a list
+            domain = [domain]
 
         # geometry
         if not isinstance(geometry, Geometry):
-            raise ValueError("'geometry' is not Geometry object")
-
-        # get dimensionality of geometry
-        num_dimensions = geometry.num_dimensions
-
-        # lower
-        if not isinstance(lower, numpy.ndarray):
-            raise ValueError("'lower' is not a numpy.ndarray")
-
-        if len(lower) != num_dimensions:
-            error_message = "'lower' does not have 'num_dimensions' components"
-            raise ValueError(error_message)
-
-        if lower.dtype not in NUMPY_INT_DTYPES:
-            error_message = "'lower' does not have an integer dtype"
-            raise ValueError(error_message)
-
-        # upper
-        if not isinstance(upper, numpy.ndarray):
-            raise ValueError("'upper' is not a numpy.ndarray")
-
-        if len(upper) != num_dimensions:
-            error_message = "'upper' does not have 'num_dimensions' components"
-            raise ValueError(error_message)
-
-        if upper.dtype not in NUMPY_INT_DTYPES:
-            error_message = "'upper' does not have an integer dtype"
-            raise ValueError(error_message)
-
-        # upper > lower
-        if not numpy.all(numpy.greater(upper, lower)):
-            error_message = "Some components of 'upper' are less than or " \
-                            "equal to components of 'lower'"
-            raise ValueError(error_message)
+            raise ValueError("'geometry' is not a Geometry object")
 
         # --- Set property and attribute values
 
-        # PYLINT: eliminate 'defined outside __init__' error
-        self._data = {}
-
         # index space
-        self._lower = lower.astype('int64')
-        self._upper = upper.astype('int64')
+        # TODO: implement compute_bounding_box()
+        self._domain = domain
+        self._bounding_box = domain[0]
+        # self._bounding_box = Box.compute_bounding_box(domain)
 
         # geometry
         self._geometry = geometry
 
-        # --- Set property and attribute values
-
-        # PYLINT: eliminate 'defined outside __init__' error
+        # levels
         self._levels = []
 
-        self._geometry = geometry
-        self._domain_block = MeshBlock(geometry, lower, upper)
+        # --- Initialize levels for single-level meshes
 
-        # --- Initialize domain and levels for single-level meshes
+        if single_block:
+            # TODO
+            block = MeshBlock(self.bounding_box, self.geometry)
+            level = MeshLevel(block)
+            self._levels.append(level)
 
-        # TODO
+        elif single_level:
+            # TODO
+            blocks = []
+            for box in domain:
+                block_geometry = None  # TODO
+                blocks.append(MeshBlock(box, block_geometry))
+
+            level = MeshLevel(blocks)
+            self._levels.append(level)
 
     def add_level(self, mesh_level):
         """
