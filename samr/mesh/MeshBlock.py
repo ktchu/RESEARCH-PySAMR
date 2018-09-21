@@ -110,11 +110,11 @@ class MeshBlock:
 
         # box
         if not isinstance(box, Box):
-            raise ValueError("'box' is not Box object")
+            raise ValueError("'box' is not a Box object")
 
         # geometry
         if not isinstance(geometry, Geometry):
-            raise ValueError("'geometry' is not Geometry object")
+            raise ValueError("'geometry' is not a Geometry object")
 
         # box.num_dimensions == geometry.num_dimensions
         if box.num_dimensions != geometry.num_dimensions:
