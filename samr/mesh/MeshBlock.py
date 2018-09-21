@@ -124,18 +124,14 @@ class MeshBlock:
 
         # --- Set property and attribute values
 
-        # PYLINT: eliminate 'defined outside __init__' error
-        self._data = {}
-
         # box
         self._box = box
 
         # geometry
         self._geometry = geometry
 
-        # index space
-        # self._lower = lower.astype('int64')
-        # self._upper = upper.astype('int64')
+        # data
+        self._data = {}
 
     def add_variable(self, variable):
         """
