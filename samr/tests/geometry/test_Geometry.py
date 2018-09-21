@@ -71,7 +71,7 @@ class GeometryTests(unittest.TestCase):
             _ = Geometry(num_dimensions=0)
 
         if exc_info:
-            expected_error = "'num_dimensions' is not a positive integer"
+            expected_error = "'num_dimensions' is not a positive value"
         assert expected_error in str(exc_info)
 
         # num_dimensions < 0
@@ -79,5 +79,5 @@ class GeometryTests(unittest.TestCase):
             _ = Geometry(num_dimensions=-1)
 
         if exc_info:
-            expected_error = "'num_dimensions' is not a positive integer"
+            expected_error = "'num_dimensions' is not a positive value"
         assert expected_error in str(exc_info)

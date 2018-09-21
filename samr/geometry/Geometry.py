@@ -15,10 +15,6 @@ contained in the LICENSE file.
 
 # Standard library
 
-# External packages
-
-# XYZ
-
 
 # --- Constants
 
@@ -38,6 +34,8 @@ class Geometry:
     Subclasses of Geometry should manage properties that are specific
     to the mapping of index space to coordinate space.
     """
+    # pylint: disable=too-few-public-methods
+
     # --- Properties
 
     @property
@@ -69,7 +67,7 @@ class Geometry:
             raise ValueError("'num_dimensions' is not an integer")
 
         if num_dimensions <= 0:
-            raise ValueError("'num_dimensions' is not a positive integer")
+            raise ValueError("'num_dimensions' is not a positive value")
 
         # --- Set property and attribute values
 

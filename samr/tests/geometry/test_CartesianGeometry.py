@@ -90,7 +90,7 @@ class CartesianGeometryTests(unittest.TestCase):
                                   dx=dx)
 
         if exc_info:
-            expected_error = "'num_dimensions' is not a positive integer"
+            expected_error = "'num_dimensions' is not a positive value"
         assert expected_error in str(exc_info)
 
         # num_dimensions < 0
@@ -100,7 +100,7 @@ class CartesianGeometryTests(unittest.TestCase):
                                   dx=dx)
 
         if exc_info:
-            expected_error = "'num_dimensions' is not a positive integer"
+            expected_error = "'num_dimensions' is not a positive value"
         assert expected_error in str(exc_info)
 
     @staticmethod
