@@ -118,9 +118,8 @@ class MeshBlock:
 
         # box.num_dimensions == geometry.num_dimensions
         if box.num_dimensions != geometry.num_dimensions:
-            error_message = "'box' and 'geometry' do not have the same " \
-                            "number of dimensions"
-            raise ValueError(error_message)
+            raise ValueError("'box' and 'geometry' do not have the same "
+                             "number of dimensions")
 
         # --- Set property and attribute values
 

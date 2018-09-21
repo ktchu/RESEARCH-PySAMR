@@ -98,17 +98,15 @@ class CartesianGeometry(Geometry):
             raise ValueError("'x_lower' is not a numpy.ndarray")
 
         if len(x_lower) != num_dimensions:
-            error_message = \
-                "'x_lower' does not have 'num_dimensions' components"
-            raise ValueError(error_message)
+            raise ValueError("'x_lower' does not have 'num_dimensions' "
+                             "components")
 
         # dx
         if not isinstance(dx, numpy.ndarray):
             raise ValueError("'dx' is not a numpy.ndarray")
 
         if len(dx) != num_dimensions:
-            error_message = "'dx' does not have 'num_dimensions' components"
-            raise ValueError(error_message)
+            raise ValueError("'dx' does not have 'num_dimensions' components")
 
         if not numpy.all(numpy.greater(dx, numpy.zeros(num_dimensions))):
             raise ValueError("'dx' contains a non-positive value")
