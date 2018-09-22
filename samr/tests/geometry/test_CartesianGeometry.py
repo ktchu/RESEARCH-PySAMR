@@ -79,8 +79,7 @@ class CartesianGeometryTests(unittest.TestCase):
                                   x_lower=x_lower,
                                   dx=dx)
 
-        if exc_info:
-            expected_error = "'num_dimensions' is not an integer"
+        expected_error = "'num_dimensions' is not an integer"
         assert expected_error in str(exc_info)
 
         # num_dimensions = 0
@@ -89,8 +88,7 @@ class CartesianGeometryTests(unittest.TestCase):
                                   x_lower=x_lower,
                                   dx=dx)
 
-        if exc_info:
-            expected_error = "'num_dimensions' is not a positive value"
+        expected_error = "'num_dimensions' is not a positive value"
         assert expected_error in str(exc_info)
 
         # num_dimensions < 0
@@ -99,8 +97,7 @@ class CartesianGeometryTests(unittest.TestCase):
                                   x_lower=x_lower,
                                   dx=dx)
 
-        if exc_info:
-            expected_error = "'num_dimensions' is not a positive value"
+        expected_error = "'num_dimensions' is not a positive value"
         assert expected_error in str(exc_info)
 
     @staticmethod
@@ -121,8 +118,7 @@ class CartesianGeometryTests(unittest.TestCase):
                                   x_lower=3,
                                   dx=dx)
 
-        if exc_info:
-            expected_error = "'x_lower' is not a numpy.ndarray"
+        expected_error = "'x_lower' is not a numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # len(x_lower) != num_dimensions
@@ -131,9 +127,7 @@ class CartesianGeometryTests(unittest.TestCase):
                                   x_lower=numpy.zeros(num_dimensions-1),
                                   dx=dx)
 
-        if exc_info:
-            expected_error = "'x_lower' does not have 'num_dimensions' " \
-                             "components"
+        expected_error = "'x_lower' does not have 'num_dimensions' components"
         assert expected_error in str(exc_info)
 
     @staticmethod
@@ -154,8 +148,7 @@ class CartesianGeometryTests(unittest.TestCase):
                                   x_lower=x_lower,
                                   dx='not a numpy.ndarray')
 
-        if exc_info:
-            expected_error = "'dx' is not a numpy.ndarray"
+        expected_error = "'dx' is not a numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # len(dx) != num_dimensions
@@ -164,9 +157,7 @@ class CartesianGeometryTests(unittest.TestCase):
                                   x_lower=x_lower,
                                   dx=numpy.ones(num_dimensions+1))
 
-        if exc_info:
-            expected_error = "'dx' does not have 'num_dimensions' " \
-                             "components"
+        expected_error = "'dx' does not have 'num_dimensions' components"
         assert expected_error in str(exc_info)
 
         # dx contains a zero value
@@ -177,8 +168,7 @@ class CartesianGeometryTests(unittest.TestCase):
                                   x_lower=x_lower,
                                   dx=invalid_dx)
 
-        if exc_info:
-            expected_error = "'dx' contains a non-positive value"
+        expected_error = "'dx' contains a non-positive value"
         assert expected_error in str(exc_info)
 
         # dx contains a negative value
@@ -189,6 +179,5 @@ class CartesianGeometryTests(unittest.TestCase):
                                   x_lower=x_lower,
                                   dx=invalid_dx)
 
-        if exc_info:
-            expected_error = "'dx' contains a non-positive value"
+        expected_error = "'dx' contains a non-positive value"
         assert expected_error in str(exc_info)

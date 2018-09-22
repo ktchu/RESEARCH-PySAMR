@@ -80,25 +80,22 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=3, upper=upper)
 
-        if exc_info:
-            expected_error = "'lower' is not a list, tuple, or numpy.ndarray"
+        expected_error = "'lower' is not a list, tuple, or numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # lower contains non-integer values
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=numpy.array([0, 0.1, 0]), upper=upper)
 
-        if exc_info:
-            expected_error = "'lower' contains non-integer values"
+        expected_error = "'lower' contains non-integer values"
         assert expected_error in str(exc_info)
 
         # len(lower) != len(upper)
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=numpy.zeros(num_dimensions-1), upper=upper)
 
-        if exc_info:
-            expected_error = "'lower' and 'upper' do not have the same " \
-                             "number of components"
+        expected_error = "'lower' and 'upper' do not have the same " \
+                         "number of components"
         assert expected_error in str(exc_info)
 
     @staticmethod
@@ -117,16 +114,14 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=lower, upper='not a valid array type')
 
-        if exc_info:
-            expected_error = "'upper' is not a list, tuple, or numpy.ndarray"
+        expected_error = "'upper' is not a list, tuple, or numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # upper contains non-integer values
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=lower, upper=numpy.array([0, 0.1, 0]))
 
-        if exc_info:
-            expected_error = "'upper' contains non-integer values"
+        expected_error = "'upper' contains non-integer values"
         assert expected_error in str(exc_info)
 
         # len(lower) != len(upper)
@@ -134,9 +129,8 @@ class BoxTests(unittest.TestCase):
             _ = Box(lower=lower,
                     upper=numpy.ones(num_dimensions+1, dtype='int'))
 
-        if exc_info:
-            expected_error = "'lower' and 'upper' do not have the same " \
-                             "number of components"
+        expected_error = "'lower' and 'upper' do not have the same " \
+                         "number of components"
         assert expected_error in str(exc_info)
 
     @staticmethod
@@ -179,8 +173,6 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=lower, upper=upper)
 
-        if exc_info:
-            expected_error = \
-                "Some components of 'upper' are less than components " \
-                "of 'lower'"
+        expected_error = "Some components of 'upper' are less than " \
+                         "components of 'lower'"
         assert expected_error in str(exc_info)
