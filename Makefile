@@ -46,7 +46,7 @@ coverage-html: .coverage
 
 # Code quality
 radon-cc:
-	radon cc ${CODE_DIRS} -a
+	radon cc ${CODE_DIRS} --total-average
 radon-mi:
 	radon mi ${CODE_DIRS} -s --sort
 radon-mi-fail:
