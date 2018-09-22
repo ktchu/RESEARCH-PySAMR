@@ -48,9 +48,9 @@ coverage-html: .coverage
 radon-cc:
 	radon cc ${CODE_DIRS} -a
 radon-mi:
-	radon mi ${CODE_DIRS} -s
+	radon mi ${CODE_DIRS} -s --sort
 radon-mi-fail:
-	radon mi ${CODE_DIRS} -nb -s
+	radon mi ${CODE_DIRS} -nB -s --sort
 radon-raw:
 	radon raw ${CODE_DIRS} -s
 
