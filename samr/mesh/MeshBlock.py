@@ -28,9 +28,10 @@ from samr.mesh import Box
 
 class MeshBlock:
     """
-    A MeshBlock object represents a region of the mathematical domain that
-    is defined by a rectangular region of index space (Box object) and its
-    mapping to a coordinate space (Geometry object).
+    A MeshBlock object represents a logically rectangular region of space
+    (i.e., a deformed rectangle). It is defined by a rectangular region of
+    index space (Box object) and its mapping to a coordinate space (Geometry
+    object).
     """
     # --- Properties
 
