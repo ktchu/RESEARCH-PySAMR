@@ -77,13 +77,13 @@ class CartesianGeometry(Geometry):
         Examples
         --------
         >>> num_dimensions = 3
-        >>> x_lower = numpy.array([1, 2, 3])
-        >>> dx = 0.1 * numpy.ones(num_dimensions)
+        >>> x_lower = [0] * num_dimensions
+        >>> dx = [0.1] * num_dimensions
         >>> geometry = CartesianGeometry(num_dimensions, x_lower, dx)
         >>> geometry.num_dimensions
         3
         >>> geometry.x_lower
-        array([1., 2., 3.])
+        array([0., 0., 0.])
         >>> geometry.dx
         array([0.1, 0.1, 0.1])
         """
@@ -94,16 +94,17 @@ class CartesianGeometry(Geometry):
         # --- Check arguments
 
         # x_lower
-        if not isinstance(x_lower, numpy.ndarray):
-            raise ValueError("'x_lower' is not a numpy.ndarray")
+        if not isinstance(x_lower, (list, tuple, numpy.ndarray)):
+            raise ValueError("'x_lower' is not a list, tuple, or "
+                             "numpy.ndarray")
 
         if len(x_lower) != num_dimensions:
             raise ValueError("'x_lower' does not have 'num_dimensions' "
                              "components")
 
         # dx
-        if not isinstance(dx, numpy.ndarray):
-            raise ValueError("'dx' is not a numpy.ndarray")
+        if not isinstance(dx, (list, tuple, numpy.ndarray)):
+            raise ValueError("'dx' is not a list, tuple, or numpy.ndarray")
 
         if len(dx) != num_dimensions:
             raise ValueError("'dx' does not have 'num_dimensions' components")
@@ -114,5 +115,40 @@ class CartesianGeometry(Geometry):
         # --- Set property and attribute values
 
         self._num_dimensions = num_dimensions
-        self._x_lower = x_lower.astype('float64')
-        self._dx = dx.astype('float64')
+        self._x_lower = numpy.array(x_lower, dtype='float64')
+        self._dx = numpy.array(dx, dtype='float64')
+
+    # --- Magic methods
+
+    def __eq__(self, other):
+        """
+        Return whether 'other' is an equivalent CartesianGeometry object.
+
+        Parameters
+        ----------
+        other: object
+            object to compare with
+
+        Return value
+        ------------
+        bool: True if 'other' is an equivalent object; False otherwise
+
+        Examples
+        --------
+        >>> num_dimensions = 3
+        >>> x_lower = [0.0] * num_dimensions
+        >>> dx = [0.1] * num_dimensions
+        >>> geometry = CartesianGeometry(num_dimensions, x_lower, dx)
+        >>> equivalent_geometry = \
+                CartesianGeometry(num_dimensions, x_lower, dx)
+        >>> geometry == equivalent_geometry
+        True
+        >>> geometry is equivalent_geometry
+        False
+        """
+        if isinstance(other, self.__class__):
+            return self.num_dimensions == other.num_dimensions and \
+                   numpy.all(self.x_lower == other.x_lower) and \
+                   numpy.all(self.dx == other.dx)
+
+        return False
