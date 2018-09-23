@@ -28,9 +28,11 @@ from . import Geometry
 
 class CartesianGeometry(Geometry):
     """
-    CartesianGeometry provides support for relating rectangular regions of
-    index space to regions of a Cartesian coordinate space.
+    A CartesianGeometry object represents a rectangular region of Cartesian
+    coordinate space. It provides support for relating rectangular regions of
+    index space to rectangular regions of a Cartesian coordinate space.
 
+    TODO
     * logically rectangular region of space
     * uniform grid spacing in each direction
     """

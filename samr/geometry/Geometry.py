@@ -23,16 +23,16 @@ contained in the LICENSE file.
 
 class Geometry:
     """
-    Base class for classes that relate rectangular regions of index space
-    to regions of coordinate space.
+    Geometry objects represent regions of coordinate space. They relate
+    rectangular regions of index space to regions of coordinate space.
 
-    The base Geometry class manages properties that are common to all
-    coordinate spaces:
+    The Geometry class is a base class for subclasses that represent specific
+    coordinate spaces.
+
+    The Geometry class manages the following properties that are common to
+    all coordinate spaces:
 
     - num_dimensions: dimensionality of space
-
-    Subclasses of Geometry should manage properties that are specific
-    to the mapping of index space to coordinate space.
     """
     # pylint: disable=too-few-public-methods
 
