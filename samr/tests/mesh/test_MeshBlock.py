@@ -46,8 +46,8 @@ class MeshBlockTests(unittest.TestCase):
         self.box = Box(self.lower, self.upper)
 
         # geometry
-        self.x_lower = numpy.zeros(self.num_dimensions)
-        self.dx = 0.1 * numpy.ones(self.num_dimensions)
+        self.x_lower = [0] * self.num_dimensions
+        self.dx = [0.1] * self.num_dimensions
         self.geometry = CartesianGeometry(self.num_dimensions,
                                           self.x_lower, self.dx)
 
@@ -78,15 +78,17 @@ class MeshBlockTests(unittest.TestCase):
         """
         Test construction of MeshBlock object with valid parameters.
         """
-        # Exercise functionality
+        # --- Exercise functionality
 
         block = MeshBlock(self.box, self.geometry)
 
-        # Check results
+        # --- Check results
 
         assert block.num_dimensions == self.num_dimensions
 
+        # Check that box is equivalent and is a copy (not the same object)
         assert block.box == self.box
+        assert block.box is not self.box
 
         assert numpy.array_equal(block.lower, self.lower)
         assert block.lower.dtype == numpy.int64
@@ -97,7 +99,9 @@ class MeshBlockTests(unittest.TestCase):
         assert numpy.array_equal(block.shape, self.box.shape)
         assert block.size == self.box.size
 
+        # Check that geometry is equivalent and is a copy (not the same object)
         assert block.geometry == self.geometry
+        assert block.geometry is not self.geometry
 
         assert block.data == {}
 

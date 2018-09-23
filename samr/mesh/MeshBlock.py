@@ -14,6 +14,7 @@ contained in the LICENSE file.
 # --- Imports
 
 # Standard library
+import copy
 
 # External packages
 import numpy
@@ -124,10 +125,10 @@ class MeshBlock:
         # --- Set property and attribute values
 
         # box
-        self._box = box
+        self._box = copy.deepcopy(box)
 
         # geometry
-        self._geometry = geometry
+        self._geometry = copy.deepcopy(geometry)
 
         # data
         self._data = {}
