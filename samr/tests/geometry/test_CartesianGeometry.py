@@ -45,7 +45,7 @@ class CartesianGeometryTests(unittest.TestCase):
     @staticmethod
     def test_init_1():
         """
-        Test construction of CartesianGeometry object with valid parameters.
+        Test __init__(): valid parameters
         """
         # --- Exercise functionality and check results
 
@@ -88,7 +88,7 @@ class CartesianGeometryTests(unittest.TestCase):
     @staticmethod
     def test_init_2():
         """
-        Test construction of CartesianGeometry object. Invalid 'num_dimensions'
+        Test __init__(): invalid 'num_dimensions'
         """
         # --- Preparations
 
@@ -128,7 +128,7 @@ class CartesianGeometryTests(unittest.TestCase):
     @staticmethod
     def test_init_3():
         """
-        Test construction of CartesianGeometry object. Invalid 'x_lower'
+        Test __init__(): invalid 'x_lower'
         """
         # --- Preparations
 
@@ -158,7 +158,7 @@ class CartesianGeometryTests(unittest.TestCase):
     @staticmethod
     def test_init_4():
         """
-        Test construction of CartesianGeometry object. Invalid 'x_lower'
+        Test __init__(): invalid 'x_lower'
         """
         # --- Preparations
 

@@ -47,7 +47,7 @@ class BoxTests(unittest.TestCase):
     @staticmethod
     def test_init_1():
         """
-        Test construction of Box object with valid parameters.
+        Test __init__(): valid parameters
         """
         # --- Exercise functionality and check results
 
@@ -96,7 +96,7 @@ class BoxTests(unittest.TestCase):
     @staticmethod
     def test_init_2():
         """
-        Test construction of Box object. Invalid 'lower'
+        Test __init__(): invalid 'lower'
         """
         # --- Preparations
 
@@ -130,7 +130,7 @@ class BoxTests(unittest.TestCase):
     @staticmethod
     def test_init_3():
         """
-        Test construction of Box object. Invalid 'upper'
+        Test __init__(): invalid 'upper'
         """
         # --- Preparations
 
@@ -165,8 +165,8 @@ class BoxTests(unittest.TestCase):
     @staticmethod
     def test_init_4():
         """
-        Test construction of Box object. Some componetns of 'upper' equal to
-        components of 'lower'
+        Test __init__(): some componetns of 'upper' equal to components of
+        'lower'
         """
         # --- Preparations
 
@@ -188,7 +188,7 @@ class BoxTests(unittest.TestCase):
     @staticmethod
     def test_init_5():
         """
-        Test construction of Box object. Component of 'upper' less than 'lower'
+        Test __init__(): component of 'upper' less than 'lower'
         """
         # --- Preparations
 

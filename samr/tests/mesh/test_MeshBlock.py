@@ -76,7 +76,7 @@ class MeshBlockTests(unittest.TestCase):
 
     def test_init_1(self):
         """
-        Test construction of MeshBlock object with valid parameters.
+        Test __init__(): valid parameters
         """
         # --- Exercise functionality
 
@@ -107,7 +107,7 @@ class MeshBlockTests(unittest.TestCase):
 
     def test_init_2(self):
         """
-        Test construction of MeshBlock object. Invalid 'box'
+        Test __init__(): invalid 'box'
         """
         # --- Exercise functionality and check results
 
@@ -120,7 +120,7 @@ class MeshBlockTests(unittest.TestCase):
 
     def test_init_3(self):
         """
-        Test construction of MeshBlock object. Invalid 'geometry'
+        Test __init__(): invalid 'geometry'
         """
         # --- Exercise functionality and check results
 

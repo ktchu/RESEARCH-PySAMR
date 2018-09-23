@@ -42,7 +42,7 @@ class GeometryTests(unittest.TestCase):
     @staticmethod
     def test_init_1():
         """
-        Test construction of Geometry object with valid parameters.
+        Test __init__(): valid parameters
         """
         # Exercise functionality
         num_dimensions = 3
@@ -54,7 +54,7 @@ class GeometryTests(unittest.TestCase):
     @staticmethod
     def test_init_2():
         """
-        Test construction of Geometry object. Invalid 'num_dimensions'
+        Test __init__(): invalid 'num_dimensions'
         """
         # --- Exercise functionality and check results
 
