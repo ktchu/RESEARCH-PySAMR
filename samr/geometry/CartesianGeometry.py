@@ -39,13 +39,6 @@ class CartesianGeometry(Geometry):
     # --- Properties
 
     @property
-    def num_dimensions(self):
-        """
-        int: number of spatial dimensions
-        """
-        return self._num_dimensions
-
-    @property
     def x_lower(self):
         """
         numpy.ndarray: lower corner of mesh
@@ -61,15 +54,12 @@ class CartesianGeometry(Geometry):
 
     # --- Public methods
 
-    def __init__(self, num_dimensions, x_lower, dx):
+    def __init__(self, x_lower, dx):
         """
-        TODO
+        Initialize CartesianGeometry object.
 
         Parameters
         ----------
-        num_dimensions: int
-            number of spatial dimensions
-
         x_lower: numpy.ndarray
             lower corner of mesh
 
@@ -81,7 +71,7 @@ class CartesianGeometry(Geometry):
         >>> num_dimensions = 3
         >>> x_lower = [0] * num_dimensions
         >>> dx = [0.1] * num_dimensions
-        >>> geometry = CartesianGeometry(num_dimensions, x_lower, dx)
+        >>> geometry = CartesianGeometry(x_lower, dx)
         >>> geometry.num_dimensions
         3
         >>> geometry.x_lower
@@ -89,10 +79,6 @@ class CartesianGeometry(Geometry):
         >>> geometry.dx
         array([0.1, 0.1, 0.1])
         """
-        # --- Call super()
-
-        super().__init__(num_dimensions)
-
         # --- Check arguments
 
         # x_lower
@@ -100,23 +86,25 @@ class CartesianGeometry(Geometry):
             raise ValueError("'x_lower' is not a list, tuple, or "
                              "numpy.ndarray")
 
-        if len(x_lower) != num_dimensions:
-            raise ValueError("'x_lower' does not have 'num_dimensions' "
-                             "components")
-
         # dx
         if not isinstance(dx, (list, tuple, numpy.ndarray)):
             raise ValueError("'dx' is not a list, tuple, or numpy.ndarray")
 
-        if len(dx) != num_dimensions:
-            raise ValueError("'dx' does not have 'num_dimensions' components")
+        # len(x_lower) == len(dx)
+        if len(x_lower) != len(dx):
+            raise ValueError("'x_lower' and 'dx' do not have the same "
+                             "number of components")
 
-        if not numpy.all(numpy.greater(dx, numpy.zeros(num_dimensions))):
+        # dx > 0
+        if not numpy.all(numpy.greater(dx, [0] * len(dx))):
             raise ValueError("'dx' contains a non-positive value")
+
+        # --- Call super()
+
+        super().__init__(num_dimensions=len(x_lower))
 
         # --- Set property and attribute values
 
-        self._num_dimensions = num_dimensions
         self._x_lower = numpy.array(x_lower, dtype='float64')
         self._dx = numpy.array(dx, dtype='float64')
 
@@ -140,9 +128,8 @@ class CartesianGeometry(Geometry):
         >>> num_dimensions = 3
         >>> x_lower = [0.0] * num_dimensions
         >>> dx = [0.1] * num_dimensions
-        >>> geometry = CartesianGeometry(num_dimensions, x_lower, dx)
-        >>> equivalent_geometry = \
-                CartesianGeometry(num_dimensions, x_lower, dx)
+        >>> geometry = CartesianGeometry(x_lower, dx)
+        >>> equivalent_geometry = CartesianGeometry(x_lower, dx)
         >>> geometry == equivalent_geometry
         True
         >>> geometry is equivalent_geometry

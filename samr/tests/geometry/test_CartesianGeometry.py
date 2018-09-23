@@ -53,7 +53,7 @@ class CartesianGeometryTests(unittest.TestCase):
         num_dimensions = 3
         x_lower = [0] * num_dimensions
         dx = [0.1] * num_dimensions
-        geometry = CartesianGeometry(num_dimensions, x_lower, dx)
+        geometry = CartesianGeometry(x_lower, dx)
 
         assert geometry.num_dimensions == num_dimensions
         assert numpy.array_equal(geometry.x_lower, x_lower)
@@ -65,7 +65,7 @@ class CartesianGeometryTests(unittest.TestCase):
         num_dimensions = 3
         x_lower = tuple([0] * num_dimensions)
         dx = tuple([0.1] * num_dimensions)
-        geometry = CartesianGeometry(num_dimensions, x_lower, dx)
+        geometry = CartesianGeometry(x_lower, dx)
 
         assert geometry.num_dimensions == num_dimensions
         assert numpy.array_equal(geometry.x_lower, x_lower)
@@ -77,7 +77,7 @@ class CartesianGeometryTests(unittest.TestCase):
         num_dimensions = 3
         x_lower = numpy.zeros(num_dimensions)
         dx = 0.1 * numpy.ones(num_dimensions)
-        geometry = CartesianGeometry(num_dimensions, x_lower, dx)
+        geometry = CartesianGeometry(x_lower, dx)
 
         assert geometry.num_dimensions == num_dimensions
         assert numpy.array_equal(geometry.x_lower, x_lower)
@@ -87,46 +87,6 @@ class CartesianGeometryTests(unittest.TestCase):
 
     @staticmethod
     def test_init_2():
-        """
-        Test __init__(): invalid 'num_dimensions'
-        """
-        # --- Preparations
-
-        num_dimensions = 5
-        x_lower = [0.0] * num_dimensions
-        dx = [0.1] * num_dimensions
-
-        # --- Exercise functionality and check results
-
-        # num_dimensions not an int
-        with pytest.raises(ValueError) as exc_info:
-            _ = CartesianGeometry(num_dimensions='not an int',
-                                  x_lower=x_lower,
-                                  dx=dx)
-
-        expected_error = "'num_dimensions' is not an integer"
-        assert expected_error in str(exc_info)
-
-        # num_dimensions = 0
-        with pytest.raises(ValueError) as exc_info:
-            _ = CartesianGeometry(num_dimensions=0,
-                                  x_lower=x_lower,
-                                  dx=dx)
-
-        expected_error = "'num_dimensions' is not a positive value"
-        assert expected_error in str(exc_info)
-
-        # num_dimensions < 0
-        with pytest.raises(ValueError) as exc_info:
-            _ = CartesianGeometry(num_dimensions=-1,
-                                  x_lower=x_lower,
-                                  dx=dx)
-
-        expected_error = "'num_dimensions' is not a positive value"
-        assert expected_error in str(exc_info)
-
-    @staticmethod
-    def test_init_3():
         """
         Test __init__(): invalid 'x_lower'
         """
@@ -139,24 +99,21 @@ class CartesianGeometryTests(unittest.TestCase):
 
         # x_lower not a valid array type
         with pytest.raises(ValueError) as exc_info:
-            _ = CartesianGeometry(num_dimensions=num_dimensions,
-                                  x_lower=3,
-                                  dx=dx)
+            _ = CartesianGeometry(x_lower=3, dx=dx)
 
         expected_error = "'x_lower' is not a list, tuple, or numpy.ndarray"
         assert expected_error in str(exc_info)
 
-        # len(x_lower) != num_dimensions
+        # len(x_lower) != len(dx)
         with pytest.raises(ValueError) as exc_info:
-            _ = CartesianGeometry(num_dimensions=num_dimensions,
-                                  x_lower=[0] * (num_dimensions-1),
-                                  dx=dx)
+            _ = CartesianGeometry(x_lower=[0] * (num_dimensions-1), dx=dx)
 
-        expected_error = "'x_lower' does not have 'num_dimensions' components"
+        expected_error = "'x_lower' and 'dx' do not have the same " \
+                         "number of components"
         assert expected_error in str(exc_info)
 
     @staticmethod
-    def test_init_4():
+    def test_init_3():
         """
         Test __init__(): invalid 'x_lower'
         """
@@ -169,29 +126,25 @@ class CartesianGeometryTests(unittest.TestCase):
 
         # dx not a valid array type
         with pytest.raises(ValueError) as exc_info:
-            _ = CartesianGeometry(num_dimensions=num_dimensions,
-                                  x_lower=x_lower,
-                                  dx='not a numpy.ndarray')
+            _ = CartesianGeometry(x_lower=x_lower, dx='not a numpy.ndarray')
 
         expected_error = "'dx' is not a list, tuple, or numpy.ndarray"
         assert expected_error in str(exc_info)
 
-        # len(dx) != num_dimensions
+        # len(x_lower) != len(dx)
         with pytest.raises(ValueError) as exc_info:
-            _ = CartesianGeometry(num_dimensions=num_dimensions,
-                                  x_lower=x_lower,
+            _ = CartesianGeometry(x_lower=x_lower,
                                   dx=[0.1] * (num_dimensions+1))
 
-        expected_error = "'dx' does not have 'num_dimensions' components"
+        expected_error = "'x_lower' and 'dx' do not have the same " \
+                         "number of components"
         assert expected_error in str(exc_info)
 
         # dx contains a zero value
         with pytest.raises(ValueError) as exc_info:
             invalid_dx = [0.1] * num_dimensions
             invalid_dx[0] = 0
-            _ = CartesianGeometry(num_dimensions=num_dimensions,
-                                  x_lower=x_lower,
-                                  dx=invalid_dx)
+            _ = CartesianGeometry(x_lower=x_lower, dx=invalid_dx)
 
         expected_error = "'dx' contains a non-positive value"
         assert expected_error in str(exc_info)
@@ -200,9 +153,7 @@ class CartesianGeometryTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             invalid_dx = [0.1] * num_dimensions
             invalid_dx[-1] = -0.1
-            _ = CartesianGeometry(num_dimensions=num_dimensions,
-                                  x_lower=x_lower,
-                                  dx=invalid_dx)
+            _ = CartesianGeometry(x_lower=x_lower, dx=invalid_dx)
 
         expected_error = "'dx' contains a non-positive value"
         assert expected_error in str(exc_info)
@@ -218,18 +169,17 @@ class CartesianGeometryTests(unittest.TestCase):
         x_lower = [0] * num_dimensions
         dx = [0.1] * num_dimensions
 
-        geometry = CartesianGeometry(num_dimensions, x_lower, dx)
+        geometry = CartesianGeometry(x_lower, dx)
 
         # --- Exercise functionality and check results
 
         # Two distinct CartesianGeometry objects that are equivalent
-        equivalent_geometry = CartesianGeometry(num_dimensions, x_lower, dx)
+        equivalent_geometry = CartesianGeometry(x_lower, dx)
         assert geometry == equivalent_geometry
         assert geometry is not equivalent_geometry
 
         # Two distinct CartesianGeometry objects that are not equivalent
-        different_geometry = CartesianGeometry(num_dimensions,
-                                               geometry.x_lower + 1, dx)
+        different_geometry = CartesianGeometry(geometry.x_lower + 1, dx)
         assert geometry != different_geometry
 
         # Comparison with non-CartesianGeometry object
