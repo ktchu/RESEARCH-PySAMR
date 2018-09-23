@@ -79,7 +79,7 @@ class BoxTests(unittest.TestCase):
         assert numpy.array_equal(box.shape, [50]*num_dimensions)
         assert box.size == numpy.product(box.shape)
 
-        # lower and upper are numpy.ndarrays
+        # lower and upper are numpy.ndarray objects
         num_dimensions = 3
         lower = numpy.ones(num_dimensions)
         upper = 20 * numpy.ones(num_dimensions)
