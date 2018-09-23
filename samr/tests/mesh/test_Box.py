@@ -49,19 +49,48 @@ class BoxTests(unittest.TestCase):
         """
         Test construction of Box object with valid parameters.
         """
-        # Exercise functionality
+        # --- Exercise functionality and check results
+
+        # lower and upper are lists
         num_dimensions = 3
-        lower = numpy.ones(num_dimensions)
-        upper = 100 * numpy.ones(num_dimensions)
+        lower = [1] * num_dimensions
+        upper = [100] * num_dimensions
         box = Box(lower, upper)
 
-        # Check results
         assert numpy.array_equal(box.lower, lower)
         assert box.lower.dtype == numpy.int64
         assert numpy.array_equal(box.upper, upper)
         assert box.upper.dtype == numpy.int64
         assert box.num_dimensions == num_dimensions
-        assert numpy.array_equal(box.shape, numpy.array([100]*num_dimensions))
+        assert numpy.array_equal(box.shape, [100] * num_dimensions)
+        assert box.size == numpy.product(box.shape)
+
+        # lower and upper are tuples
+        num_dimensions = 3
+        lower = tuple([1] * num_dimensions)
+        upper = tuple([50] * num_dimensions)
+        box = Box(lower, upper)
+
+        assert numpy.array_equal(box.lower, lower)
+        assert box.lower.dtype == numpy.int64
+        assert numpy.array_equal(box.upper, upper)
+        assert box.upper.dtype == numpy.int64
+        assert box.num_dimensions == num_dimensions
+        assert numpy.array_equal(box.shape, [50]*num_dimensions)
+        assert box.size == numpy.product(box.shape)
+
+        # lower and upper are numpy.ndarrays
+        num_dimensions = 3
+        lower = numpy.ones(num_dimensions)
+        upper = 20 * numpy.ones(num_dimensions)
+        box = Box(lower, upper)
+
+        assert numpy.array_equal(box.lower, lower)
+        assert box.lower.dtype == numpy.int64
+        assert numpy.array_equal(box.upper, upper)
+        assert box.upper.dtype == numpy.int64
+        assert box.num_dimensions == num_dimensions
+        assert numpy.array_equal(box.shape, [20]*num_dimensions)
         assert box.size == numpy.product(box.shape)
 
     @staticmethod
@@ -72,7 +101,7 @@ class BoxTests(unittest.TestCase):
         # --- Preparations
 
         num_dimensions = 2
-        upper = numpy.ones(num_dimensions)
+        upper = [1] * num_dimensions
 
         # --- Exercise functionality and check results
 
@@ -106,7 +135,7 @@ class BoxTests(unittest.TestCase):
         # --- Preparations
 
         num_dimensions = 3
-        lower = numpy.zeros(num_dimensions, dtype='int')
+        lower = [0] * num_dimensions
 
         # --- Exercise functionality and check results
 
@@ -142,8 +171,8 @@ class BoxTests(unittest.TestCase):
         # --- Preparations
 
         num_dimensions = 4
-        lower = numpy.ones(num_dimensions, dtype='int')
-        upper = 10 * numpy.ones(num_dimensions, dtype='int')
+        lower = [0] * num_dimensions
+        upper = [9.0] * num_dimensions
         upper[1] = lower[1]
         upper[-1] = lower[-1]
 
@@ -164,8 +193,8 @@ class BoxTests(unittest.TestCase):
         # --- Preparations
 
         num_dimensions = 5
-        lower = numpy.ones(num_dimensions, dtype='int')
-        upper = 10 * numpy.ones(num_dimensions, dtype='int')
+        lower = [1] * num_dimensions
+        upper = [10] * num_dimensions
         upper[1] = 0
 
         # --- Exercise functionality and check results
@@ -176,3 +205,30 @@ class BoxTests(unittest.TestCase):
         expected_error = "Some components of 'upper' are less than " \
                          "components of 'lower'"
         assert expected_error in str(exc_info)
+
+    @staticmethod
+    def test_eq():
+        """
+        Test __eq__().
+        """
+        # --- Preparations
+
+        num_dimensions = 4
+        lower = [1] * num_dimensions
+        upper = [10] * num_dimensions
+
+        box = Box(lower, upper)
+
+        # --- Exercise functionality and check results
+
+        # Two distinct Box objects that are equivalent
+        equivalent_box = Box(lower, upper)
+        assert box == equivalent_box
+        assert box is not equivalent_box
+
+        # Two distinct Box objects that are not equivalent
+        different_box = Box(lower, box.upper + [1, 2, 3, 4])
+        assert box != different_box
+
+        # Comparison with non-Box object
+        assert box != 'not a Box object'

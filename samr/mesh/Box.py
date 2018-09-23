@@ -173,3 +173,35 @@ class Box:
         False
         """
         return numpy.all(numpy.equal(numpy.mod(array, 1), 0))
+
+    # --- Magic methods
+
+    def __eq__(self, other):
+        """
+        Return whether 'other' is an equivalent Box object.
+
+        Parameters
+        ----------
+        other: object
+            object to compare with
+
+        Return value
+        ------------
+        bool: True if 'other' is an equivalent object; False otherwise
+
+        Examples
+        --------
+        >>> lower = (0, 0, 0)
+        >>> upper = (10, 10, 10)
+        >>> box = Box(lower, upper)
+        >>> equivalent_box = Box(lower, upper)
+        >>> box == equivalent_box
+        True
+        >>> box is equivalent_box
+        False
+        """
+        if isinstance(other, self.__class__):
+            return numpy.all(self.lower == other.lower) and \
+                   numpy.all(self.upper == other.upper)
+
+        return False
