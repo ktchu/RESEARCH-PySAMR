@@ -23,7 +23,7 @@ import numpy
 
 class Box:
     """
-    The Box class defines a rectangular region of index space.
+    A Box object represents a rectangular region of index space.
     """
     # --- Properties
 
