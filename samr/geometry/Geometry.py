@@ -49,7 +49,7 @@ class Geometry:
 
     def __init__(self, num_dimensions):
         """
-        TODO
+        Initialize Geometry object.
 
         Parameters
         ----------
@@ -58,7 +58,7 @@ class Geometry:
 
         Examples
         --------
-        TODO
+        >>> geometry = Geometry(num_dimensions=3)
         """
         # --- Check arguments
 
