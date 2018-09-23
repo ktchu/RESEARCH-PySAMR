@@ -106,7 +106,7 @@ class Mesh:
     def __init__(self, domain, geometry,
                  single_level=False, single_block=False):
         """
-        Initialize Mesh.
+        Initialize Mesh object.
 
         Parameters
         ----------
