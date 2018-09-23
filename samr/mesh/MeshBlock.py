@@ -20,6 +20,7 @@ import copy
 import numpy
 
 # XYZ
+from samr.geometry import CartesianGeometry  # pylint: disable=unused-import
 from samr.geometry import Geometry
 from samr.mesh import Box
 
@@ -96,7 +97,7 @@ class MeshBlock:
 
     def __init__(self, box, geometry):
         """
-        Initialize MeshBlock.
+        Initialize MeshBlock object.
 
         Parameters
         ----------
@@ -108,7 +109,9 @@ class MeshBlock:
 
         Examples
         --------
-        TODO
+        >>> box = Box(lower=[1, 1], upper=[10, 10])
+        >>> geometry = CartesianGeometry(lower=[1, 1], upper=[10, 10])
+        >>> block = MeshBlock(box=box, geometry=geometry)
         """
         # --- Check arguments
 
