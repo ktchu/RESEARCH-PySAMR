@@ -45,12 +45,14 @@ coverage-html: .coverage
 	coverage html -d coverage
 
 # Code quality
-radon-cc:
-	radon cc ${CODE_DIRS} --total-average
 radon-mi:
 	radon mi ${CODE_DIRS} -s --sort
 radon-mi-fail:
 	radon mi ${CODE_DIRS} -nB -s --sort
+radon-cc:
+	radon cc ${CODE_DIRS} --total-average
+radon-cc-fail:
+	radon cc ${CODE_DIRS} -nC --average
 radon-raw:
 	radon raw ${CODE_DIRS} -s
 
