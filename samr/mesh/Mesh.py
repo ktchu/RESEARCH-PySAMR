@@ -14,6 +14,7 @@ contained in the LICENSE file.
 # --- Imports
 
 # Standard library
+import copy
 
 # External packages
 import numpy
@@ -154,12 +155,12 @@ class Mesh:
 
         # index space
         # TODO: implement compute_bounding_box()
-        self._domain = domain
-        self._bounding_box = domain[0]
+        self._domain = copy.deepcopy(domain)
+        self._bounding_box = self.domain[0]
         # self._bounding_box = Box.compute_bounding_box(domain)
 
         # geometry
-        self._geometry = geometry
+        self._geometry = copy.deepcopy(geometry)
 
         # levels
         self._levels = []
