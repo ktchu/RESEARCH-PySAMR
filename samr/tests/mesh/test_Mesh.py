@@ -61,19 +61,28 @@ class MeshTests(unittest.TestCase):
         assert hasattr(Mesh, 'num_dimensions')
 
         assert hasattr(Mesh, 'levels')
+        assert hasattr(Mesh, 'num_levels')
+
         assert hasattr(Mesh, 'blocks')
+        assert hasattr(Mesh, 'num_blocks')
+
+        assert hasattr(Mesh, 'data')
+
+        assert hasattr(Mesh, 'is_single_level')
+        assert hasattr(Mesh, 'is_single_block')
 
         assert hasattr(Mesh, 'add_level')
 
     def test_init_1(self):
         """
-        Test __init__(): valid parameters
+        Test __init__(): valid parameters for single-block Mesh
         """
-        # --- Exercise functionality
+        # --- Exercise functionality and check results
 
+        # ------ single_block=True, single_level not set
+
+        # Create mesh
         mesh = Mesh(self.domain, self.geometry, single_block=True)
-
-        # --- Check results
 
         # Check that domain is equivalent and is a copy (not the same object)
         assert mesh.domain == self.domain
@@ -84,6 +93,7 @@ class MeshTests(unittest.TestCase):
             assert box == self.domain[idx]
             assert box is not self.domain[idx]
 
+        # Check bounding box
         assert mesh.bounding_box == self.domain[0]
 
         # Check that geometry is equivalent and is a copy (not the same object)
@@ -92,13 +102,42 @@ class MeshTests(unittest.TestCase):
 
         assert mesh.num_dimensions == self.geometry.num_dimensions
 
+        # Check levels
         assert len(mesh.levels) == 1
         assert mesh.num_levels == 1
 
+        # Check blocks
         assert len(mesh.blocks) == 1
         assert mesh.num_blocks == 1
 
-    def test_init_2(self):
+        # Check is_single_level and is_single_block
+        assert mesh.is_single_level
+        assert mesh.is_single_block
+
+        # ------ single_block=True, single_level=False
+
+        # Create mesh
+        mesh = Mesh(self.domain, self.geometry,
+                    single_block=True, single_level=False)
+
+        # Check is_single_level and is_single_block
+        assert mesh.is_single_level
+        assert mesh.is_single_block
+
+    def test_init_5(self):
+        """
+        Test __init__(): invalid 'domain'
+        """
+        # --- Exercise functionality and check results
+
+        # num_dimensions not an int
+        with pytest.raises(ValueError) as exc_info:
+            _ = Mesh(self.domain, geometry='not a Geometry object')
+
+        expected_error = "'geometry' is not a Geometry object"
+        assert expected_error in str(exc_info)
+
+    def test_init_6(self):
         """
         Test __init__(): invalid 'geometry'
         """

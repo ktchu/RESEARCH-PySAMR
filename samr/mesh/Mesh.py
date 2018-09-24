@@ -16,14 +16,10 @@ contained in the LICENSE file.
 # Standard library
 import copy
 
-# External packages
-import numpy
-
 # XYZ
 from samr.geometry import Geometry
 from .Box import Box
 from .MeshBlock import MeshBlock
-from .MeshLevel import MeshLevel
 
 
 # --- Class definition
@@ -31,6 +27,9 @@ from .MeshLevel import MeshLevel
 class Mesh:
     """
     TODO
+
+    * 'refinement level' = collection of MeshBlocks with the same level of
+      refinement (relative to coarest level of Mesh)
     """
     # --- Properties
 
@@ -66,40 +65,60 @@ class Mesh:
     @property
     def levels(self):
         """
-        list: MeshLevels in Mesh
+        list: refinement levels in Mesh
         """
         return self._levels
 
     @property
     def num_levels(self):
         """
-        int: number of MeshLevels in Mesh
+        int: number of refinement levels in Mesh
         """
         return len(self._levels)
 
     @property
-    def blocks(self):
+    def blocks(self, level_number=0):
         """
         list: MeshBlocks in Mesh
-
-        Notes
-        -----
-        * 'blocks' property is only available for single-level meshes
         """
-        if not self.levels:
-            raise RuntimeError("Mesh contains no blocks.")
-        elif len(self.levels) > 1:
-            raise RuntimeError("'blocks' is only available for "
-                               "single-level meshes")
+        if level_number > self.num_levels:
+            raise RuntimeError("'level_number' exceeds the number of levels "
+                               "in Mesh")
 
-        return self.levels[0].blocks
+        return self.levels[level_number]
 
     @property
-    def num_blocks(self):
+    def num_blocks(self, level_number=0):
         """
         int: number of MeshBlocks in Mesh
         """
+        if level_number > self.num_levels:
+            raise RuntimeError("'level_number' exceeds the number of levels "
+                               "in Mesh")
+
         return len(self.blocks)
+
+    @property
+    def data(self, variable, block_number=0):
+        """
+        TODO
+        """
+        # TODO
+        pass
+
+    @property
+    def is_single_level(self):
+        """
+        boolean: True if Mesh is single-level; False otherwise
+        """
+        return self._is_single_level
+
+    @property
+    def is_single_block(self):
+        """
+        boolean: True if Mesh is single-block; False otherwise
+        """
+        return self._is_single_block
 
     # --- Public methods
 
@@ -126,7 +145,8 @@ class Mesh:
 
         Notes
         -----
-        * When 'single_block' is set to True, 'single_level' is ignored.
+        * When 'single_block' is set to True, the Mesh.is_single_level is
+          set to True. The value of the 'single_level' parameter is ignored.
 
         Examples
         --------
@@ -154,38 +174,43 @@ class Mesh:
         # --- Set property and attribute values
 
         # index space
-        # TODO: implement compute_bounding_box()
         self._domain = copy.deepcopy(domain)
-        self._bounding_box = self.domain[0]
-        # self._bounding_box = Box.compute_bounding_box(domain)
+        self._bounding_box = Box.compute_bounding_box(self.domain)
 
         # geometry
         self._geometry = copy.deepcopy(geometry)
 
-        # levels
+        # refinement levels
         self._levels = []
+
+        # is_single_block
+        self._is_single_block = single_block
+
+        # is_single_level
+        if self.is_single_block:
+            self._is_single_level = True
+        else:
+            self._is_single_level = single_level
 
         # --- Initialize levels for single-level meshes
 
         if single_block:
-            # TODO
-            block = MeshBlock(self.bounding_box, self.geometry)
-            level = MeshLevel(block)
+            block = MeshBlock(self.domain[0], self.geometry)
+            level = [block]
             self._levels.append(level)
 
-        elif single_level:
-            # TODO
-            blocks = []
+        else:
+            level = []
             for box in domain:
-                block_geometry = None  # TODO
-                blocks.append(MeshBlock(box, block_geometry))
+                # TODO: fix computation of geometry for block
+                block_geometry = self.geometry
+                level.append(MeshBlock(box, block_geometry))
 
-            level = MeshLevel(blocks)
             self._levels.append(level)
 
-    def add_level(self, mesh_level):
+    def add_level(self, level):
         """
-        Add a MeshLevel to Mesh.
+        Add a refinement level to Mesh.
 
         Parameters
         ----------
