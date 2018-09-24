@@ -23,6 +23,5 @@ def test_attributes():
     """
     # Package information
     assert mesh.Mesh
-    assert mesh.MeshLevel
     assert mesh.MeshBlock
     assert mesh.MeshVariable
