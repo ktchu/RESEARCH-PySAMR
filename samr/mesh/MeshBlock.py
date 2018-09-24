@@ -110,7 +110,7 @@ class MeshBlock:
         Examples
         --------
         >>> box = Box(lower=[1, 1], upper=[10, 10])
-        >>> geometry = CartesianGeometry(x_lower=[0.0, 0.0], dx=[0.1, 0.1])
+        >>> geometry = CartesianGeometry(x_lower=[0., 0.], x_upper=[1., 1.])
         >>> block = MeshBlock(box=box, geometry=geometry)
         """
         # --- Check arguments
