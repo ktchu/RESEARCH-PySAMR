@@ -72,3 +72,52 @@ class Geometry:
         # --- Set property and attribute values
 
         self._num_dimensions = num_dimensions
+
+    # --- Magic methods
+
+    def __repr__(self):
+        """
+        Return unambiguous representation of object.
+
+        Parameters
+        ----------
+        None
+
+        Return value
+        ------------
+        str: unambiguous string representation of object
+
+        Examples
+        --------
+        >>> geometry = Geometry(8)
+        >>> print(geometry)
+        Geometry(8)
+        """
+        return "Geometry({})".format(self.num_dimensions)
+
+    def __eq__(self, other):
+        """
+        Return whether 'other' is an equivalent Box object.
+
+        Parameters
+        ----------
+        other: object
+            object to compare with
+
+        Return value
+        ------------
+        bool: True if 'other' is an equivalent object; False otherwise
+
+        Examples
+        --------
+        >>> geometry = Geometry(8)
+        >>> equivalent_geometry = Geometry(8)
+        >>> geometry == equivalent_geometry
+        True
+        >>> geometry is equivalent_geometry
+        False
+        """
+        if isinstance(other, self.__class__):
+            return self.num_dimensions == other.num_dimensions
+
+        return False

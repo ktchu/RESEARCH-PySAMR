@@ -78,3 +78,42 @@ class GeometryTests(unittest.TestCase):
 
         expected_error = "'num_dimensions' is not a positive value"
         assert expected_error in str(exc_info)
+
+    @staticmethod
+    def test_repr():
+        """
+        Test __repr__().
+        """
+        # --- Preparations
+
+        geometry = Geometry(3)
+
+        # --- Exercise functionality and check results
+
+        expected_repr = "Geometry(3)"
+        assert repr(geometry) == expected_repr
+        assert str(geometry) == expected_repr
+
+    @staticmethod
+    def test_eq():
+        """
+        Test __eq__().
+        """
+        # --- Preparations
+
+        num_dimensions = 100
+        geometry = Geometry(num_dimensions)
+
+        # --- Exercise functionality and check results
+
+        # Two distinct Geometry objects that are equivalent
+        equivalent_geometry = Geometry(num_dimensions)
+        assert geometry == equivalent_geometry
+        assert geometry is not equivalent_geometry
+
+        # Two distinct Geometry objects that are not equivalent
+        different_geometry = Geometry(num_dimensions + 1)
+        assert geometry != different_geometry
+
+        # Comparison with non-Geometry object
+        assert geometry != 'not a Geometry object'
