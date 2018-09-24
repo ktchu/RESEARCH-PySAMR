@@ -18,6 +18,9 @@ contained in the LICENSE file.
 # External packages
 import numpy
 
+# XYZ
+from .utils import contains_only_integers
+
 
 # --- Class definition
 
@@ -107,7 +110,7 @@ class Box:
             raise ValueError("'lower' is not a list, tuple, or numpy.ndarray")
 
         # lower contains only integer values
-        if not Box._contains_only_integers(lower):
+        if not contains_only_integers(lower):
             raise ValueError("'lower' contains non-integer values")
 
         # upper
@@ -115,7 +118,7 @@ class Box:
             raise ValueError("'upper' is not a list, tuple, or numpy.ndarray")
 
         # upper contains only integer values
-        if not Box._contains_only_integers(upper):
+        if not contains_only_integers(upper):
             raise ValueError("'upper' contains non-integer values")
 
         # len(lower) == len(upper)
@@ -230,55 +233,3 @@ class Box:
                    numpy.all(self.upper == other.upper)
 
         return False
-
-    # --- Private methods
-
-    @staticmethod
-    def _contains_only_integers(array):
-        """
-        Return whether 'array' contains only integer values.
-
-        Parameters
-        ----------
-        array: scalar or array-like (e.g., list, tuple, numpy.array)
-            array of values to evaluate
-
-        Return value
-        ------------
-        bool: True if 'array' contains only integer values; False otherwise
-
-        Examples
-        --------
-        >>> array = [0.0, 1.0, 2.0]
-        >>> Box._contains_only_integers(array)
-        True
-        >>> array = [0.5, 1.0, 2.0]
-        >>> Box._contains_only_integers(array)
-        False
-        >>> array = numpy.array([0, 1, 2])
-        >>> Box._contains_only_integers(array)
-        True
-        >>> array = numpy.ones(10)
-        >>> Box._contains_only_integers(array)
-        True
-        >>> Box._contains_only_integers(3)
-        True
-        >>> Box._contains_only_integers(3.5)
-        False
-        """
-        # --- Check arguments
-
-        if not isinstance(array, (int, float, list, tuple, numpy.ndarray)):
-            raise ValueError("'array' is not a scalar, list, tuple, or "
-                             "numpy.ndarray")
-
-        if isinstance(array, (list, tuple, numpy.ndarray)):
-            try:
-                _ = numpy.array(array, dtype=float)
-            except Exception:
-                raise ValueError("Unable to convert 'array' to an array of "
-                                 "numeric values")
-
-        # --- Determine whether all entries of 'array' are integers
-
-        return numpy.all(numpy.equal(numpy.mod(array, 1), 0))
