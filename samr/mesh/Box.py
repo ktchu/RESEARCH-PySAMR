@@ -144,7 +144,7 @@ class Box:
 
         Parameters
         ----------
-        boxes: Box object or list of Box objects
+        boxes: list of Box objects
             list of boxes to compute bounding box for
 
         Return value
