@@ -160,9 +160,13 @@ class Mesh:
                              "Box objects")
 
         if isinstance(domain, (list, tuple)):
+            if not domain:
+                raise ValueError("'domain' is empty")
+
             for box in domain:
                 if not isinstance(box, Box):
                     raise ValueError("'domain' contains a non-Box object")
+
         else:
             # Ensure that domain is a list
             domain = [domain]

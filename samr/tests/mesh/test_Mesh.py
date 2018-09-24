@@ -130,11 +130,27 @@ class MeshTests(unittest.TestCase):
         """
         # --- Exercise functionality and check results
 
-        # num_dimensions not an int
+        # domain is not a valid type
         with pytest.raises(ValueError) as exc_info:
-            _ = Mesh(self.domain, geometry='not a Geometry object')
+            _ = Mesh(domain='invalid domain', geometry=self.geometry)
 
-        expected_error = "'geometry' is not a Geometry object"
+        expected_error = "'domain' is not a Box object or a list of Box " \
+                         "objects"
+        assert expected_error in str(exc_info)
+
+        # empty domain
+        with pytest.raises(ValueError) as exc_info:
+            _ = Mesh(domain=[], geometry=self.geometry)
+
+        expected_error = "'domain' is empty"
+        assert expected_error in str(exc_info)
+
+        # domain contains non-Box object
+        with pytest.raises(ValueError) as exc_info:
+            _ = Mesh(domain=self.domain + ['not a Box'],
+                     geometry=self.geometry)
+
+        expected_error = "'domain' contains a non-Box object"
         assert expected_error in str(exc_info)
 
     def test_init_6(self):
@@ -143,7 +159,6 @@ class MeshTests(unittest.TestCase):
         """
         # --- Exercise functionality and check results
 
-        # num_dimensions not an int
         with pytest.raises(ValueError) as exc_info:
             _ = Mesh(self.domain, geometry='not a Geometry object')
 
