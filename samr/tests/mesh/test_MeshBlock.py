@@ -47,8 +47,8 @@ class MeshBlockTests(unittest.TestCase):
 
         # geometry
         self.x_lower = [0] * self.num_dimensions
-        self.dx = [0.1] * self.num_dimensions
-        self.geometry = CartesianGeometry(self.x_lower, self.dx)
+        self.x_upper = [1] * self.num_dimensions
+        self.geometry = CartesianGeometry(self.x_lower, self.x_upper)
 
     # --- Test cases
 
