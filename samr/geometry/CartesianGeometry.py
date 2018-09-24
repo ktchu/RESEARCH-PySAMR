@@ -46,15 +46,15 @@ class CartesianGeometry(Geometry):
         return self._x_lower
 
     @property
-    def dx(self):
+    def x_upper(self):
         """
         numpy.ndarray: grid spacing of mesh
         """
-        return self._dx
+        return self._x_upper
 
     # --- Public methods
 
-    def __init__(self, x_lower, dx):
+    def __init__(self, x_lower, x_upper):
         """
         Initialize CartesianGeometry object.
 
@@ -63,21 +63,21 @@ class CartesianGeometry(Geometry):
         x_lower: numpy.ndarray
             lower corner of mesh
 
-        dx: numpy.ndarray
-            grid spacing of mesh
+        x_upper: numpy.ndarray
+            upper corner of mesh
 
         Examples
         --------
         >>> num_dimensions = 3
         >>> x_lower = [0] * num_dimensions
-        >>> dx = [0.1] * num_dimensions
-        >>> geometry = CartesianGeometry(x_lower, dx)
+        >>> x_upper = [1] * num_dimensions
+        >>> geometry = CartesianGeometry(x_lower, x_upper)
         >>> geometry.num_dimensions
         3
         >>> geometry.x_lower
         array([0., 0., 0.])
-        >>> geometry.dx
-        array([0.1, 0.1, 0.1])
+        >>> geometry.x_upper
+        array([1., 1., 1.])
         """
         # --- Check arguments
 
@@ -86,18 +86,20 @@ class CartesianGeometry(Geometry):
             raise ValueError("'x_lower' is not a list, tuple, or "
                              "numpy.ndarray")
 
-        # dx
-        if not isinstance(dx, (list, tuple, numpy.ndarray)):
-            raise ValueError("'dx' is not a list, tuple, or numpy.ndarray")
+        # x_upper
+        if not isinstance(x_upper, (list, tuple, numpy.ndarray)):
+            raise ValueError("'x_upper' is not a list, tuple, or "
+                             "numpy.ndarray")
 
-        # len(x_lower) == len(dx)
-        if len(x_lower) != len(dx):
-            raise ValueError("'x_lower' and 'dx' do not have the same "
+        # len(x_lower) == len(x_upper)
+        if len(x_lower) != len(x_upper):
+            raise ValueError("'x_lower' and 'x_upper' do not have the same "
                              "number of components")
 
-        # dx > 0
-        if not numpy.all(numpy.greater(dx, [0] * len(dx))):
-            raise ValueError("'dx' contains a non-positive value")
+        # x_upper > x_lower
+        if not numpy.all(numpy.greater(x_upper, x_lower)):
+            raise ValueError("'x_upper' less than or equal to 'x_lower' "
+                             "along some axes")
 
         # --- Call super()
 
@@ -106,9 +108,30 @@ class CartesianGeometry(Geometry):
         # --- Set property and attribute values
 
         self._x_lower = numpy.array(x_lower, dtype='float64')
-        self._dx = numpy.array(dx, dtype='float64')
+        self._x_upper = numpy.array(x_upper, dtype='float64')
 
     # --- Magic methods
+
+    def __repr__(self):
+        """
+        Return unambiguous representation of object.
+
+        Parameters
+        ----------
+        None
+
+        Return value
+        ------------
+        str: unambiguous string representation of object
+
+        Examples
+        --------
+        >>> geometry = CartesianGeometry([0, 0], [10, 10])
+        >>> print(geometry)
+        CartesianGeometry([0.0, 0.0], [10.0, 10.0])
+        """
+        return "CartesianGeometry({}, {})".format(list(self.x_lower),
+                                                  list(self.x_upper))
 
     def __eq__(self, other):
         """
@@ -127,9 +150,9 @@ class CartesianGeometry(Geometry):
         --------
         >>> num_dimensions = 3
         >>> x_lower = [0.0] * num_dimensions
-        >>> dx = [0.1] * num_dimensions
-        >>> geometry = CartesianGeometry(x_lower, dx)
-        >>> equivalent_geometry = CartesianGeometry(x_lower, dx)
+        >>> x_upper = [1.0] * num_dimensions
+        >>> geometry = CartesianGeometry(x_lower, x_upper)
+        >>> equivalent_geometry = CartesianGeometry(x_lower, x_upper)
         >>> geometry == equivalent_geometry
         True
         >>> geometry is equivalent_geometry
@@ -138,6 +161,6 @@ class CartesianGeometry(Geometry):
         if isinstance(other, self.__class__):
             return self.num_dimensions == other.num_dimensions and \
                    numpy.all(self.x_lower == other.x_lower) and \
-                   numpy.all(self.dx == other.dx)
+                   numpy.all(self.x_upper == other.x_upper)
 
         return False
