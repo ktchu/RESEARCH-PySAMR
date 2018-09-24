@@ -96,7 +96,7 @@ class Box:
         >>> box.num_dimensions
         3
         >>> box.shape
-        (10, 10, 10)
+        array([10, 10, 10])
         >>> box.size
         1000
         """
