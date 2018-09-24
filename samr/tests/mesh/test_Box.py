@@ -165,7 +165,7 @@ class BoxTests(unittest.TestCase):
     @staticmethod
     def test_init_4():
         """
-        Test __init__(): some componetns of 'upper' equal to components of
+        Test __init__(): some components of 'upper' equal to components of
         'lower'
         """
         # --- Preparations
