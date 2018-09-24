@@ -132,7 +132,7 @@ class CartesianGeometry(Geometry):
         >>> geometry = CartesianGeometry([0, 0], [10, 10])
         >>> box = Box([0, 0], [99, 99])
         >>> geometry.compute_dx(box)
-        [0.1, 0.1]
+        array([0.1, 0.1])
         """
         return self.shape / box.shape
 
