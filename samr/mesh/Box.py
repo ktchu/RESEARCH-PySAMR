@@ -177,43 +177,6 @@ class Box:
 
         return Box(bounding_box_lower, bounding_box_upper)
 
-    # --- Private methods
-
-    @staticmethod
-    def _contains_only_integers(array):
-        """
-        Return whether 'array' contains only integer values.
-
-        Parameters
-        ----------
-        array: scalar or array-like (e.g., list, tuple, numpy.array)
-            array of values to evaluate
-
-        Return value
-        ------------
-        bool: True if 'array' contains only integer values; False otherwise
-
-        Examples
-        --------
-        >>> array = [0.0, 1.0, 2.0]
-        >>> Box._contains_only_integers(array)
-        True
-        >>> array = [0.5, 1.0, 2.0]
-        >>> Box._contains_only_integers(array)
-        False
-        >>> array = numpy.array([0, 1, 2])
-        >>> Box._contains_only_integers(array)
-        True
-        >>> array = numpy.ones(10)
-        >>> Box._contains_only_integers(array)
-        True
-        >>> Box._contains_only_integers(3)
-        True
-        >>> Box._contains_only_integers(3.5)
-        False
-        """
-        return numpy.all(numpy.equal(numpy.mod(array, 1), 0))
-
     # --- Magic methods
 
     def __repr__(self):
@@ -267,3 +230,40 @@ class Box:
                    numpy.all(self.upper == other.upper)
 
         return False
+
+    # --- Private methods
+
+    @staticmethod
+    def _contains_only_integers(array):
+        """
+        Return whether 'array' contains only integer values.
+
+        Parameters
+        ----------
+        array: scalar or array-like (e.g., list, tuple, numpy.array)
+            array of values to evaluate
+
+        Return value
+        ------------
+        bool: True if 'array' contains only integer values; False otherwise
+
+        Examples
+        --------
+        >>> array = [0.0, 1.0, 2.0]
+        >>> Box._contains_only_integers(array)
+        True
+        >>> array = [0.5, 1.0, 2.0]
+        >>> Box._contains_only_integers(array)
+        False
+        >>> array = numpy.array([0, 1, 2])
+        >>> Box._contains_only_integers(array)
+        True
+        >>> array = numpy.ones(10)
+        >>> Box._contains_only_integers(array)
+        True
+        >>> Box._contains_only_integers(3)
+        True
+        >>> Box._contains_only_integers(3.5)
+        False
+        """
+        return numpy.all(numpy.equal(numpy.mod(array, 1), 0))
