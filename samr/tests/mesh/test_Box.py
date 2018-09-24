@@ -311,3 +311,35 @@ class BoxTests(unittest.TestCase):
 
         # Comparison with non-Box object
         assert box != 'not a Box object'
+
+    @staticmethod
+    def test_contains_only_integers():
+        """
+        Test contains_only_integers().
+        """
+        # pylint: disable=protected-access
+
+        # --- Exercise functionality and check results
+
+        # Normal usage
+        assert Box._contains_only_integers([1, 2, 3])
+        assert not Box._contains_only_integers([1, 2, 3.4])
+        assert Box._contains_only_integers(1)
+        assert not Box._contains_only_integers(1.5)
+
+        # 'array' is not a scalar or array-like
+        with pytest.raises(ValueError) as exc_info:
+            Box._contains_only_integers('invalid array')
+
+        expected_error = "'array' is not a scalar, list, tuple, or " \
+                         "numpy.ndarray"
+        assert expected_error in str(exc_info)
+
+        # 'array' contains values that cannot be converted to a numeric value
+        # 'array' cannot be converted to an array of numeric values
+        with pytest.raises(ValueError) as exc_info:
+            Box._contains_only_integers([1, 2, 2.5, 'non-numeric'])
+
+        expected_error = "Unable to convert 'array' to an array of " \
+                         "numeric values"
+        assert expected_error in str(exc_info)

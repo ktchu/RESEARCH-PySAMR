@@ -203,7 +203,7 @@ class Box:
 
     def __eq__(self, other):
         """
-        Return whether 'other' is an equivalent Box object.
+        Return whether 'other' is an equivalent object.
 
         Parameters
         ----------
@@ -266,4 +266,19 @@ class Box:
         >>> Box._contains_only_integers(3.5)
         False
         """
+        # --- Check arguments
+
+        if not isinstance(array, (int, float, list, tuple, numpy.ndarray)):
+            raise ValueError("'array' is not a scalar, list, tuple, or "
+                             "numpy.ndarray")
+
+        if isinstance(array, (list, tuple, numpy.ndarray)):
+            try:
+                _ = numpy.array(array, dtype=float)
+            except Exception:
+                raise ValueError("Unable to convert 'array' to an array of "
+                                 "numeric values")
+
+        # --- Determine whether all entries of 'array' are integers
+
         return numpy.all(numpy.equal(numpy.mod(array, 1), 0))
