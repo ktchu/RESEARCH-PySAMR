@@ -59,7 +59,11 @@ class Box:
     @property
     def shape(self):
         """
-        tuple: number of cells Box has in each coordinate direction
+        numpy.ndarray: number of cells Box has in each coordinate direction
+
+        Notes
+        -----
+        * upper.dtype = 'int64'
         """
         return self._shape
 
@@ -130,8 +134,8 @@ class Box:
         self._upper = numpy.array(upper, dtype='int64')
 
         # shape
-        self._shape = tuple(self.upper - self.lower +
-                            numpy.ones(self.num_dimensions, dtype='int64'))
+        self._shape = self.upper - self.lower + \
+            numpy.ones(self.num_dimensions, dtype='int64')
 
         # size
         self._size = numpy.product(self.shape)
