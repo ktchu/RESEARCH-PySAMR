@@ -22,6 +22,7 @@ import pytest
 
 # XYZ
 from samr.geometry import CartesianGeometry
+from samr.mesh import Box
 
 
 # --- Tests
@@ -41,6 +42,7 @@ class CartesianGeometryTests(unittest.TestCase):
         assert hasattr(CartesianGeometry, 'num_dimensions')
         assert hasattr(CartesianGeometry, 'x_lower')
         assert hasattr(CartesianGeometry, 'x_upper')
+        assert hasattr(CartesianGeometry, 'shape')
 
     @staticmethod
     def test_init_1():
@@ -61,6 +63,10 @@ class CartesianGeometryTests(unittest.TestCase):
         assert numpy.array_equal(geometry.x_upper, x_upper)
         assert geometry.x_upper.dtype == numpy.float64
 
+        expected_shape = numpy.array(x_upper) - numpy.array(x_lower)
+        assert numpy.array_equal(geometry.shape, expected_shape)
+        assert geometry.shape.dtype == numpy.float64
+
         # x_lower and x_upper are tuples
         num_dimensions = 3
         x_lower = tuple([0] * num_dimensions)
@@ -73,6 +79,10 @@ class CartesianGeometryTests(unittest.TestCase):
         assert numpy.array_equal(geometry.x_upper, x_upper)
         assert geometry.x_upper.dtype == numpy.float64
 
+        expected_shape = numpy.array(x_upper) - numpy.array(x_lower)
+        assert numpy.array_equal(geometry.shape, expected_shape)
+        assert geometry.shape.dtype == numpy.float64
+
         # x_lower and x_upper are numpy.ndarray objects
         num_dimensions = 3
         x_lower = numpy.zeros(num_dimensions)
@@ -84,6 +94,10 @@ class CartesianGeometryTests(unittest.TestCase):
         assert geometry.x_lower.dtype == numpy.float64
         assert numpy.array_equal(geometry.x_upper, x_upper)
         assert geometry.x_upper.dtype == numpy.float64
+
+        expected_shape = numpy.array(x_upper) - numpy.array(x_lower)
+        assert numpy.array_equal(geometry.shape, expected_shape)
+        assert geometry.shape.dtype == numpy.float64
 
     @staticmethod
     def test_init_2():
@@ -176,6 +190,29 @@ class CartesianGeometryTests(unittest.TestCase):
         expected_error = "'x_upper' less than or equal to 'x_lower' " \
                          "along some axes"
         assert expected_error in str(exc_info)
+
+    @staticmethod
+    def test_compute_dx():
+        """
+        Test compute_dx().
+        """
+        # --- Preparations
+
+        num_dimensions = 3
+        x_lower = [-1] * num_dimensions
+        x_upper = [1] * num_dimensions
+
+        geometry = CartesianGeometry(x_lower, x_upper)
+
+        lower = [0] * num_dimensions
+        upper = [99] * num_dimensions
+        box = Box(lower, upper)
+
+        # --- Exercise functionality and check results
+
+        dx = geometry.compute_dx(box)
+        expected_dx = [0.02] * num_dimensions
+        assert numpy.array_equal(dx, expected_dx)
 
     @staticmethod
     def test_repr():

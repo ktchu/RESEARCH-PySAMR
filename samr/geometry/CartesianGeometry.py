@@ -17,6 +17,7 @@ contained in the LICENSE file.
 import numpy
 
 # XYZ
+from samr.mesh import Box  # pylint: disable=unused-import
 from . import Geometry
 
 
@@ -33,16 +34,23 @@ class CartesianGeometry(Geometry):
     @property
     def x_lower(self):
         """
-        numpy.ndarray: lower corner of mesh
+        numpy.ndarray: lower corner of region of Cartesian coordinate space
         """
         return self._x_lower
 
     @property
     def x_upper(self):
         """
-        numpy.ndarray: grid spacing of mesh
+        numpy.ndarray: upper corner of region of Cartesian coordinate space
         """
         return self._x_upper
+
+    @property
+    def shape(self):
+        """
+        numpy.ndarray: dimensions of region of Cartesian coordinate space
+        """
+        return self._shape
 
     # --- Public methods
 
@@ -53,23 +61,25 @@ class CartesianGeometry(Geometry):
         Parameters
         ----------
         x_lower: numpy.ndarray
-            lower corner of mesh
+            lower corner of region
 
         x_upper: numpy.ndarray
-            upper corner of mesh
+            upper corner of region
 
         Examples
         --------
         >>> num_dimensions = 3
-        >>> x_lower = [0] * num_dimensions
+        >>> x_lower = [-1] * num_dimensions
         >>> x_upper = [1] * num_dimensions
         >>> geometry = CartesianGeometry(x_lower, x_upper)
         >>> geometry.num_dimensions
         3
         >>> geometry.x_lower
-        array([0., 0., 0.])
+        array([-1., -1., -1.])
         >>> geometry.x_upper
         array([1., 1., 1.])
+        >>> geometry.shape
+        array([2., 2., 2.])
         """
         # --- Check arguments
 
@@ -101,6 +111,30 @@ class CartesianGeometry(Geometry):
 
         self._x_lower = numpy.array(x_lower, dtype='float64')
         self._x_upper = numpy.array(x_upper, dtype='float64')
+
+        self._shape = self.x_upper - self.x_lower
+
+    def compute_dx(self, box):
+        """
+        Compute grid spacing.
+
+        Parameters
+        ----------
+        box: Box object
+            box representing rectangular region of index space
+
+        Return value
+        ------------
+        numpy.ndarray: grid spacing in each space dimension
+
+        Examples
+        --------
+        >>> geometry = CartesianGeometry([0, 0], [10, 10])
+        >>> box = Box([0, 0], [99, 99])
+        >>> geometry.compute_dx(box)
+        [0.1, 0.1]
+        """
+        return self.shape / box.shape
 
     # --- Magic methods
 
