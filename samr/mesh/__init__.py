@@ -12,6 +12,5 @@ contained in the LICENSE file.
 # Package types
 from .Box import Box
 from .Mesh import Mesh
-from .MeshLevel import MeshLevel
 from .MeshBlock import MeshBlock
 from .MeshVariable import MeshVariable
