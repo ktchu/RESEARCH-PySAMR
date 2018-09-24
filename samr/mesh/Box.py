@@ -137,6 +137,43 @@ class Box:
         # size
         self._size = numpy.product(self.shape)
 
+    @staticmethod
+    def compute_bounding_box(boxes):
+        """
+        Compute bounding box for list of boxes.
+
+        Parameters
+        ----------
+        boxes: Box object or list of Box objects
+            list of boxes to compute bounding box for
+
+        Return value
+        ------------
+        Box: bounding box
+
+        Examples
+        --------
+        >>> boxes = [Box([0, 0, 0], [2, 2, 2]), Box([-2, -2, 0], [1, 1, 3])]
+        >>> Box.compute_bounding_box(boxes)
+        Box([-2, -2, 0], [2, 2, 3])
+        """
+        # --- Check arguments
+
+        # boxes
+        if not isinstance(boxes, (list, tuple)):
+            raise ValueError("'boxes' is not a list of Box objects")
+
+        for box in boxes:
+            if not isinstance(box, Box):
+                raise ValueError("'boxes' contains a non-Box object")
+
+        # --- Compute bounding box
+
+        bounding_box_lower = numpy.min([box.lower for box in boxes], axis=0)
+        bounding_box_upper = numpy.max([box.upper for box in boxes], axis=0)
+
+        return Box(bounding_box_lower, bounding_box_upper)
+
     # --- Private methods
 
     @staticmethod
@@ -175,6 +212,28 @@ class Box:
         return numpy.all(numpy.equal(numpy.mod(array, 1), 0))
 
     # --- Magic methods
+
+    def __repr__(self):
+        """
+        Return unambiguous representation of object.
+
+        Parameters
+        ----------
+        None
+
+        Return value
+        ------------
+        str: unambiguous string representation of object
+
+        Examples
+        --------
+        >>> lower = (0, 0, 0)
+        >>> upper = (10, 10, 10)
+        >>> box = Box(lower, upper)
+        >>> print(box)
+        Box([0, 0, 0], [10, 10, 10])
+        """
+        return "Box({}, {})".format(list(self.lower), list(self.upper))
 
     def __eq__(self, other):
         """

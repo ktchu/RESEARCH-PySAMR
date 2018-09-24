@@ -207,6 +207,25 @@ class BoxTests(unittest.TestCase):
         assert expected_error in str(exc_info)
 
     @staticmethod
+    def test_repr():
+        """
+        Test __repr__().
+        """
+        # --- Preparations
+
+        num_dimensions = 4
+        lower = [1] * num_dimensions
+        upper = [10] * num_dimensions
+
+        box = Box(lower, upper)
+
+        # --- Exercise functionality and check results
+
+        expected_repr = "Box([1, 1, 1, 1], [10, 10, 10, 10])"
+        assert repr(box) == expected_repr
+        assert str(box) == expected_repr
+
+    @staticmethod
     def test_eq():
         """
         Test __eq__().
