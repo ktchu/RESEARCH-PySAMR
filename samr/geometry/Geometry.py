@@ -13,18 +13,16 @@ contained in the LICENSE file.
 
 # --- Imports
 
-# Standard library
-
-
-# --- Constants
+from abc import ABC
 
 
 # --- Class definition
 
-class Geometry:
+class Geometry(ABC):
     """
-    Geometry objects represent regions of coordinate space. They relate
-    rectangular regions of index space to regions of coordinate space.
+    Geometry objects represent regions of coordinate space. They define the
+    relationship between rectangular regions of index space and rectangular
+    regions of coordinate space.
 
     The Geometry class is a base class for subclasses that represent specific
     coordinate spaces.

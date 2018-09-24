@@ -13,15 +13,11 @@ contained in the LICENSE file.
 
 # --- Imports
 
-# Standard library
-
 # External packages
 import numpy
 
 # XYZ
 from . import Geometry
-
-# --- Constants
 
 
 # --- Class definition
@@ -29,12 +25,8 @@ from . import Geometry
 class CartesianGeometry(Geometry):
     """
     A CartesianGeometry object represents a rectangular region of Cartesian
-    coordinate space. It provides support for relating rectangular regions of
-    index space to rectangular regions of a Cartesian coordinate space.
-
-    TODO
-    * logically rectangular region of space
-    * uniform grid spacing in each direction
+    coordinate space. It maps rectangular regions of index space to a grid
+    in Cartesian coordinate space that is uniform in each space dimension.
     """
     # --- Properties
 
