@@ -121,8 +121,7 @@ class Box:
 
         # upper >= lower
         if not numpy.all(numpy.greater_equal(upper, lower)):
-            raise ValueError("Some components of 'upper' are less than "
-                             "components of 'lower'")
+            raise ValueError("'upper' is less than 'lower' along some axes")
 
         # --- Set property and attribute values
 

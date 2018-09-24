@@ -202,8 +202,7 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=lower, upper=upper)
 
-        expected_error = "Some components of 'upper' are less than " \
-                         "components of 'lower'"
+        expected_error = "'upper' is less than 'lower' along some axes"
         assert expected_error in str(exc_info)
 
     @staticmethod
