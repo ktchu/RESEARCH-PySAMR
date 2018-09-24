@@ -236,6 +236,13 @@ class BoxTests(unittest.TestCase):
         expected_bounding_box = Box([-10, -10], [19, 19])
         assert Box.compute_bounding_box(boxes) == expected_bounding_box
 
+        # Test case 4
+        boxes = [Box([0, 0], [9, 9]),
+                 Box([-10, -10], [19, 19])]
+
+        expected_bounding_box = Box([-10, -10], [19, 19])
+        assert Box.compute_bounding_box(boxes) == expected_bounding_box
+
     @staticmethod
     def test_compute_bounding_box_2():
         """
