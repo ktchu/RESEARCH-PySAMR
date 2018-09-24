@@ -84,33 +84,33 @@ class MeshTests(unittest.TestCase):
         # Create mesh
         mesh = Mesh(self.domain, self.geometry, single_block=True)
 
-        # Check that domain is equivalent and is a copy (not the same object)
+        # domain is equivalent and is a copy (not the same object)
         assert mesh.domain == self.domain
         assert mesh.domain is not self.domain
 
-        # Check that each box is equivalent and is a copy (not the same object)
+        # box is equivalent and is a copy (not the same object)
         for idx, box in enumerate(mesh.domain):
             assert box == self.domain[idx]
             assert box is not self.domain[idx]
 
-        # Check bounding box
+        # bounding box
         assert mesh.bounding_box == self.domain[0]
 
-        # Check that geometry is equivalent and is a copy (not the same object)
+        # geometry is equivalent and is a copy (not the same object)
         assert mesh.geometry == self.geometry
         assert mesh.geometry is not self.geometry
 
         assert mesh.num_dimensions == self.geometry.num_dimensions
 
-        # Check levels
+        # levels
         assert len(mesh.levels) == 1
         assert mesh.num_levels == 1
 
-        # Check blocks
+        # blocks
         assert len(mesh.blocks) == 1
         assert mesh.num_blocks == 1
 
-        # Check is_single_level and is_single_block
+        # is_single_level and is_single_block
         assert mesh.is_single_level
         assert mesh.is_single_block
 
@@ -120,7 +120,7 @@ class MeshTests(unittest.TestCase):
         mesh = Mesh(self.domain, self.geometry,
                     single_block=True, single_level=False)
 
-        # Check is_single_level and is_single_block
+        # is_single_level and is_single_block
         assert mesh.is_single_level
         assert mesh.is_single_block
 
