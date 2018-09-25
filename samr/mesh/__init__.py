@@ -13,4 +13,5 @@ contained in the LICENSE file.
 from .Box import Box
 from .Mesh import Mesh
 from .MeshBlock import MeshBlock
+from .MeshLevel import MeshLevel
 from .MeshVariable import MeshVariable
