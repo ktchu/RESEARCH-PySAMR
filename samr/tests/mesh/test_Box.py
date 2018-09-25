@@ -112,6 +112,13 @@ class BoxTests(unittest.TestCase):
         expected_error = "'lower' is not a list, tuple, or numpy.ndarray"
         assert expected_error in str(exc_info)
 
+        # lower is empty
+        with pytest.raises(ValueError) as exc_info:
+            _ = Box(lower=[], upper=upper)
+
+        expected_error = "'lower' is empty"
+        assert expected_error in str(exc_info)
+
         # lower contains non-integer values
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=numpy.array([0, 0.1, 0]), upper=upper)
@@ -144,6 +151,13 @@ class BoxTests(unittest.TestCase):
             _ = Box(lower=lower, upper='not a valid array type')
 
         expected_error = "'upper' is not a list, tuple, or numpy.ndarray"
+        assert expected_error in str(exc_info)
+
+        # upper is empty
+        with pytest.raises(ValueError) as exc_info:
+            _ = Box(lower=lower, upper=numpy.array([]))
+
+        expected_error = "'upper' is empty"
         assert expected_error in str(exc_info)
 
         # upper contains non-integer values
