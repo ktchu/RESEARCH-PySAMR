@@ -61,18 +61,17 @@ class MeshBlockTests(unittest.TestCase):
         assert hasattr(MeshBlock, 'box')
         assert hasattr(MeshBlock, 'geometry')
 
+        assert hasattr(MeshBlock, 'num_dimensions')
         assert hasattr(MeshBlock, 'lower')
         assert hasattr(MeshBlock, 'upper')
-        assert hasattr(MeshBlock, 'num_dimensions')
         assert hasattr(MeshBlock, 'shape')
         assert hasattr(MeshBlock, 'size')
 
         assert hasattr(MeshBlock, 'variables')
-        assert hasattr(MeshBlock, 'data')
 
         # Methods
         assert hasattr(MeshBlock, 'add_variable')
-        assert hasattr(MeshBlock, 'get_data')
+        assert hasattr(MeshBlock, 'data')
 
     def test_init_1(self):
         """
@@ -84,27 +83,32 @@ class MeshBlockTests(unittest.TestCase):
 
         # --- Check results
 
-        # num_dimensions
-        assert block.num_dimensions == self.num_dimensions
-
         # box is equivalent and is a copy (not the same object)
         assert block.box == self.box
         assert block.box is not self.box
-
-        assert numpy.array_equal(block.lower, self.lower)
-        assert block.lower.dtype == numpy.int64
-
-        assert numpy.array_equal(block.upper, self.upper)
-        assert block.upper.dtype == numpy.int64
-
-        assert numpy.array_equal(block.shape, self.box.shape)
-        assert block.size == self.box.size
 
         # geometry is equivalent and is a copy (not the same object)
         assert block.geometry == self.geometry
         assert block.geometry is not self.geometry
 
-        assert block.data == {}
+        # num_dimensions
+        assert block.num_dimensions == self.num_dimensions
+
+        # index space
+        assert numpy.array_equal(block.lower, self.lower)
+        assert block.lower.dtype == numpy.int64
+        assert numpy.array_equal(block.upper, self.upper)
+        assert block.upper.dtype == numpy.int64
+
+        # shape and size
+        assert numpy.array_equal(block.shape, self.box.shape)
+        assert block.size == self.box.size
+
+        # variables
+        assert block.variables == tuple()
+
+        # data
+        assert block.data() == {}
 
     def test_init_2(self):
         """
@@ -112,7 +116,6 @@ class MeshBlockTests(unittest.TestCase):
         """
         # --- Exercise functionality and check results
 
-        # num_dimensions not an int
         with pytest.raises(ValueError) as exc_info:
             _ = MeshBlock(box='not a Box object', geometry=self.geometry)
 
@@ -125,11 +128,33 @@ class MeshBlockTests(unittest.TestCase):
         """
         # --- Exercise functionality and check results
 
-        # num_dimensions not an int
         with pytest.raises(ValueError) as exc_info:
             _ = MeshBlock(self.box, geometry='not a Geometry object')
 
         expected_error = "'geometry' is not a Geometry object"
+        assert expected_error in str(exc_info)
+
+    @staticmethod
+    def test_init_4():
+        """
+        Test __init__(): incompatible 'box' and 'geometry'
+        """
+        # --- Exercise functionality and check results
+
+        num_dimensions = 2
+        lower = [0] * num_dimensions
+        upper = [99] * num_dimensions
+        box = Box(lower, upper)
+
+        x_lower = [0] * (num_dimensions + 1)
+        x_upper = [1] * (num_dimensions + 1)
+        geometry = CartesianGeometry(x_lower, x_upper)
+
+        with pytest.raises(ValueError) as exc_info:
+            _ = MeshBlock(box, geometry)
+
+        expected_error = "'box' and 'geometry' do not have the same " \
+                         "number of dimensions"
         assert expected_error in str(exc_info)
 
     @unittest.skip('TODO')
@@ -147,9 +172,9 @@ class MeshBlockTests(unittest.TestCase):
         # TODO
 
     @unittest.skip('TODO')
-    def test_get_data(self):
+    def test_data(self):
         """
-        Test get_data(): normal usage
+        Test data(): normal usage
         """
         # Preparations
         block = MeshBlock(self.box, self.geometry)
