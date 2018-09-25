@@ -56,8 +56,8 @@ class MeshVariable:
         """
         Options for precision of MeshVariable data
         """
-        DOUBLE = numpy.float64
-        SINGLE = numpy.float32
+        DOUBLE = numpy.dtype(numpy.float64)
+        SINGLE = numpy.dtype(numpy.float32)
 
     # --- Properties
 
@@ -184,6 +184,29 @@ class MeshVariable:
 
         self._max_stencil_width = numpy.array(max_stencil_width, dtype='int64')
 
+    def data(self, block):
+        """
+        Get data array for MeshVariable for specified MeshBlock.
+
+        Parameters
+        ----------
+        block: MeshBlock object
+            MeshBlock to get data array from
+
+        Return value
+        ------------
+        numpy.ndarray: data array from 'block' for MeshVariable
+        """
+        # --- Check arguments
+
+        # 'block' is a MeshBlock object
+        if not isinstance(block, samr.mesh.MeshBlock):
+            raise ValueError("'block' is not a MeshBlock object")
+
+        # --- Retrieve and return data array
+
+        return block.get_data(self)
+
     # --- Magic methods
 
     def __repr__(self):
@@ -202,10 +225,11 @@ class MeshVariable:
         --------
         TODO
         """
-        return "MeshVariable(mesh=Mesh({}), location={}, " \
+        return "MeshVariable(mesh=<Mesh object at {}>, location={}, " \
                "max_stencil_width={}, depth={}, dtype={})". \
-               format(id(self.mesh), self.location, self.max_stencil_width,
-                      self.depth, self.dtype)
+               format(hex(id(self.mesh)), self.location,
+                      self.max_stencil_width, self.depth,
+                      self.dtype.name)
 
     def __eq__(self, other):
         """
