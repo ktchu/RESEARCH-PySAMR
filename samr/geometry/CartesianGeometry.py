@@ -161,7 +161,7 @@ class CartesianGeometry(Geometry):
 
     def __eq__(self, other):
         """
-        Return whether 'other' is an equivalent CartesianGeometry object.
+        Return whether 'other' is an equivalent object.
 
         Parameters
         ----------

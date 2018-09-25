@@ -95,7 +95,7 @@ class Geometry(ABC):
 
     def __eq__(self, other):
         """
-        Return whether 'other' is an equivalent Box object.
+        Return whether 'other' is an equivalent object.
 
         Parameters
         ----------
