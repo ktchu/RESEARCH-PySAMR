@@ -17,6 +17,7 @@ contained in the LICENSE file.
 import unittest
 
 # External packages
+import numpy
 import pytest
 
 # XYZ
@@ -40,19 +41,23 @@ class mesh_utils_Tests(unittest.TestCase):
         assert hasattr(utils, 'contains_only_integers')
 
     @staticmethod
-    def test_contains_only_integers():
+    def test_contains_only_integers_1():
         """
-        Test contains_only_integers().
+        Test contains_only_integers(): normal usage
         """
-        # pylint: disable=protected-access
-
         # --- Exercise functionality and check results
 
-        # Normal usage
         assert utils.contains_only_integers([1, 2, 3])
         assert not utils.contains_only_integers([1, 2, 3.4])
         assert utils.contains_only_integers(1)
         assert not utils.contains_only_integers(1.5)
+
+    @staticmethod
+    def test_contains_only_integers_2():
+        """
+        Test contains_only_integers(): invalid 'array'
+        """
+        # --- Exercise functionality and check results
 
         # 'array' is not a scalar or array-like
         with pytest.raises(ValueError) as exc_info:
@@ -70,3 +75,14 @@ class mesh_utils_Tests(unittest.TestCase):
         expected_error = "Unable to convert 'array' to an array of " \
                          "numeric values"
         assert expected_error in str(exc_info)
+
+    @staticmethod
+    def test_contains_only_integers_3():
+        """
+        Test contains_only_integers(): empty 'array'
+        """
+        # --- Exercise functionality and check results
+
+        assert not utils.contains_only_integers([])
+        assert not utils.contains_only_integers(tuple([]))
+        assert not utils.contains_only_integers(numpy.array([]))

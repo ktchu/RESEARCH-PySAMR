@@ -21,7 +21,7 @@ import numpy
 
 def contains_only_integers(array):
     """
-    Return whether 'array' contains only integer values.
+    Return whether 'array' is non-empty and contains only integer values.
 
     Parameters
     ----------
@@ -30,21 +30,24 @@ def contains_only_integers(array):
 
     Return value
     ------------
-    bool: True if 'array' contains only integer values; False otherwise
+    bool: True if 'array' is non-empty contains only integer values;
+        False otherwise
 
     Examples
     --------
-    >>> Box._contains_only_integers([0, 1, 2])
+    >>> contains_only_integers([0, 1, 2])
     True
-    >>> Box._contains_only_integers(3)
+    >>> contains_only_integers(3)
     True
-    >>> Box._contains_only_integers(numpy.array([0, 1, 2]))
+    >>> contains_only_integers(numpy.array([0, 1, 2]))
     True
-    >>> Box._contains_only_integers([0.0, 1.0, 2.0])
+    >>> contains_only_integers([0.0, 1.0, 2.0])
     True
-    >>> Box._contains_only_integers([0.5, 1.0, 2.0])
+    >>> contains_only_integers([0.5, 1.0, 2.0])
     False
-    >>> Box._contains_only_integers(3.5)
+    >>> contains_only_integers(3.5)
+    False
+    >>> contains_only_integers([])
     False
     """
     # --- Check arguments
@@ -56,9 +59,19 @@ def contains_only_integers(array):
     if isinstance(array, (list, tuple, numpy.ndarray)):
         try:
             _ = numpy.array(array, dtype=float)
+
         except Exception:
             raise ValueError("Unable to convert 'array' to an array of "
                              "numeric values")
+
+        # Return False if 'array' is empty
+        if isinstance(array, (list, tuple)):
+            if not array:
+                return False
+
+        elif isinstance(array, numpy.ndarray):
+            if array.size == 0:
+                return False
 
     # --- Determine whether all entries of 'array' are integers
 
