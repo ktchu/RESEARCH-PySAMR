@@ -181,7 +181,7 @@ class MeshBlock:
         data = numpy.array(data_shape, dtype=variable.dtype)
 
         # Set data for variable
-        self._data[variable.id()] = data
+        self._data[id(variable)] = data
 
     def get_data(self, variable):
         """

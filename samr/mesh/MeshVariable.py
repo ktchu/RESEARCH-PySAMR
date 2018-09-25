@@ -204,7 +204,7 @@ class MeshVariable:
         """
         return "MeshVariable(mesh=Mesh({}), location={}, " \
                "max_stencil_width={}, depth={}, dtype={})". \
-               format(self.mesh.id(), self.location, self.max_stencil_width,
+               format(id(self.mesh), self.location, self.max_stencil_width,
                       self.depth, self.dtype)
 
     def __eq__(self, other):
