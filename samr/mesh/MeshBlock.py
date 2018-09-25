@@ -91,7 +91,7 @@ class MeshBlock:
         """
         tuple: list of MeshVariables defined on MeshBlock
         """
-        return tuple(self._data.keys())
+        return tuple(self._variables)
 
     @property
     def data(self):
@@ -143,6 +143,9 @@ class MeshBlock:
         # geometry
         self._geometry = copy.deepcopy(geometry)
 
+        # variables
+        self._variables = []
+
         # data
         self._data = {}
 
@@ -167,6 +170,9 @@ class MeshBlock:
 
         # --- Add MeshVariable to MeshBlock
 
+        # Add 'variable' to variable list
+        self._variables.append(variable)
+
         # Construct shape for data array
         # TODO: construct shape as a function of location, stencil_width, depth
         data_shape = self.shape
@@ -175,7 +181,7 @@ class MeshBlock:
         data = numpy.array(data_shape, dtype=variable.dtype)
 
         # Set data for variable
-        self._data[variable] = data
+        self._data[variable.id()] = data
 
     def get_data(self, variable):
         """

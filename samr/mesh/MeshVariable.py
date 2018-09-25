@@ -104,7 +104,7 @@ class MeshVariable:
 
     def __init__(self, mesh,
                  location=Location.NODE,
-                 max_stencil_width=None,
+                 max_stencil_width=0,
                  depth=1,
                  precision=Precision.DOUBLE):
         """
@@ -143,13 +143,21 @@ class MeshVariable:
         if location not in MeshVariable.Location:
             raise ValueError("'location' not a valid Location value")
 
-        # max_stencil_width is not empty
-        if array_is_empty(max_stencil_width):
-            raise ValueError("'max_stencil_width' is empty")
+        # max_stencil_width has a valid type
+        if not isinstance(max_stencil_width,
+                          (int, float, list, tuple, numpy.ndarray)):
+            raise ValueError("'max_stencil_width' is not a scalar, list, "
+                             "tuple, or numpy.ndarray")
 
-        # max_stencil_width contains only integer values
-        if not contains_only_integers(max_stencil_width):
-            raise ValueError("'max_stencil_width' contains non-integer values")
+        if isinstance(max_stencil_width, (list, tuple, numpy.ndarray)):
+            # max_stencil_width is not empty
+            if array_is_empty(max_stencil_width):
+                raise ValueError("'max_stencil_width' is empty")
+
+            # max_stencil_width contains only integer values
+            if not contains_only_integers(max_stencil_width):
+                raise ValueError("'max_stencil_width' contains non-integer "
+                                 "values")
 
         # depth
         if not isinstance(depth, (int, float)):
