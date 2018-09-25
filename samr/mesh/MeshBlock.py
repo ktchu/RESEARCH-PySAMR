@@ -178,7 +178,7 @@ class MeshBlock:
         data_shape = self.shape
 
         # Construct data array for variable
-        data = numpy.array(data_shape, dtype=variable.dtype)
+        data = numpy.zeros(data_shape, dtype=variable.dtype)
 
         # Set data for variable
         self._data[id(variable)] = data
@@ -202,14 +202,15 @@ class MeshBlock:
             raise ValueError("'variable' is not a MeshVariable object")
 
         # 'variable' is in data
-        if variable not in self.data:
+        variable_id = id(variable)
+        if variable_id not in self.data:
             error_message = \
                 "'variable' (={}) not defined on MeshBlock".format(variable)
             raise ValueError(error_message)
 
         # --- Return data
 
-        return self.data[variable]
+        return self.data[variable_id]
 
     # --- Magic methods
 
