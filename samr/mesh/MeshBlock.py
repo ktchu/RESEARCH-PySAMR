@@ -52,6 +52,13 @@ class MeshBlock:
         return self._geometry
 
     @property
+    def num_dimensions(self):
+        """
+        int: dimensionality of index space
+        """
+        return self.box.num_dimensions
+
+    @property
     def lower(self):
         """
         numpy.ndarray: lower corner of index space covered by MeshBlock
@@ -64,13 +71,6 @@ class MeshBlock:
         numpy.ndarray: upper corner of index space covered by MeshBlock
         """
         return self.box.upper
-
-    @property
-    def num_dimensions(self):
-        """
-        int: dimensionality of index space
-        """
-        return self.box.num_dimensions
 
     @property
     def shape(self):
@@ -135,7 +135,7 @@ class MeshBlock:
             raise ValueError("'box' and 'geometry' do not have the same "
                              "number of dimensions")
 
-        # --- Set property and attribute values
+        # --- Initialize property and attribute values
 
         # box
         self._box = copy.deepcopy(box)

@@ -187,7 +187,7 @@ class Mesh:
         if not isinstance(geometry, Geometry):
             raise ValueError("'geometry' is not a Geometry object")
 
-        # --- Set property and attribute values
+        # --- Initialize property and attribute values
 
         # index space
         self._domain = copy.deepcopy(domain)
@@ -202,16 +202,15 @@ class Mesh:
         # variables
         self._variables = []
 
-        # is_single_block
+        # mesh type
         self._is_single_block = single_block
 
-        # is_single_level
         if self.is_single_block:
             self._is_single_level = True
         else:
             self._is_single_level = single_level
 
-        # --- Initialize levels for single-level meshes
+        # --- Initialize refinement levels
 
         if single_block:
             block = MeshBlock(self.domain[0], self.geometry)

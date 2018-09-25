@@ -35,6 +35,10 @@ class CartesianGeometry(Geometry):
     def x_lower(self):
         """
         numpy.ndarray: lower corner of region of Cartesian coordinate space
+
+        Notes
+        -----
+        * x_lower.dtype = 'float64'
         """
         return self._x_lower
 
@@ -42,6 +46,10 @@ class CartesianGeometry(Geometry):
     def x_upper(self):
         """
         numpy.ndarray: upper corner of region of Cartesian coordinate space
+
+        Notes
+        -----
+        * x_upper.dtype = 'float64'
         """
         return self._x_upper
 
@@ -49,6 +57,10 @@ class CartesianGeometry(Geometry):
     def shape(self):
         """
         numpy.ndarray: dimensions of region of Cartesian coordinate space
+
+        Notes
+        -----
+        * shape.dtype = 'float64'
         """
         return self._shape
 
@@ -107,11 +119,13 @@ class CartesianGeometry(Geometry):
 
         super().__init__(num_dimensions=len(x_lower))
 
-        # --- Set property and attribute values
+        # --- Initialize property and attribute values
 
+        # region bounds
         self._x_lower = numpy.array(x_lower, dtype='float64')
         self._x_upper = numpy.array(x_upper, dtype='float64')
 
+        # shape
         self._shape = self.x_upper - self.x_lower
 
     def compute_dx(self, box):

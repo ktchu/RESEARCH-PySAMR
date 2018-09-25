@@ -139,7 +139,7 @@ class Box:
         if not numpy.all(numpy.greater_equal(upper, lower)):
             raise ValueError("'upper' is less than 'lower' along some axes")
 
-        # --- Set property and attribute values
+        # --- Initialize property and attribute values
 
         # index space
         self._lower = numpy.array(lower, dtype='int64')

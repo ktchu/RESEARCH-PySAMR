@@ -171,18 +171,21 @@ class MeshVariable:
         if precision not in MeshVariable.Precision:
             raise ValueError("'precision' not a valid Precision value")
 
-        # --- Set property and attribute values
+        # --- Initialize property and attribute values
 
+        # mesh
         self._mesh = mesh
-        self._location = location
-        self._depth = depth
-        self._dtype = precision.value
 
-        # Set max_stencil_width is an array
+        # variable properties
+        self._location = location
+
         if isinstance(max_stencil_width, (int, float)):
             max_stencil_width = [max_stencil_width] * mesh.num_dimensions
 
         self._max_stencil_width = numpy.array(max_stencil_width, dtype='int64')
+
+        self._depth = depth
+        self._dtype = precision.value
 
     def data(self, block):
         """

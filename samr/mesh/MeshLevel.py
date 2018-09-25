@@ -101,10 +101,15 @@ class MeshLevel:
             # Ensure that blocks is a list
             blocks = [blocks]
 
-        # --- Set property and attribute values
+        # --- Initialize property and attribute values
 
+        # level number
         self._level_number = level_number
+
+        # blocks
         self._blocks = blocks
+
+        # variables
         self._variables = []
 
     def add_variable(self, variable):
