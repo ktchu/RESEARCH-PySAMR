@@ -18,13 +18,6 @@ import os.path
 from pkg_resources import get_distribution, DistributionNotFound
 
 
-# --- Package API
-
-# Sub-packages
-from . import mesh
-from . import geometry
-
-
 # --- Package information
 
 _PKG_INFO = {
