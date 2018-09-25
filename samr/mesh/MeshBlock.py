@@ -22,7 +22,8 @@ import numpy
 # XYZ
 from samr.geometry import CartesianGeometry  # pylint: disable=unused-import
 from samr.geometry import Geometry
-from samr.mesh import Box
+from .Box import Box
+from .MeshVariable import MeshVariable
 
 
 # --- Class definition
@@ -74,7 +75,7 @@ class MeshBlock:
     @property
     def shape(self):
         """
-        tuple: number of cells in each coordinate direction
+        numpy.ndarray: number of cells in each coordinate direction
         """
         return self.box.shape
 
@@ -86,10 +87,16 @@ class MeshBlock:
         return self.box.size
 
     @property
+    def variables(self):
+        """
+        tuple: list of MeshVariables defined on MeshBlock
+        """
+        return tuple(self._data.keys())
+
+    @property
     def data(self):
         """
-        dict: mapping from MeshVariables to numpy arrays containing
-              data values
+        dict: map from MeshVariables to numpy arrays containing data values
         """
         return self._data
 
@@ -145,25 +152,50 @@ class MeshBlock:
 
         Parameters
         ----------
-        variable: MeshVariable
-            MeshVariable to add to MeshBlock
+        variable: MeshVariable object
+            variable to add to MeshBlock
 
         Return value
         ------------
         None
         """
+        # --- Check arguments
+
+        # 'variable' is a MeshVariable object
+        if not isinstance(variable, MeshVariable):
+            raise ValueError("'variable' is not a MeshVariable object")
+
+        # --- Add MeshVariable to MeshBlock
+
+        # Construct shape for data array
+        # TODO: construct shape as a function of location, stencil_width, depth
+        data_shape = self.shape
+
         # Construct data array for variable
-        data = numpy.array(self.shape, dtype=variable.dtype)
+        data = numpy.array(data_shape, dtype=variable.dtype)
 
         # Set data for variable
         self._data[variable] = data
 
     def get_data(self, variable):
         """
-        TODO
+        Get data array for specified variable.
+
+        Parameters
+        ----------
+        variable: MeshVariable object
+
+        Return value
+        ------------
+        numpy.ndarray: data array for specified variable
         """
         # --- Check arguments
 
+        # 'variable' is a MeshVariable object
+        if not isinstance(variable, MeshVariable):
+            raise ValueError("'variable' is not a MeshVariable object")
+
+        # 'variable' is in data
         if variable not in self.data:
             error_message = "'variable' (={}) not defined on MeshBlock". \
                 format(variable)
@@ -172,3 +204,24 @@ class MeshBlock:
         # --- Return data
 
         return self.data[variable]
+
+    # --- Magic methods
+
+    def __repr__(self):
+        """
+        Return unambiguous representation of object.
+
+        Parameters
+        ----------
+        None
+
+        Return value
+        ------------
+        str: unambiguous string representation of object
+
+        Examples
+        --------
+        TODO
+        """
+        return "MeshBlock(box={}, geometry={}, variables={})". \
+            format(self.box, self.geometry, self.variables)

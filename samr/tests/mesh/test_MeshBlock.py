@@ -67,6 +67,7 @@ class MeshBlockTests(unittest.TestCase):
         assert hasattr(MeshBlock, 'shape')
         assert hasattr(MeshBlock, 'size')
 
+        assert hasattr(MeshBlock, 'variables')
         assert hasattr(MeshBlock, 'data')
 
         # Methods
@@ -83,9 +84,10 @@ class MeshBlockTests(unittest.TestCase):
 
         # --- Check results
 
+        # num_dimensions
         assert block.num_dimensions == self.num_dimensions
 
-        # Check that box is equivalent and is a copy (not the same object)
+        # box is equivalent and is a copy (not the same object)
         assert block.box == self.box
         assert block.box is not self.box
 
@@ -98,7 +100,7 @@ class MeshBlockTests(unittest.TestCase):
         assert numpy.array_equal(block.shape, self.box.shape)
         assert block.size == self.box.size
 
-        # Check that geometry is equivalent and is a copy (not the same object)
+        # geometry is equivalent and is a copy (not the same object)
         assert block.geometry == self.geometry
         assert block.geometry is not self.geometry
 
@@ -131,9 +133,9 @@ class MeshBlockTests(unittest.TestCase):
         assert expected_error in str(exc_info)
 
     @unittest.skip('TODO')
-    def test_add_variable(self):
+    def test_add_variable_1(self):
         """
-        Test addition of MeshVariable to MeshBlock.
+        Test add_variable(): normal usage
         """
         # Preparations
         block = MeshBlock(self.box, self.geometry)
@@ -147,7 +149,7 @@ class MeshBlockTests(unittest.TestCase):
     @unittest.skip('TODO')
     def test_get_data(self):
         """
-        Test addition of MeshVariable to MeshBlock.
+        Test get_data(): normal usage
         """
         # Preparations
         block = MeshBlock(self.box, self.geometry)
@@ -157,3 +159,21 @@ class MeshBlockTests(unittest.TestCase):
 
         # Check results
         # TODO
+
+    def test_repr(self):
+        """
+        Test __repr__().
+        """
+        # --- Preparations
+
+        block = MeshBlock(self.box, self.geometry)
+
+        # --- Exercise functionality and check results
+
+        expected_repr = "MeshBlock(" \
+                        "box=Box([1, 1, 1], [100, 100, 100]), " \
+                        "geometry=CartesianGeometry([0.0, 0.0, 0.0], " \
+                        "[1.0, 1.0, 1.0]), " \
+                        "variables=())"
+        assert repr(block) == expected_repr
+        assert str(block) == expected_repr
