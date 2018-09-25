@@ -22,6 +22,9 @@ def test_attributes():
    Test for expected package attributes.
     """
     # Package information
+    assert mesh.Box
     assert mesh.Mesh
     assert mesh.MeshBlock
+    assert mesh.MeshLevel
     assert mesh.MeshVariable
+    assert mesh.utils
