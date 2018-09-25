@@ -110,7 +110,7 @@ class Box:
         if not isinstance(lower, (list, tuple, numpy.ndarray)):
             raise ValueError("'lower' is not a list, tuple, or numpy.ndarray")
 
-        # lower is empty
+        # lower is not empty
         if array_is_empty(lower):
             raise ValueError("'lower' is empty")
 
@@ -122,7 +122,7 @@ class Box:
         if not isinstance(upper, (list, tuple, numpy.ndarray)):
             raise ValueError("'upper' is not a list, tuple, or numpy.ndarray")
 
-        # upper is empty
+        # upper is not empty
         if array_is_empty(upper):
             raise ValueError("'upper' is empty")
 
