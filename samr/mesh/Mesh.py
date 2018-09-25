@@ -20,16 +20,21 @@ import copy
 from samr.geometry import Geometry
 from .Box import Box
 from .MeshBlock import MeshBlock
+from .MeshLevel import MeshLevel
+from .MeshVariable import MeshVariable
+
+from .utils import array_is_empty
+from .utils import contains_only_integers
 
 
 # --- Class definition
 
 class Mesh:
     """
-    TODO
+    A Mesh object represents a collection of meshes with different levels of
+    refinement (relative to the coarsest mesh level).
 
-    * 'refinement level' = collection of MeshBlocks with the same level of
-      refinement (relative to coarest level of Mesh)
+    TODO
     """
     # --- Properties
 
@@ -65,27 +70,27 @@ class Mesh:
     @property
     def levels(self):
         """
-        list: refinement levels in Mesh
+        tuple: MeshLevels in Mesh
         """
-        return self._levels
+        return tuple(self._levels)
 
     @property
     def num_levels(self):
         """
-        int: number of refinement levels in Mesh
+        int: number of MeshLevels in Mesh
         """
-        return len(self._levels)
+        return len(self.levels)
 
     @property
     def blocks(self, level_number=0):
         """
-        list: MeshBlocks in Mesh
+        tuple: MeshBlocks in Mesh
         """
         if level_number > self.num_levels:
             raise RuntimeError("'level_number' exceeds the number of levels "
                                "in Mesh")
 
-        return self.levels[level_number]
+        return self.levels[level_number].blocks
 
     @property
     def num_blocks(self, level_number=0):
@@ -97,6 +102,13 @@ class Mesh:
                                "in Mesh")
 
         return len(self.blocks)
+
+    @property
+    def variables(self):
+        """
+        tuple: list of MeshVariables defined on Mesh
+        """
+        return tuple(self._variables)
 
     @property
     def data(self, variable, block_number=0):
@@ -130,8 +142,8 @@ class Mesh:
         Parameters
         ----------
         domain: Box or list of Boxes
-            list of boxes that define the index space covered by Mesh on the
-            coarsest level
+            boxes that define the index space covered by Mesh on the coarsest
+            level
 
         geometry: Geometry
             geometry for Mesh on the coarsest level. Geometry parameters
@@ -187,6 +199,9 @@ class Mesh:
         # refinement levels
         self._levels = []
 
+        # variables
+        self._variables = []
+
         # is_single_block
         self._is_single_block = single_block
 
@@ -200,25 +215,31 @@ class Mesh:
 
         if single_block:
             block = MeshBlock(self.domain[0], self.geometry)
-            level = [block]
+            level = MeshLevel(level_number=0, blocks=[block])
             self._levels.append(level)
 
         else:
-            level = []
+            blocks = []
             for box in domain:
                 # TODO: fix computation of geometry for block
                 block_geometry = self.geometry
-                level.append(MeshBlock(box, block_geometry))
+                blocks.append(MeshBlock(box, block_geometry))
 
+            level = MeshLevel(level_number=0, blocks=blocks)
             self._levels.append(level)
 
-    def add_level(self, level):
+    def add_level(self, blocks):
         """
-        Add a refinement level to Mesh.
+        Add a MeshLevel to Mesh.
 
         Parameters
         ----------
-        TODO
+        blocks: MeshBlock object or list of MeshBlock objects
+            blocks that make up new refinement level
+
+        Return value
+        ------------
+        None
 
         Examples
         --------
@@ -226,5 +247,101 @@ class Mesh:
         """
         # --- Check arguments
 
-        # TODO
-        pass
+        # let MeshLevel.__init__() check 'blocks'
+
+        # --- Create and set up new MeshLevel
+
+        level = MeshLevel(self.num_levels, blocks)
+        for variable in self.variables:
+            level.add_variable(variable)
+
+        self._levels.append(level)
+
+    def create_variable(self, level_numbers=None):
+        """
+        Create MeshVariable on specified levels.
+
+        Parameters
+        ----------
+        level_numbers: int or list of ints
+            level numbers that variable should be added to
+
+        TODO: other parameters
+
+        Return value
+        ------------
+        variable: MeshVariable object
+            newly created MeshVariable object
+        """
+        # TODO: add parameters for MeshVariable
+
+        # --- Check arguments
+
+        # level_numbers
+        if level_numbers is not None:
+            if not isinstance(level_numbers, (int, float, list, tuple)):
+                raise ValueError("'level_numbers' is not a scalar or a list "
+                                 "of integers")
+
+            # level_numbers is not empty
+            if isinstance(level_numbers, (list, tuple)):
+                if array_is_empty(level_numbers):
+                    raise ValueError("'level_numbers' is empty")
+            else:
+                # Ensure that level_numbers is a list
+                level_numbers = [level_numbers]
+
+            # level_numbers contains only integers
+            if not contains_only_integers(level_numbers):
+                raise ValueError("'level_numbers' contains non-integer values")
+
+            # min(level_numbers) >= 0
+            if min(level_numbers) < 0:
+                raise ValueError("'level_numbers' contains negative values")
+
+            # max(level_numbers) < mesh.num_levels
+            if max(level_numbers) >= self.num_levels:
+                raise ValueError("'level_numbers' contains values larger "
+                                 "maximum level number in mesh")
+
+        # --- Create MeshVariable and add it to Mesh
+
+        # Create MeshVariable
+        # TODO: add variable parameters
+        variable = MeshVariable(self)
+
+        # Add variable to Mesh
+        self._variables.append(variable)
+
+        # Convert level numbers to levels
+        if level_numbers is None:
+            levels = self.levels
+        else:
+            levels = [self.levels[level_num] for level_num in level_numbers]
+
+        # Add variable to levels
+        for level in levels:
+            level.add_variable(variable)
+
+    # --- Magic methods
+
+    def __repr__(self):
+        """
+        Return unambiguous representation of object.
+
+        Parameters
+        ----------
+        None
+
+        Return value
+        ------------
+        str: unambiguous string representation of object
+
+        Examples
+        --------
+        TODO
+        """
+        return "Mesh(domain={}, geometry={}, variables={}, " \
+               "single_level={}, single_block={})". \
+               format(self.domain, self.geometry, self.variables,
+                      self.is_single_level, self.is_single_block)
