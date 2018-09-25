@@ -93,13 +93,6 @@ class MeshBlock:
         """
         return tuple(self._variables)
 
-    @property
-    def data(self):
-        """
-        dict: map from MeshVariables to numpy arrays containing data values
-        """
-        return self._data
-
     # --- Public methods
 
     def __init__(self, box, geometry):
@@ -183,7 +176,7 @@ class MeshBlock:
         # Set data for variable
         self._data[id(variable)] = data
 
-    def get_data(self, variable):
+    def data(self, variable=None):
         """
         Get data array for specified variable.
 
@@ -193,8 +186,16 @@ class MeshBlock:
 
         Return value
         ------------
-        numpy.ndarray: data array for specified variable
+        numpy.ndarray or dict:
+            When 'variable' is set, return data array for specified variable.
+            When 'variable' is not set, return map from MeshVariables to
+            numpy arrays containing data values.
         """
+        # --- Return self._data when 'variable' is not set
+
+        if variable is None:
+            return self._data
+
         # --- Check arguments
 
         # 'variable' is a MeshVariable object
@@ -203,14 +204,14 @@ class MeshBlock:
 
         # 'variable' is in data
         variable_id = id(variable)
-        if variable_id not in self.data:
-            error_message = \
-                "'variable' (={}) not defined on MeshBlock".format(variable)
+        if variable_id not in self._data:
+            error_message = "'variable' (={}) not defined on MeshBlock". \
+                format(variable)
             raise ValueError(error_message)
 
         # --- Return data
 
-        return self.data[variable_id]
+        return self._data[variable_id]
 
     # --- Magic methods
 

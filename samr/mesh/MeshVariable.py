@@ -208,7 +208,7 @@ class MeshVariable:
 
         # --- Retrieve and return data array
 
-        return block.get_data(self)
+        return block.data(self)
 
     # --- Magic methods
 
