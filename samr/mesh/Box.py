@@ -106,7 +106,7 @@ class Box:
         """
         # --- Check arguments
 
-        # lower
+        # lower not a valid type
         if not isinstance(lower, (list, tuple, numpy.ndarray)):
             raise ValueError("'lower' is not a list, tuple, or numpy.ndarray")
 
@@ -118,7 +118,7 @@ class Box:
         if not contains_only_integers(lower):
             raise ValueError("'lower' contains non-integer values")
 
-        # upper
+        # upper not a valid type
         if not isinstance(upper, (list, tuple, numpy.ndarray)):
             raise ValueError("'upper' is not a list, tuple, or numpy.ndarray")
 
