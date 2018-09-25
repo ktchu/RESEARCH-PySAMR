@@ -197,8 +197,8 @@ class MeshBlock:
 
         # 'variable' is in data
         if variable not in self.data:
-            error_message = "'variable' (={}) not defined on MeshBlock". \
-                format(variable)
+            error_message = \
+                "'variable' (={}) not defined on MeshBlock".format(variable)
             raise ValueError(error_message)
 
         # --- Return data
@@ -223,5 +223,5 @@ class MeshBlock:
         --------
         TODO
         """
-        return "MeshBlock(box={}, geometry={}, variables={})". \
-            format(self.box, self.geometry, self.variables)
+        return "MeshBlock(box={}, geometry={}, variables={})".format(
+            self.box, self.geometry, self.variables)
