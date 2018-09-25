@@ -19,6 +19,45 @@ import numpy
 
 # --- Public module functions
 
+def array_is_empty(array):
+    """
+    Return whether 'array' is empty.
+
+    Parameters
+    ----------
+    array: list, tuple, numpy.array
+        array of values to evaluate
+
+    Return value
+    ------------
+    bool: True if 'array' is empty; False otherwise
+
+    Examples
+    --------
+    >>> array_is_empty([])
+    True
+    >>> array_is_empty(tuple([]))
+    True
+    >>> array_is_empty(numpy.array([]))
+    True
+    >>> array_is_empty([0, 1, 2])
+    False
+    """
+    # --- Check arguments
+
+    if not isinstance(array, (list, tuple, numpy.ndarray)):
+        raise ValueError("'array' is not a list, tuple, or numpy.ndarray")
+
+    # --- Determine if array is empty
+
+    # 'array' is an numpy.ndarray
+    if isinstance(array, numpy.ndarray):
+        return array.size == 0
+
+    # 'array' is a list or tuple
+    return not array
+
+
 def contains_only_integers(array):
     """
     Return whether 'array' is non-empty and contains only integer values.

@@ -38,7 +38,19 @@ class mesh_utils_Tests(unittest.TestCase):
         Test for expected attributes.
         """
         # Public functions
+        assert hasattr(utils, 'array_is_empty')
         assert hasattr(utils, 'contains_only_integers')
+
+    @staticmethod
+    def test_array_is_empty():
+        """
+        Test array_is_empty_1(): normal usage
+        """
+        # --- Exercise functionality and check results
+
+        assert utils.array_is_empty([])
+        assert utils.array_is_empty(tuple([]))
+        assert utils.array_is_empty(numpy.array([]))
 
     @staticmethod
     def test_contains_only_integers_1():
