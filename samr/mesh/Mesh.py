@@ -304,7 +304,7 @@ class Mesh:
                 raise ValueError("'level_numbers' contains values larger "
                                  "maximum level number in mesh")
 
-        # --- Create MeshVariable and add it to Mesh
+        # --- Create new MeshVariable and add it to Mesh
 
         # Create MeshVariable
         # TODO: add variable parameters
@@ -322,6 +322,10 @@ class Mesh:
         # Add variable to levels
         for level in levels:
             level.add_variable(variable)
+
+        # --- Return MeshVariable
+
+        return variable
 
     # --- Magic methods
 
