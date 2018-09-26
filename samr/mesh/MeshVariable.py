@@ -187,28 +187,44 @@ class MeshVariable:
         self._depth = depth
         self._dtype = precision.value
 
-    def data(self, block):
+    def data(self, block_or_mesh):
         """
         Get data array for MeshVariable for specified MeshBlock.
 
         Parameters
         ----------
-        block: MeshBlock object
-            MeshBlock to get data array from
+        block_or_mesh: MeshBlock or Mesh object
+            MeshBlock or single-block Mesh to get data array from
 
         Return value
         ------------
         numpy.ndarray: data array from 'block' for MeshVariable
+
+        Notes
+        -----
+        * When 'block_or_mesh' is a Mesh object, an error is raised if
+          'block_or_mesh' is not a single-block Mesh (i.e.,
+          Mesh.is_single_block is False).
         """
-        # --- Check arguments
+        # Case: 'block_or_mesh' is a MeshBlock
+        if isinstance(block_or_mesh, samr.mesh.MeshBlock):
 
-        # 'block' is a MeshBlock object
-        if not isinstance(block, samr.mesh.MeshBlock):
-            raise ValueError("'block' is not a MeshBlock object")
+            # Retrieve and return data array
+            return block_or_mesh.data(self)
 
-        # --- Retrieve and return data array
+        # Case: 'block_or_mesh' is a single-block Mesh object
+        if isinstance(block_or_mesh, samr.mesh.Mesh):
 
-        return block.data(self)
+            # Check arguments
+            if not block_or_mesh.is_single_block:
+                raise ValueError("'block_or_mesh' is not a single-block Mesh")
+
+            # Retrieve and return data array
+            return block_or_mesh.block.data(self)
+
+        # Case: 'block_or_mesh' not a valid type
+        raise ValueError("'block_or_mesh' is not a MeshBlock or Mesh "
+                         "object")
 
     # --- Magic methods
 
