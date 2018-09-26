@@ -62,6 +62,9 @@ class MeshTests(unittest.TestCase):
         assert hasattr(Mesh, 'levels')
         assert hasattr(Mesh, 'num_levels')
 
+        assert hasattr(Mesh, 'blocks')
+        assert hasattr(Mesh, 'num_blocks')
+
         assert hasattr(Mesh, 'variables')
 
         assert hasattr(Mesh, 'is_single_level')
@@ -70,8 +73,6 @@ class MeshTests(unittest.TestCase):
         assert hasattr(Mesh, 'add_level')
         assert hasattr(Mesh, 'create_variable')
 
-        assert hasattr(Mesh, 'blocks')
-        assert hasattr(Mesh, 'num_blocks')
         assert hasattr(Mesh, 'data')
 
     def test_init_1(self):
