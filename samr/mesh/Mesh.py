@@ -87,14 +87,14 @@ class Mesh:
         """
         tuple: MeshBlocks in Mesh
 
-        Note
-        ----
-        * Only available when Mesh is created with single_level=True
+        Notes
+        -----
+        * Only available when Mesh.is_single_level is True (i.e., Mesh is
+          created with single_level=True)
         """
         if not self.is_single_level:
             raise RuntimeError("Mesh is multi-level. "
-                               "'blocks' is unavailable for multi-level "
-                               "Meshes")
+                               "'blocks' is unavailable")
 
         return self.levels[0].blocks
 
@@ -103,16 +103,32 @@ class Mesh:
         """
         int: number of MeshBlocks in Mesh
 
-        Note
-        ----
-        * Only available when Mesh is created with single_level=True
+        Notes
+        -----
+        * Only available when Mesh.is_single_level is True (i.e., Mesh is
+          created with single_level=True)
         """
         if not self.is_single_level:
             raise RuntimeError("Mesh is multi-level. "
-                               "'num_blocks' is unavailable for multi-level "
-                               "Meshes")
+                               "'num_blocks' is unavailable")
 
         return self.levels[0].num_blocks
+
+    @property
+    def block(self):
+        """
+        MeshBlock: MeshBlock in Mesh
+
+        Notes
+        -----
+        * Only available when Mesh.is_single_block is True (i.e., Mesh is
+          created with a single-box domain and single_level=True)
+        """
+        if not self.is_single_block:
+            raise RuntimeError("Mesh is not single-block. "
+                               "'block' is unavailable")
+
+        return self.levels[0].blocks[0]
 
     @property
     def variables(self):
@@ -327,17 +343,17 @@ class Mesh:
         ------------
         numpy.ndarray: data array for specified variable
 
-        Note
-        ----
-        * Only available when Mesh is created with a single-box domain and
-          single_level=True
+        Notes
+        -----
+        * Only available when Mesh.is_single_block is True (i.e., Mesh is
+          created with a single-box domain and single_level=True)
         """
         # --- Check arguments
 
-        # Mesh is single-level
-        if not self.is_single_level:
-            raise RuntimeError("Mesh is multi-level. "
-                               "'data' is unavailable for multi-level Meshes")
+        # Mesh is single-block
+        if not self.is_single_block:
+            raise RuntimeError("Mesh is not single-block. "
+                               "'data' is unavailable")
 
         # 'variable' is a MeshVariable object
         if not isinstance(variable, MeshVariable):
