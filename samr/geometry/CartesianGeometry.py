@@ -72,10 +72,10 @@ class CartesianGeometry(Geometry):
 
         Parameters
         ----------
-        x_lower: numpy.ndarray
+        x_lower: list, tuple, or numpy.ndarray
             lower corner of region
 
-        x_upper: numpy.ndarray
+        x_upper: list, tuple, or numpy.ndarray
             upper corner of region
 
         Examples

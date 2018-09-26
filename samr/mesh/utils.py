@@ -25,7 +25,7 @@ def array_is_empty(array):
 
     Parameters
     ----------
-    array: list, tuple, numpy.array
+    array: list, tuple, or numpy.array
         array of values to evaluate
 
     Return value
@@ -64,7 +64,7 @@ def contains_only_integers(array):
 
     Parameters
     ----------
-    array: scalar or array-like (e.g., list, tuple, numpy.array)
+    array: scalar (int or float) or array-like (list, tuple, or numpy.array)
         array of values to evaluate
 
     Return value
