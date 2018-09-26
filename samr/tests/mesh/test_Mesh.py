@@ -37,14 +37,13 @@ class MeshTests(unittest.TestCase):
         """
         Set up test fixtures.
         """
-        self.num_dimensions = 3
+        self.domain = [
+            Box([0, 0], [10, 10]),
+            Box([10, 5], [20, 15]),
+        ]
 
-        lower = [1] * self.num_dimensions
-        upper = [100] * self.num_dimensions
-        self.domain = [Box(lower, upper)]
-
-        self.x_lower = [0] * self.num_dimensions
-        self.x_upper = [1] * self.num_dimensions
+        self.x_lower = [0.0, 0.0]
+        self.x_upper = [4.0, 3.0]
         self.geometry = CartesianGeometry(self.x_lower, self.x_upper)
 
     # --- Test cases
@@ -63,38 +62,41 @@ class MeshTests(unittest.TestCase):
         assert hasattr(Mesh, 'levels')
         assert hasattr(Mesh, 'num_levels')
 
-        assert hasattr(Mesh, 'blocks')
-        assert hasattr(Mesh, 'num_blocks')
-
-        assert hasattr(Mesh, 'data')
+        assert hasattr(Mesh, 'variables')
 
         assert hasattr(Mesh, 'is_single_level')
         assert hasattr(Mesh, 'is_single_block')
 
         assert hasattr(Mesh, 'add_level')
+        assert hasattr(Mesh, 'create_variable')
+
+        assert hasattr(Mesh, 'blocks')
+        assert hasattr(Mesh, 'num_blocks')
+        assert hasattr(Mesh, 'data')
 
     def test_init_1(self):
         """
-        Test __init__(): valid parameters for single-block Mesh
+        Test __init__(): valid parameters for Mesh multi-box domain
         """
         # --- Exercise functionality and check results
 
-        # ------ single_block=True, single_level not set
+        # ------ single-level Mesh
 
         # Create mesh
-        mesh = Mesh(self.domain, self.geometry, single_block=True)
+        mesh = Mesh(self.domain, self.geometry, single_level=True)
 
         # domain is equivalent and is a copy (not the same object)
         assert mesh.domain == self.domain
         assert mesh.domain is not self.domain
 
-        # box is equivalent and is a copy (not the same object)
+        # boxes are equivalent and are copies (not the same object)
         for idx, box in enumerate(mesh.domain):
             assert box == self.domain[idx]
             assert box is not self.domain[idx]
 
         # bounding box
-        assert mesh.bounding_box == self.domain[0]
+        expected_bounding_box = Box.compute_bounding_box(self.domain)
+        assert mesh.bounding_box == expected_bounding_box
 
         # geometry is equivalent and is a copy (not the same object)
         assert mesh.geometry == self.geometry
@@ -107,24 +109,91 @@ class MeshTests(unittest.TestCase):
         assert mesh.num_levels == 1
 
         # blocks
+        assert len(mesh.blocks) == 2
+        assert mesh.num_blocks == 2
+
+        # is single-level
+        assert mesh.is_single_level
+
+        # is not single-block
+        assert not mesh.is_single_block
+
+        # ------ multi-level Mesh
+
+        # Create mesh
+        mesh = Mesh(self.domain, self.geometry, single_level=False)
+
+        # is single-level
+        assert not mesh.is_single_level
+
+        # is single-block
+        assert not mesh.is_single_block
+
+    @staticmethod
+    def test_init_2():
+        """
+        Test __init__(): valid parameters for single-block Mesh
+        """
+        # --- Preparations
+
+        num_dimensions = 5
+        lower = [1] * num_dimensions
+        upper = [100] * num_dimensions
+        domain = Box(lower, upper)
+
+        x_lower = [0.0] * num_dimensions
+        x_upper = [1.0] * num_dimensions
+        geometry = CartesianGeometry(x_lower, x_upper)
+
+        # --- Exercise functionality and check results
+
+        # ------ single-level Mesh
+
+        # Create mesh
+        mesh = Mesh(domain, geometry, single_level=True)
+
+        # domain is equivalent and is a copy (not the same object)
+        assert mesh.domain == [domain]
+
+        # domain box is equivalent and is a copy (not the same object)
+        assert mesh.domain[0] == domain
+        assert mesh.domain[0] is not domain
+
+        # bounding box
+        assert mesh.bounding_box == domain
+
+        # geometry is equivalent and is a copy (not the same object)
+        assert mesh.geometry == geometry
+        assert mesh.geometry is not geometry
+
+        assert mesh.num_dimensions == geometry.num_dimensions
+
+        # levels
+        assert len(mesh.levels) == 1
+        assert mesh.num_levels == 1
+
+        # blocks
         assert len(mesh.blocks) == 1
         assert mesh.num_blocks == 1
 
-        # is_single_level and is_single_block
+        # is single-level
         assert mesh.is_single_level
+
+        # is single-block
         assert mesh.is_single_block
 
-        # ------ single_block=True, single_level=False
+        # ------ multi-level Mesh
 
         # Create mesh
-        mesh = Mesh(self.domain, self.geometry,
-                    single_block=True, single_level=False)
+        mesh = Mesh(domain, geometry, single_level=False)
 
-        # is_single_level and is_single_block
-        assert mesh.is_single_level
-        assert mesh.is_single_block
+        # is single-level
+        assert not mesh.is_single_level
 
-    def test_init_5(self):
+        # is single-block
+        assert not mesh.is_single_block
+
+    def test_init_3(self):
         """
         Test __init__(): invalid 'domain'
         """
@@ -153,7 +222,7 @@ class MeshTests(unittest.TestCase):
         expected_error = "'domain' contains a non-Box object"
         assert expected_error in str(exc_info)
 
-    def test_init_6(self):
+    def test_init_4(self):
         """
         Test __init__(): invalid 'geometry'
         """

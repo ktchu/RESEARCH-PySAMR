@@ -18,6 +18,7 @@ import copy
 
 # XYZ
 from samr.geometry import Geometry
+
 from .Box import Box
 from .MeshBlock import MeshBlock
 from .MeshLevel import MeshLevel
@@ -82,26 +83,36 @@ class Mesh:
         return len(self.levels)
 
     @property
-    def blocks(self, level_number=0):
+    def blocks(self):
         """
         tuple: MeshBlocks in Mesh
-        """
-        if level_number > self.num_levels:
-            raise RuntimeError("'level_number' exceeds the number of levels "
-                               "in Mesh")
 
-        return self.levels[level_number].blocks
+        Note
+        ----
+        * Only available when Mesh is created with single_level=True
+        """
+        if not self.is_single_level:
+            raise RuntimeError("Mesh is multi-level. "
+                               "'blocks' is unavailable for multi-level "
+                               "Meshes")
+
+        return self.levels[0].blocks
 
     @property
-    def num_blocks(self, level_number=0):
+    def num_blocks(self):
         """
         int: number of MeshBlocks in Mesh
-        """
-        if level_number > self.num_levels:
-            raise RuntimeError("'level_number' exceeds the number of levels "
-                               "in Mesh")
 
-        return len(self.blocks)
+        Note
+        ----
+        * Only available when Mesh is created with single_level=True
+        """
+        if not self.is_single_level:
+            raise RuntimeError("Mesh is multi-level. "
+                               "'num_blocks' is unavailable for multi-level "
+                               "Meshes")
+
+        return self.levels[0].num_blocks
 
     @property
     def variables(self):
@@ -109,14 +120,6 @@ class Mesh:
         tuple: list of MeshVariables defined on Mesh
         """
         return tuple(self._variables)
-
-    @property
-    def data(self, variable, block_number=0):
-        """
-        TODO
-        """
-        # TODO
-        pass
 
     @property
     def is_single_level(self):
@@ -134,8 +137,7 @@ class Mesh:
 
     # --- Public methods
 
-    def __init__(self, domain, geometry,
-                 single_level=False, single_block=False):
+    def __init__(self, domain, geometry, single_level=False):
         """
         Initialize Mesh object.
 
@@ -151,14 +153,6 @@ class Mesh:
 
         single_level: boolean
             True if Mesh will contain at most one level; False otherwise
-
-        single_block: boolean
-            True if Mesh will contain at most one block; False otherwise
-
-        Notes
-        -----
-        * When 'single_block' is set to True, the Mesh.is_single_level is
-          set to True. The value of the 'single_level' parameter is ignored.
 
         Examples
         --------
@@ -203,29 +197,23 @@ class Mesh:
         self._variables = []
 
         # mesh type
-        self._is_single_block = single_block
+        self._is_single_level = single_level
 
-        if self.is_single_block:
-            self._is_single_level = True
+        if self.is_single_level:
+            self._is_single_block = len(self._domain) == 1
         else:
-            self._is_single_level = single_level
+            self._is_single_block = False
 
-        # --- Initialize refinement levels
+        # --- Initialize coarsest MeshLevel
 
-        if single_block:
-            block = MeshBlock(self.domain[0], self.geometry)
-            level = MeshLevel(level_number=0, blocks=[block])
-            self._levels.append(level)
+        blocks = []
+        for box in domain:
+            # TODO: fix computation of geometry for block
+            block_geometry = self.geometry
+            blocks.append(MeshBlock(box, block_geometry))
 
-        else:
-            blocks = []
-            for box in domain:
-                # TODO: fix computation of geometry for block
-                block_geometry = self.geometry
-                blocks.append(MeshBlock(box, block_geometry))
-
-            level = MeshLevel(level_number=0, blocks=blocks)
-            self._levels.append(level)
+        level = MeshLevel(level_number=0, blocks=blocks)
+        self._levels.append(level)
 
     def add_level(self, blocks):
         """
@@ -326,6 +314,43 @@ class Mesh:
 
         return variable
 
+    def data(self, variable):
+        """
+        Retrieve data array for specified variable.
+
+        Parameters
+        ----------
+        variable: MeshVariable object
+            variable to retrieve data array for
+
+        Return value
+        ------------
+        numpy.ndarray: data array for specified variable
+
+        Note
+        ----
+        * Only available when Mesh is created with a single-box domain and
+          single_level=True
+        """
+        # --- Check arguments
+
+        # Mesh is single-level
+        if not self.is_single_level:
+            raise RuntimeError("Mesh is multi-level. "
+                               "'data' is unavailable for multi-level Meshes")
+
+        # 'variable' is a MeshVariable object
+        if not isinstance(variable, MeshVariable):
+            raise ValueError("'variable' is not a MeshVariable object")
+
+        # 'variable' is not in variable list for Mesh
+        if variable not in self.variables:
+            raise ValueError("'variable' is in variable list for Mesh")
+
+        # --- Retrieve data array
+
+        return variable.data(self.levels[0].blocks[0])
+
     # --- Magic methods
 
     def __repr__(self):
@@ -339,10 +364,6 @@ class Mesh:
         Return value
         ------------
         str: unambiguous string representation of object
-
-        Examples
-        --------
-        TODO
         """
         return "Mesh(domain={}, geometry={}, variables={}, " \
                "single_level={}, single_block={})". \
