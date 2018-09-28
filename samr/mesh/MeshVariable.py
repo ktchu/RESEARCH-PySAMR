@@ -249,29 +249,3 @@ class MeshVariable:
                format(hex(id(self.mesh)), self.location,
                       self.max_stencil_width, self.depth,
                       self.dtype.name)
-
-    def __eq__(self, other):
-        """
-        Return whether 'other' is an equivalent object.
-
-        Parameters
-        ----------
-        other: object
-            object to compare with
-
-        Return value
-        ------------
-        bool: True if 'other' is an equivalent object; False otherwise
-
-        Examples
-        --------
-        TODO
-        """
-        if isinstance(other, self.__class__):
-            return self.mesh == other.mesh and \
-                   self.location == other.location and \
-                   self.max_stencil_width == other.max_stencil_width and \
-                   self.depth == other.depth and \
-                   self.dtype == other.dtype
-
-        return False
