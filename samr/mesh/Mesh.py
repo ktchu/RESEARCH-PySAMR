@@ -42,10 +42,10 @@ class Mesh:
     @property
     def domain(self):
         """
-        list: boxes that define the index space covered by Mesh on the
+        tuple: boxes that define the index space covered by Mesh on the
               coarsest level
         """
-        return self._domain
+        return tuple(self._domain)
 
     @property
     def bounding_box(self):
@@ -350,7 +350,8 @@ class Mesh:
         """
         # --- Check arguments
 
-        # let MeshLevel.__init__() check 'blocks'
+        # MeshLevel parameters are checked by MeshLevel.__init__():
+        #   - blocks
 
         # --- Create and set up new MeshLevel
 
@@ -413,5 +414,6 @@ class Mesh:
         """
         return "Mesh(domain={}, geometry={}, variables={}, " \
                "single_level={}, single_block={})". \
-               format(self.domain, self.geometry, self.variables,
+               format(list(self.domain), self.geometry,
+                      list(self.variables),
                       self.is_single_level, self.is_single_block)
