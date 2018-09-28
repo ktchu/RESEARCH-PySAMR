@@ -127,13 +127,15 @@ class MeshLevel:
         """
         # --- Check arguments
 
+        # 'variable' is a MeshVariable object
         if not isinstance(variable, MeshVariable):
             raise ValueError("'variable' is not a MeshVariable object")
 
         # --- Add MeshVariable to MeshLevel
 
         # Add 'variable' to variable list
-        self._variables.append(variable)
+        if variable not in self.variables:
+            self._variables.append(variable)
 
         # Add 'variable' to all MeshBlocks
         for block in self.blocks:
