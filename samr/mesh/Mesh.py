@@ -257,8 +257,7 @@ class Mesh:
 
         Return value
         ------------
-        variable: MeshVariable object
-            newly created MeshVariable object
+        MeshVariable object: newly created MeshVariable object
         """
         # pylint: disable=too-many-arguments
         # pylint: disable=too-many-branches
@@ -355,11 +354,49 @@ class Mesh:
 
         # --- Create and set up new MeshLevel
 
-        level = MeshLevel(self.num_levels, blocks)
+        # Create MeshLevel object
+        level = MeshLevel(level_number=self.num_levels, blocks=blocks)
+
+        # Add new MeshLevel object to Mesh
+        self._levels.append(level)
+
+        # Add existing variables to new MeshLevel object
         for variable in self.variables:
             level.add_variable(variable)
 
-        self._levels.append(level)
+    def remove_level(self):
+        """
+        Remove MeshLevel at the highest level of refinement from Mesh.
+
+        Parameters
+        ----------
+        None
+
+        Return value
+        ------------
+        MeshLevel object: MeshLevel object removed from Mesh
+
+        Notes
+        -----
+        * It is an error to attempt to remove the coarsest MeshLevel in the
+          Mesh.
+
+        Examples
+        --------
+        TODO
+        """
+        # --- Check arguments
+
+        if self.num_levels == 1:
+            raise RuntimeError("The coarsest MeshLevel cannot be removed "
+                               "from Mesh.")
+
+        # --- Remove and return MeshLevel object at highest level of refinement
+
+        level = self.levels[-1]
+        del self._levels[-1]
+
+        return level
 
     def data(self, variable):
         """

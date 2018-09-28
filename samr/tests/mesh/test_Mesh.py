@@ -334,6 +334,7 @@ class MeshTests(unittest.TestCase):
             for block in level.blocks:
                 assert variable in block.variables
 
+    @unittest.skip("TODO")
     def test_add_level(self):
         """
         Test add_level(): normal usage
@@ -349,6 +350,40 @@ class MeshTests(unittest.TestCase):
         # --- Exercise functionality and check results
 
         # TODO
+
+    @unittest.skip("TODO")
+    def test_remove_level_1(self):
+        """
+        Test remove_level(): normal usage
+        """
+        # ------ Preparations
+
+        # Create mesh
+        mesh = Mesh(self.domain, self.geometry)
+
+        # Add levels to Mesh
+        # TODO
+
+        # --- Exercise functionality and check results
+
+        # TODO
+
+    def test_remove_level_2(self):
+        """
+        Test remove_level(): Mesh contains only coarsest MeshLevel
+        """
+        # ------ Preparations
+
+        # Create mesh
+        mesh = Mesh(self.domain, self.geometry)
+
+        # --- Exercise functionality and check results
+
+        with pytest.raises(RuntimeError) as exc_info:
+            mesh.remove_level()
+
+        expected_error = "The coarsest MeshLevel cannot be removed from Mesh."
+        assert expected_error in str(exc_info)
 
     def test_repr(self):
         """
