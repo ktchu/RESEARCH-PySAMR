@@ -231,52 +231,37 @@ class Mesh:
         level = MeshLevel(level_number=0, blocks=blocks)
         self._levels.append(level)
 
-    def add_level(self, blocks):
-        """
-        Add a MeshLevel to Mesh.
-
-        Parameters
-        ----------
-        blocks: MeshBlock object or list of MeshBlock objects
-            blocks that make up new refinement level
-
-        Return value
-        ------------
-        None
-
-        Examples
-        --------
-        TODO
-        """
-        # --- Check arguments
-
-        # let MeshLevel.__init__() check 'blocks'
-
-        # --- Create and set up new MeshLevel
-
-        level = MeshLevel(self.num_levels, blocks)
-        for variable in self.variables:
-            level.add_variable(variable)
-
-        self._levels.append(level)
-
-    def create_variable(self, level_numbers=None):
+    def create_variable(self,
+                        location=None, max_stencil_width=None,
+                        depth=None, precision=None,
+                        level_numbers=None):
         """
         Create MeshVariable on specified levels.
 
         Parameters
         ----------
+        location: Location
+            location of MeshVariable values in mesh cell
+
+        max_stencil_width: int or list of ints
+            maximum width of stencil applied to MeshVariable
+
+        depth: int
+            number of components of MeshVariable
+
+        precision: Precision
+            floating-point precision for MeshVariable
+
         level_numbers: int or list of ints
             level numbers that variable should be added to
-
-        TODO: other parameters
 
         Return value
         ------------
         variable: MeshVariable object
             newly created MeshVariable object
         """
-        # TODO: add parameters for MeshVariable
+        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-branches
 
         # --- Check arguments
 
@@ -307,11 +292,27 @@ class Mesh:
                 raise ValueError("'level_numbers' contains values larger "
                                  "maximum level number in mesh")
 
+        # MeshVariable parameters are checked by MeshVariable.__init__():
+        #   - location
+        #   - max_stencil_width
+        #   - depth
+        #   - precision
+
         # --- Create new MeshVariable and add it to Mesh
 
+        # Construct variable parameter dict
+        variable_parameters = {}
+        if location is not None:
+            variable_parameters['location'] = location
+        if max_stencil_width is not None:
+            variable_parameters['max_stencil_width'] = max_stencil_width
+        if depth is not None:
+            variable_parameters['depth'] = depth
+        if precision is not None:
+            variable_parameters['precision'] = precision
+
         # Create MeshVariable
-        # TODO: add variable parameters
-        variable = MeshVariable(self)
+        variable = MeshVariable(self, **variable_parameters)
 
         # Add variable to Mesh
         self._variables.append(variable)
@@ -329,6 +330,35 @@ class Mesh:
         # --- Return MeshVariable
 
         return variable
+
+    def add_level(self, blocks):
+        """
+        Add a MeshLevel to Mesh.
+
+        Parameters
+        ----------
+        blocks: MeshBlock object or list of MeshBlock objects
+            blocks that make up new refinement level
+
+        Return value
+        ------------
+        None
+
+        Examples
+        --------
+        TODO
+        """
+        # --- Check arguments
+
+        # let MeshLevel.__init__() check 'blocks'
+
+        # --- Create and set up new MeshLevel
+
+        level = MeshLevel(self.num_levels, blocks)
+        for variable in self.variables:
+            level.add_variable(variable)
+
+        self._levels.append(level)
 
     def data(self, variable):
         """

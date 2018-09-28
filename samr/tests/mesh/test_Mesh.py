@@ -17,12 +17,14 @@ contained in the LICENSE file.
 import unittest
 
 # External packages
+import numpy
 import pytest
 
 # XYZ
 from samr.geometry import CartesianGeometry
 from samr.mesh import Box
 from samr.mesh import Mesh
+from samr.mesh import MeshVariable
 
 
 # --- Tests
@@ -38,8 +40,9 @@ class MeshTests(unittest.TestCase):
         Set up test fixtures.
         """
         self.domain = [
-            Box([0, 0], [10, 10]),
-            Box([10, 5], [20, 15]),
+            Box([0, 0], [9, 9]),
+            Box([10, 5], [19, 14]),
+            Box([0, 10], [4, 14]),
         ]
 
         self.x_lower = [0.0, 0.0]
@@ -70,8 +73,8 @@ class MeshTests(unittest.TestCase):
         assert hasattr(Mesh, 'is_single_level')
         assert hasattr(Mesh, 'is_single_block')
 
-        assert hasattr(Mesh, 'add_level')
         assert hasattr(Mesh, 'create_variable')
+        assert hasattr(Mesh, 'add_level')
 
         assert hasattr(Mesh, 'data')
 
@@ -110,8 +113,8 @@ class MeshTests(unittest.TestCase):
         assert mesh.num_levels == 1
 
         # blocks
-        assert len(mesh.blocks) == 2
-        assert mesh.num_blocks == 2
+        assert len(mesh.blocks) == 3
+        assert mesh.num_blocks == 3
 
         # is single-level
         assert mesh.is_single_level
@@ -234,3 +237,67 @@ class MeshTests(unittest.TestCase):
 
         expected_error = "'geometry' is not a Geometry object"
         assert expected_error in str(exc_info)
+
+    def test_create_variable_1(self):
+        """
+        Test create_variable(): normal usage, level_numbers=None
+        """
+        # ------ Preparations
+
+        # Create mesh
+        mesh = Mesh(self.domain, self.geometry)
+
+        # Add levels to Mesh
+        # TODO
+
+        # --- Exercise functionality and check results
+
+        # Default variable parameters
+        u = mesh.create_variable()
+
+        assert isinstance(u, MeshVariable)
+
+        assert u in mesh.variables
+        for level in mesh.levels:
+            assert u in level.variables
+
+        assert u.mesh == mesh
+        assert u.location == MeshVariable.Location.NODE
+        assert numpy.array_equal(u.max_stencil_width,
+                                 numpy.zeros(mesh.num_dimensions))
+        assert u.depth == 1
+        assert u.dtype == numpy.float64
+
+        # Custom variable parameters #1
+        u = mesh.create_variable(location=MeshVariable.Location.CELL,
+                                 max_stencil_width=2,
+                                 precision=MeshVariable.Precision.SINGLE)
+
+        assert isinstance(u, MeshVariable)
+
+        assert u in mesh.variables
+        for level in mesh.levels:
+            assert u in level.variables
+
+        assert u.mesh == mesh
+        assert u.location == MeshVariable.Location.CELL
+        assert numpy.array_equal(u.max_stencil_width,
+                                 2 * numpy.ones(mesh.num_dimensions))
+        assert u.depth == 1
+        assert u.dtype == numpy.float32
+
+        # Custom variable parameters #2
+        u = mesh.create_variable(max_stencil_width=1, depth=5)
+
+        assert isinstance(u, MeshVariable)
+
+        assert u in mesh.variables
+        for level in mesh.levels:
+            assert u in level.variables
+
+        assert u.mesh == mesh
+        assert u.location == MeshVariable.Location.NODE
+        assert numpy.array_equal(u.max_stencil_width,
+                                 numpy.ones(mesh.num_dimensions))
+        assert u.depth == 5
+        assert u.dtype == numpy.float64
