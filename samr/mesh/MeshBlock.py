@@ -161,6 +161,10 @@ class MeshBlock:
         if not isinstance(variable, MeshVariable):
             raise ValueError("'variable' is not a MeshVariable object")
 
+        # Exit if variable has already been added to MeshBlock
+        if variable in self.variables:
+            return
+
         # --- Add MeshVariable to MeshBlock
 
         # Add 'variable' to variable list
