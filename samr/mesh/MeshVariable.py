@@ -48,8 +48,8 @@ class MeshVariable:
         """
         Options for location of MeshVariable values on a mesh
         """
-        CELL = enum.auto()
         NODE = enum.auto()
+        CELL = enum.auto()
         FACE = enum.auto()
 
     class Precision(Enum):
@@ -116,7 +116,7 @@ class MeshVariable:
             mesh that MeshVariable is defined on
 
         location: Location
-            location of values in mesh cell
+            location of MeshVariable values in mesh cell
 
         max_stencil_width: int or list of ints
             maximum width of stencil applied to MeshVariable
