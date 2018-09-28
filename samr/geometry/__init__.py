@@ -10,5 +10,11 @@ contained in the LICENSE file.
 ------------------------------------------------------------------------------
 """
 # Package types
-from .Geometry import Geometry
 from .CartesianGeometry import CartesianGeometry
+from .Geometry import Geometry
+
+# Exported packages and modules
+__all__ = [
+    'CartesianGeometry',
+    'Geometry',
+]

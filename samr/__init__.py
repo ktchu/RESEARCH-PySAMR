@@ -1,5 +1,5 @@
 """
-SAMR: a light-weight library for Structure Adaptive Mesh Refinement
+PySAMR: a light-weight library for Structure Adaptive Mesh Refinement
 
 TODO.
 
@@ -16,6 +16,14 @@ contained in the LICENSE file.
 # Standard library
 import os.path
 from pkg_resources import get_distribution, DistributionNotFound
+
+
+# --- Exported packages and modules
+
+__all__ = [
+    'geometry',
+    'mesh',
+]
 
 
 # --- Package information
