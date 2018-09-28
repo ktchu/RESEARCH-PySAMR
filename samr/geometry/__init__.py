@@ -15,6 +15,6 @@ from .Geometry import Geometry
 
 # Exported packages and modules
 __all__ = [
-    'CartesianGeometry',
-    'Geometry',
+    CartesianGeometry,
+    Geometry,
 ]
