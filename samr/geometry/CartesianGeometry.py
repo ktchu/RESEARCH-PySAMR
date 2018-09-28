@@ -18,7 +18,7 @@ import numpy
 
 # XYZ
 from samr.mesh import Box  # pylint: disable=unused-import
-from . import Geometry
+from .Geometry import Geometry
 
 
 # --- Class definition
