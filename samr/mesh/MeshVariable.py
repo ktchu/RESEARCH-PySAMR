@@ -30,8 +30,8 @@ from .utils import contains_only_integers
 
 class MeshVariable:
     """
-    A MeshVariable object represents a mathematical variable on a Mesh. It
-    defines the following properties of a mesh variable:
+    A MeshVariable represents a mathematical variable on a Mesh. It defines
+    the following properties of a mesh variable:
 
     * the location of variable values relative to mesh cells,
 
@@ -108,11 +108,11 @@ class MeshVariable:
                  depth=1,
                  precision=Precision.DOUBLE):
         """
-        Initialize MeshVariable object.
+        Initialize MeshVariable.
 
         Parameters
         ----------
-        mesh: Mesh object
+        mesh: Mesh
             mesh that MeshVariable is defined on
 
         location: Location
@@ -137,7 +137,7 @@ class MeshVariable:
 
         # mesh
         if not isinstance(mesh, samr.mesh.Mesh):
-            raise ValueError("'mesh' is not a Mesh object")
+            raise ValueError("'mesh' is not a Mesh")
 
         # location
         if location not in MeshVariable.Location:
@@ -193,7 +193,7 @@ class MeshVariable:
 
         Parameters
         ----------
-        block_or_mesh: MeshBlock or Mesh object
+        block_or_mesh: MeshBlock or Mesh
             MeshBlock or single-block Mesh to get data array from
 
         Return value
@@ -202,7 +202,7 @@ class MeshVariable:
 
         Notes
         -----
-        * When 'block_or_mesh' is a Mesh object, an error is raised if
+        * When 'block_or_mesh' is a Mesh , an error is raised if
           'block_or_mesh' is not a single-block Mesh (i.e.,
           Mesh.is_single_block is False).
         """
@@ -212,7 +212,7 @@ class MeshVariable:
             # Retrieve and return data array
             return block_or_mesh.data(self)
 
-        # Case: 'block_or_mesh' is a single-block Mesh object
+        # Case: 'block_or_mesh' is a single-block Mesh
         if isinstance(block_or_mesh, samr.mesh.Mesh):
 
             # Check arguments
@@ -223,8 +223,7 @@ class MeshVariable:
             return block_or_mesh.block.data(self)
 
         # Case: 'block_or_mesh' not a valid type
-        raise ValueError("'block_or_mesh' is not a MeshBlock or Mesh "
-                         "object")
+        raise ValueError("'block_or_mesh' is not a MeshBlock or Mesh")
 
     # --- Magic methods
 

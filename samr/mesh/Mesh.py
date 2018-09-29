@@ -164,8 +164,8 @@ class Mesh:
             level
 
         geometry: Geometry
-            geometry of the rectangular region of coordinate space (not
-            necessarily physical space) covered by the bounding box of the
+            geometry of the logically rectangular region of space (not
+            necessarily coordinate space) covered by the bounding box of the
             boxes in the 'domain' parameter
 
         single_level: boolean

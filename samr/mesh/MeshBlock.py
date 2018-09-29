@@ -30,10 +30,9 @@ from .MeshVariable import MeshVariable
 
 class MeshBlock:
     """
-    A MeshBlock object represents a logically rectangular region of space
-    (i.e., a deformed rectangle). It is defined by a rectangular region of
-    index space (Box object) and its mapping to a coordinate space (Geometry
-    object).
+    A MeshBlock represents a logically rectangular region of space (i.e., a
+    deformed rectangle). It is defined by a rectangular region of index space
+    (Box) and its mapping to a coordinate space (Geometry).
     """
     # --- Properties
 
@@ -97,14 +96,14 @@ class MeshBlock:
 
     def __init__(self, box, geometry):
         """
-        Initialize MeshBlock object.
+        Initialize MeshBlock.
 
         Parameters
         ----------
-        box: Box object
+        box: Box
             box that defines region of index space covered by MeshBlock
 
-        geometry: Geometry object
+        geometry: Geometry
             geometry of MeshBlock
 
         Examples
@@ -117,11 +116,11 @@ class MeshBlock:
 
         # box
         if not isinstance(box, Box):
-            raise ValueError("'box' is not a Box object")
+            raise ValueError("'box' is not a Box")
 
         # geometry
         if not isinstance(geometry, Geometry):
-            raise ValueError("'geometry' is not a Geometry object")
+            raise ValueError("'geometry' is not a Geometry")
 
         # box.num_dimensions == geometry.num_dimensions
         if box.num_dimensions != geometry.num_dimensions:
@@ -148,7 +147,7 @@ class MeshBlock:
 
         Parameters
         ----------
-        variable: MeshVariable object
+        variable: MeshVariable
             variable to add to MeshBlock
 
         Return value
@@ -157,9 +156,9 @@ class MeshBlock:
         """
         # --- Check arguments
 
-        # 'variable' is a MeshVariable object
+        # 'variable' is a MeshVariable
         if not isinstance(variable, MeshVariable):
-            raise ValueError("'variable' is not a MeshVariable object")
+            raise ValueError("'variable' is not a MeshVariable")
 
         # Exit if variable has already been added to MeshBlock
         if variable in self.variables:
@@ -186,7 +185,7 @@ class MeshBlock:
 
         Parameters
         ----------
-        variable: MeshVariable object
+        variable: MeshVariable
 
         Return value
         ------------
@@ -202,9 +201,9 @@ class MeshBlock:
 
         # --- Check arguments
 
-        # 'variable' is a MeshVariable object
+        # 'variable' is a MeshVariable
         if not isinstance(variable, MeshVariable):
-            raise ValueError("'variable' is not a MeshVariable object")
+            raise ValueError("'variable' is not a MeshVariable")
 
         # 'variable' is in data
         variable_id = id(variable)
