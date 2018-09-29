@@ -25,7 +25,7 @@ from .Geometry import Geometry
 
 class CartesianGeometry(Geometry):
     """
-    A CartesianGeometry object represents a rectangular region of Cartesian
+    A CartesianGeometry represents a rectangular region of Cartesian
     coordinate space. It maps rectangular regions of index space to a grid
     in Cartesian coordinate space that is uniform in each space dimension.
     """
@@ -68,7 +68,7 @@ class CartesianGeometry(Geometry):
 
     def __init__(self, x_lower, x_upper):
         """
-        Initialize CartesianGeometry object.
+        Initialize CartesianGeometry.
 
         Parameters
         ----------
@@ -97,23 +97,23 @@ class CartesianGeometry(Geometry):
 
         # x_lower
         if not isinstance(x_lower, (list, tuple, numpy.ndarray)):
-            raise ValueError("'x_lower' is not a list, tuple, or "
+            raise ValueError("'x_lower' must be a list, tuple, or "
                              "numpy.ndarray")
 
         # x_upper
         if not isinstance(x_upper, (list, tuple, numpy.ndarray)):
-            raise ValueError("'x_upper' is not a list, tuple, or "
+            raise ValueError("'x_upper' must be a list, tuple, or "
                              "numpy.ndarray")
 
         # len(x_lower) == len(x_upper)
         if len(x_lower) != len(x_upper):
-            raise ValueError("'x_lower' and 'x_upper' do not have the same "
+            raise ValueError("'x_lower' and 'x_upper' must have the same "
                              "number of components")
 
         # x_upper > x_lower
         if not numpy.all(numpy.greater(x_upper, x_lower)):
-            raise ValueError("'x_upper' less than or equal to 'x_lower' "
-                             "along some axes")
+            raise ValueError("'x_upper' must be greater than 'x_lower' along "
+                             "all axes")
 
         # --- Call super()
 
@@ -134,7 +134,7 @@ class CartesianGeometry(Geometry):
 
         Parameters
         ----------
-        box: Box object
+        box: Box
             box representing rectangular region of index space
 
         Return value

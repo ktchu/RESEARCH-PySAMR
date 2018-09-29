@@ -109,29 +109,29 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=3, upper=upper)
 
-        expected_error = "'lower' is not a list, tuple, or numpy.ndarray"
+        expected_error = "'lower' must be a list, tuple, or numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # lower is empty
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=[], upper=upper)
 
-        expected_error = "'lower' is empty"
+        expected_error = "'lower' must not be empty"
         assert expected_error in str(exc_info)
 
         # lower contains non-integer values
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=numpy.array([0, 0.1, 0]), upper=upper)
 
-        expected_error = "'lower' contains non-integer values"
+        expected_error = "'lower' must contain only integer values"
         assert expected_error in str(exc_info)
 
         # len(lower) != len(upper)
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=numpy.zeros(num_dimensions-1), upper=upper)
 
-        expected_error = "'lower' and 'upper' do not have the same " \
-                         "number of components"
+        expected_error = "'lower' and 'upper' must have the same number of " \
+                         "components"
         assert expected_error in str(exc_info)
 
     @staticmethod
@@ -150,21 +150,21 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=lower, upper='not a valid array type')
 
-        expected_error = "'upper' is not a list, tuple, or numpy.ndarray"
+        expected_error = "'upper' must be a list, tuple, or numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # upper is empty
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=lower, upper=numpy.array([]))
 
-        expected_error = "'upper' is empty"
+        expected_error = "'upper' must not be empty"
         assert expected_error in str(exc_info)
 
         # upper contains non-integer values
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=lower, upper=numpy.array([0, 0.1, 0]))
 
-        expected_error = "'upper' contains non-integer values"
+        expected_error = "'upper' must contain only integer values"
         assert expected_error in str(exc_info)
 
         # len(lower) != len(upper)
@@ -172,8 +172,8 @@ class BoxTests(unittest.TestCase):
             _ = Box(lower=lower,
                     upper=numpy.ones(num_dimensions+1, dtype='int'))
 
-        expected_error = "'lower' and 'upper' do not have the same " \
-                         "number of components"
+        expected_error = "'lower' and 'upper' must have the same number of " \
+                         "components"
         assert expected_error in str(exc_info)
 
     @staticmethod
@@ -216,7 +216,8 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=lower, upper=upper)
 
-        expected_error = "'upper' is less than 'lower' along some axes"
+        expected_error = "'upper' must be greater than or equal to 'lower' " \
+                         "along all axes"
         assert expected_error in str(exc_info)
 
     @staticmethod
@@ -269,7 +270,7 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box.compute_bounding_box(boxes)
 
-        expected_error = "'boxes' is not a list of Boxes"
+        expected_error = "'boxes' must be a list of Boxes"
         assert expected_error in str(exc_info)
 
         # 'boxes' is not list-like
@@ -277,7 +278,7 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box.compute_bounding_box(boxes)
 
-        expected_error = "'boxes' contains a non-Box item"
+        expected_error = "'boxes' must not contain non-Box items"
         assert expected_error in str(exc_info)
 
     @staticmethod

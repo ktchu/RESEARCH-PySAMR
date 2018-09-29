@@ -20,9 +20,9 @@ from abc import ABC
 
 class Geometry(ABC):
     """
-    Geometry objects represent regions of coordinate space. They define the
-    relationship between rectangular regions of index space and rectangular
-    regions of coordinate space.
+    A Geometry represents a region of coordinate space. It defines the
+    relationship between a rectangular region of index space and a rectangular
+    region of coordinate space.
 
     The Geometry class is a base class for subclasses that represent specific
     coordinate spaces.
@@ -47,7 +47,7 @@ class Geometry(ABC):
 
     def __init__(self, num_dimensions):
         """
-        Initialize Geometry object.
+        Initialize Geometry.
 
         Parameters
         ----------
@@ -62,10 +62,10 @@ class Geometry(ABC):
 
         # num_dimensions
         if not isinstance(num_dimensions, int):
-            raise ValueError("'num_dimensions' is not an integer")
+            raise ValueError("'num_dimensions' must be an integer")
 
         if num_dimensions <= 0:
-            raise ValueError("'num_dimensions' is not a positive value")
+            raise ValueError("'num_dimensions' must be a positive value")
 
         # --- Initialize property and attribute values
 
