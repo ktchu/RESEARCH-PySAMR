@@ -97,23 +97,23 @@ class CartesianGeometry(Geometry):
 
         # x_lower
         if not isinstance(x_lower, (list, tuple, numpy.ndarray)):
-            raise ValueError("'x_lower' must be a list, tuple, or "
+            raise ValueError("'x_lower' should be a list, tuple, or "
                              "numpy.ndarray")
 
         # x_upper
         if not isinstance(x_upper, (list, tuple, numpy.ndarray)):
-            raise ValueError("'x_upper' must be a list, tuple, or "
+            raise ValueError("'x_upper' should be a list, tuple, or "
                              "numpy.ndarray")
 
         # len(x_lower) == len(x_upper)
         if len(x_lower) != len(x_upper):
-            raise ValueError("'x_lower' and 'x_upper' must have the same "
+            raise ValueError("'x_lower' and 'x_upper' should have the same "
                              "number of components")
 
         # x_upper > x_lower
         if not numpy.all(numpy.greater(x_upper, x_lower)):
-            raise ValueError("'x_upper' must be greater than 'x_lower' along "
-                             "all axes")
+            raise ValueError("'x_upper' should be greater than 'x_lower' "
+                             "along all axes")
 
         # --- Call super()
 

@@ -62,10 +62,10 @@ class Geometry(ABC):
 
         # num_dimensions
         if not isinstance(num_dimensions, int):
-            raise ValueError("'num_dimensions' must be an integer")
+            raise ValueError("'num_dimensions' should be an integer")
 
         if num_dimensions <= 0:
-            raise ValueError("'num_dimensions' must be a positive value")
+            raise ValueError("'num_dimensions' should be a positive value")
 
         # --- Initialize property and attribute values
 

@@ -115,7 +115,7 @@ class CartesianGeometryTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = CartesianGeometry(x_lower=3, x_upper=x_upper)
 
-        expected_error = "'x_lower' must be a list, tuple, or numpy.ndarray"
+        expected_error = "'x_lower' should be a list, tuple, or numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # len(x_lower) != len(x_upper)
@@ -123,7 +123,7 @@ class CartesianGeometryTests(unittest.TestCase):
             _ = CartesianGeometry(x_lower=[0] * (num_dimensions-1),
                                   x_upper=x_upper)
 
-        expected_error = "'x_lower' and 'x_upper' must have the same " \
+        expected_error = "'x_lower' and 'x_upper' should have the same " \
                          "number of components"
         assert expected_error in str(exc_info)
 
@@ -144,7 +144,7 @@ class CartesianGeometryTests(unittest.TestCase):
             _ = CartesianGeometry(x_lower=x_lower,
                                   x_upper='not a numpy.ndarray')
 
-        expected_error = "'x_upper' must be a list, tuple, or numpy.ndarray"
+        expected_error = "'x_upper' should be a list, tuple, or numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # len(x_lower) != len(x_upper)
@@ -152,7 +152,7 @@ class CartesianGeometryTests(unittest.TestCase):
             _ = CartesianGeometry(x_lower=x_lower,
                                   x_upper=[1.0] * (num_dimensions+1))
 
-        expected_error = "'x_lower' and 'x_upper' must have the same " \
+        expected_error = "'x_lower' and 'x_upper' should have the same " \
                          "number of components"
         assert expected_error in str(exc_info)
 
@@ -173,7 +173,7 @@ class CartesianGeometryTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = CartesianGeometry(x_lower=x_lower, x_upper=x_upper)
 
-        expected_error = "'x_upper' must be greater than 'x_lower' along " \
+        expected_error = "'x_upper' should be greater than 'x_lower' along " \
                          "all axes"
         assert expected_error in str(exc_info)
 
@@ -187,7 +187,7 @@ class CartesianGeometryTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = CartesianGeometry(x_lower=x_lower, x_upper=x_upper)
 
-        expected_error = "'x_upper' must be greater than 'x_lower' along " \
+        expected_error = "'x_upper' should be greater than 'x_lower' along " \
                          "all axes"
         assert expected_error in str(exc_info)
 
