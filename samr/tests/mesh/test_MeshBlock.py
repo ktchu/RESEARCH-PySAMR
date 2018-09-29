@@ -117,9 +117,9 @@ class MeshBlockTests(unittest.TestCase):
         # --- Exercise functionality and check results
 
         with pytest.raises(ValueError) as exc_info:
-            _ = MeshBlock(box='not a Box object', geometry=self.geometry)
+            _ = MeshBlock(box='not a Box', geometry=self.geometry)
 
-        expected_error = "'box' is not a Box object"
+        expected_error = "'box' is not a Box"
         assert expected_error in str(exc_info)
 
     def test_init_3(self):
@@ -129,9 +129,9 @@ class MeshBlockTests(unittest.TestCase):
         # --- Exercise functionality and check results
 
         with pytest.raises(ValueError) as exc_info:
-            _ = MeshBlock(self.box, geometry='not a Geometry object')
+            _ = MeshBlock(self.box, geometry='not a Geometry')
 
-        expected_error = "'geometry' is not a Geometry object"
+        expected_error = "'geometry' is not a Geometry"
         assert expected_error in str(exc_info)
 
     @staticmethod
@@ -170,6 +170,7 @@ class MeshBlockTests(unittest.TestCase):
 
         # Check results
         # TODO
+        # variables
 
     @unittest.skip('TODO')
     def test_data(self):

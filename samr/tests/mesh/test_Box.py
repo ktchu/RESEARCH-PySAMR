@@ -269,7 +269,7 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box.compute_bounding_box(boxes)
 
-        expected_error = "'boxes' is not a list of Box objects"
+        expected_error = "'boxes' is not a list of Boxes"
         assert expected_error in str(exc_info)
 
         # 'boxes' is not list-like
@@ -277,7 +277,7 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box.compute_bounding_box(boxes)
 
-        expected_error = "'boxes' contains a non-Box object"
+        expected_error = "'boxes' contains a non-Box item"
         assert expected_error in str(exc_info)
 
     @staticmethod

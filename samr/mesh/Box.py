@@ -27,7 +27,7 @@ from .utils import contains_only_integers
 
 class Box:
     """
-    A Box object represents a rectangular region of index space.
+    A Box represents a rectangular region of index space.
     """
     # --- Properties
 
@@ -159,7 +159,7 @@ class Box:
 
         Parameters
         ----------
-        boxes: list of Box objects
+        boxes: list of Boxes
             list of boxes to compute bounding box for
 
         Return value
@@ -176,11 +176,11 @@ class Box:
 
         # boxes
         if not isinstance(boxes, (list, tuple)):
-            raise ValueError("'boxes' is not a list of Box objects")
+            raise ValueError("'boxes' is not a list of Boxes")
 
         for box in boxes:
             if not isinstance(box, Box):
-                raise ValueError("'boxes' contains a non-Box object")
+                raise ValueError("'boxes' contains a non-Box item")
 
         # --- Compute bounding box
 

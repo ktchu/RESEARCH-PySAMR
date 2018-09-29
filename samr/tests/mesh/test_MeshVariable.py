@@ -47,7 +47,7 @@ class MeshVariableTests(unittest.TestCase):
     @staticmethod
     def test_init_1():
         """
-        Test construction of MeshVariable object with default parameters.
+        Test construction of MeshVariable with default parameters.
         """
         # Exercise functionality
         mesh_variable = MeshVariable()
@@ -59,7 +59,7 @@ class MeshVariableTests(unittest.TestCase):
     @staticmethod
     def test_init_2():
         """
-        Test construction of MeshVariable object: precision='double'
+        Test construction of MeshVariable: precision='double'
         """
         # Exercise functionality
         mesh_variable = MeshVariable(precision='double')
@@ -71,7 +71,7 @@ class MeshVariableTests(unittest.TestCase):
     @staticmethod
     def test_init_3():
         """
-        Test construction of MeshVariable object: precision='single'
+        Test construction of MeshVariable: precision='single'
         """
         # Exercise functionality
         mesh_variable = MeshVariable(precision='single')

@@ -101,10 +101,10 @@ class MeshBlock:
 
         Parameters
         ----------
-        box: Box
+        box: Box object
             box that defines region of index space covered by MeshBlock
 
-        geometry: Geometry
+        geometry: Geometry object
             geometry of MeshBlock
 
         Examples

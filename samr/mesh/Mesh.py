@@ -32,7 +32,7 @@ from .utils import contains_only_integers
 
 class Mesh:
     """
-    A Mesh object represents a collection of meshes with different levels of
+    A Mesh represents a collection of meshes with different levels of
     refinement (relative to the coarsest mesh level).
 
     TODO
@@ -155,7 +155,7 @@ class Mesh:
 
     def __init__(self, domain, geometry, single_level=False):
         """
-        Initialize Mesh object.
+        Initialize Mesh.
 
         Parameters
         ----------
@@ -164,8 +164,9 @@ class Mesh:
             level
 
         geometry: Geometry
-            geometry for Mesh on the coarsest level. Geometry parameters
-            provided by 'geometry' apply to the bounding box for 'domain'.
+            geometry of the rectangular region of coordinate space (not
+            necessarily physical space) covered by the bounding box of the
+            boxes in the 'domain' parameter
 
         single_level: boolean
             True if Mesh will contain at most one level; False otherwise
@@ -178,8 +179,7 @@ class Mesh:
 
         # domain
         if not isinstance(domain, (Box, list, tuple)):
-            raise ValueError("'domain' is not a Box object or a list of "
-                             "Box objects")
+            raise ValueError("'domain' is not a Box or a list of Boxes")
 
         if isinstance(domain, (list, tuple)):
             if not domain:
@@ -187,7 +187,7 @@ class Mesh:
 
             for box in domain:
                 if not isinstance(box, Box):
-                    raise ValueError("'domain' contains a non-Box object")
+                    raise ValueError("'domain' contains a non-Box item")
 
         else:
             # Ensure that domain is a list
@@ -195,7 +195,7 @@ class Mesh:
 
         # geometry
         if not isinstance(geometry, Geometry):
-            raise ValueError("'geometry' is not a Geometry object")
+            raise ValueError("'geometry' is not a Geometry")
 
         # --- Initialize property and attribute values
 
@@ -257,7 +257,7 @@ class Mesh:
 
         Return value
         ------------
-        MeshVariable object: newly created MeshVariable object
+        MeshVariable: newly created MeshVariable
         """
         # pylint: disable=too-many-arguments
         # pylint: disable=too-many-branches
@@ -336,7 +336,7 @@ class Mesh:
 
         Parameters
         ----------
-        blocks: MeshBlock object or list of MeshBlock objects
+        blocks: MeshBlock or list of MeshBlocks
             blocks that make up new refinement level
 
         Return value
@@ -354,13 +354,13 @@ class Mesh:
 
         # --- Create and set up new MeshLevel
 
-        # Create MeshLevel object
+        # Create MeshLevel
         level = MeshLevel(level_number=self.num_levels, blocks=blocks)
 
-        # Add new MeshLevel object to Mesh
+        # Add new MeshLevel to Mesh
         self._levels.append(level)
 
-        # Add existing variables to new MeshLevel object
+        # Add existing variables to new MeshLevel
         for variable in self.variables:
             level.add_variable(variable)
 
@@ -374,7 +374,7 @@ class Mesh:
 
         Return value
         ------------
-        MeshLevel object: MeshLevel object removed from Mesh
+        MeshLevel: MeshLevel removed from Mesh
 
         Notes
         -----
@@ -391,7 +391,7 @@ class Mesh:
             raise RuntimeError("The coarsest MeshLevel cannot be removed "
                                "from Mesh.")
 
-        # --- Remove and return MeshLevel object at highest level of refinement
+        # --- Remove and return MeshLevel at highest level of refinement
 
         level = self.levels[-1]
         del self._levels[-1]
@@ -404,7 +404,7 @@ class Mesh:
 
         Parameters
         ----------
-        variable: MeshVariable object
+        variable: MeshVariable
             variable to retrieve data array for
 
         Return value
@@ -423,9 +423,9 @@ class Mesh:
             raise RuntimeError("Mesh is not single-block. "
                                "'data' is unavailable")
 
-        # 'variable' is a MeshVariable object
+        # 'variable' is a MeshVariable
         if not isinstance(variable, MeshVariable):
-            raise ValueError("'variable' is not a MeshVariable object")
+            raise ValueError("'variable' is not a MeshVariable")
 
         # 'variable' is not in variable list for Mesh
         if variable not in self.variables:
