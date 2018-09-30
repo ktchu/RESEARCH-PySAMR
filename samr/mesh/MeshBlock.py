@@ -116,15 +116,15 @@ class MeshBlock:
 
         # box
         if not isinstance(box, Box):
-            raise ValueError("'box' is not a Box")
+            raise ValueError("'box' should be a Box")
 
         # geometry
         if not isinstance(geometry, Geometry):
-            raise ValueError("'geometry' is not a Geometry")
+            raise ValueError("'geometry' should be a Geometry")
 
         # box.num_dimensions == geometry.num_dimensions
         if box.num_dimensions != geometry.num_dimensions:
-            raise ValueError("'box' and 'geometry' do not have the same "
+            raise ValueError("'box' and 'geometry' should have the same "
                              "number of dimensions")
 
         # --- Initialize property and attribute values
@@ -158,7 +158,7 @@ class MeshBlock:
 
         # 'variable' is a MeshVariable
         if not isinstance(variable, MeshVariable):
-            raise ValueError("'variable' is not a MeshVariable")
+            raise ValueError("'variable' should be a MeshVariable")
 
         # Exit if variable has already been added to MeshBlock
         if variable in self.variables:
@@ -181,7 +181,7 @@ class MeshBlock:
 
     def data(self, variable=None):
         """
-        Get data array for specified variable.
+        Get data array for a specified variable.
 
         Parameters
         ----------
@@ -203,12 +203,12 @@ class MeshBlock:
 
         # 'variable' is a MeshVariable
         if not isinstance(variable, MeshVariable):
-            raise ValueError("'variable' is not a MeshVariable")
+            raise ValueError("'variable' should be a MeshVariable")
 
         # 'variable' is in data
         variable_id = id(variable)
         if variable_id not in self._data:
-            error_message = "'variable' (={}) not defined on MeshBlock". \
+            error_message = "'variable' (={}) is not defined on MeshBlock". \
                 format(variable)
             raise ValueError(error_message)
 

@@ -108,36 +108,38 @@ class Box:
 
         # lower not a valid type
         if not isinstance(lower, (list, tuple, numpy.ndarray)):
-            raise ValueError("'lower' must be a list, tuple, or numpy.ndarray")
+            raise ValueError("'lower' should be a list, tuple, or "
+                             "numpy.ndarray")
 
         # lower is not empty
         if array_is_empty(lower):
-            raise ValueError("'lower' must not be empty")
+            raise ValueError("'lower' should not be empty")
 
         # lower contains only integer values
         if not contains_only_integers(lower):
-            raise ValueError("'lower' must contain only integer values")
+            raise ValueError("'lower' should contain only integer values")
 
         # upper not a valid type
         if not isinstance(upper, (list, tuple, numpy.ndarray)):
-            raise ValueError("'upper' must be a list, tuple, or numpy.ndarray")
+            raise ValueError("'upper' should be a list, tuple, or "
+                             "numpy.ndarray")
 
         # upper is not empty
         if array_is_empty(upper):
-            raise ValueError("'upper' must not be empty")
+            raise ValueError("'upper' should not be empty")
 
         # upper contains only integer values
         if not contains_only_integers(upper):
-            raise ValueError("'upper' must contain only integer values")
+            raise ValueError("'upper' should contain only integer values")
 
         # len(lower) == len(upper)
         if len(lower) != len(upper):
-            raise ValueError("'lower' and 'upper' must have the same number "
+            raise ValueError("'lower' and 'upper' should have the same number "
                              "of components")
 
         # upper >= lower
         if not numpy.all(numpy.greater_equal(upper, lower)):
-            raise ValueError("'upper' must be greater than or equal to "
+            raise ValueError("'upper' should be greater than or equal to "
                              "'lower' along all axes")
 
         # --- Initialize property and attribute values
@@ -177,11 +179,11 @@ class Box:
 
         # boxes
         if not isinstance(boxes, (list, tuple)):
-            raise ValueError("'boxes' must be a list of Boxes")
+            raise ValueError("'boxes' should be a list of Boxes")
 
         for box in boxes:
             if not isinstance(box, Box):
-                raise ValueError("'boxes' must not contain non-Box items")
+                raise ValueError("'boxes' should not contain non-Box items")
 
         # --- Compute bounding box
 

@@ -119,7 +119,7 @@ class MeshBlockTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = MeshBlock(box='not a Box', geometry=self.geometry)
 
-        expected_error = "'box' is not a Box"
+        expected_error = "'box' should be a Box"
         assert expected_error in str(exc_info)
 
     def test_init_3(self):
@@ -131,7 +131,7 @@ class MeshBlockTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = MeshBlock(self.box, geometry='not a Geometry')
 
-        expected_error = "'geometry' is not a Geometry"
+        expected_error = "'geometry' should be a Geometry"
         assert expected_error in str(exc_info)
 
     @staticmethod
@@ -153,7 +153,7 @@ class MeshBlockTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = MeshBlock(box, geometry)
 
-        expected_error = "'box' and 'geometry' do not have the same " \
+        expected_error = "'box' and 'geometry' should have the same " \
                          "number of dimensions"
         assert expected_error in str(exc_info)
 

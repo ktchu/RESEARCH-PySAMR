@@ -179,15 +179,16 @@ class Mesh:
 
         # domain
         if not isinstance(domain, (Box, list, tuple)):
-            raise ValueError("'domain' is not a Box or a list of Boxes")
+            raise ValueError("'domain' should be a Box or a list of Boxes")
 
         if isinstance(domain, (list, tuple)):
             if not domain:
-                raise ValueError("'domain' is empty")
+                raise ValueError("'domain' should not be empty")
 
             for box in domain:
                 if not isinstance(box, Box):
-                    raise ValueError("'domain' contains a non-Box item")
+                    raise ValueError("'domain' should not contain non-Box "
+                                     "items")
 
         else:
             # Ensure that domain is a list
@@ -195,7 +196,7 @@ class Mesh:
 
         # geometry
         if not isinstance(geometry, Geometry):
-            raise ValueError("'geometry' is not a Geometry")
+            raise ValueError("'geometry' should be a Geometry")
 
         # --- Initialize property and attribute values
 
@@ -267,29 +268,31 @@ class Mesh:
         # level_numbers
         if level_numbers is not None:
             if not isinstance(level_numbers, (int, float, list, tuple)):
-                raise ValueError("'level_numbers' is not a scalar or a list "
-                                 "of integers")
+                raise ValueError("'level_numbers' should be a scalar or a "
+                                 "list of integers")
 
             # level_numbers is not empty
             if isinstance(level_numbers, (list, tuple)):
                 if array_is_empty(level_numbers):
-                    raise ValueError("'level_numbers' is empty")
+                    raise ValueError("'level_numbers' should not be empty")
             else:
                 # Ensure that level_numbers is a list
                 level_numbers = [level_numbers]
 
             # level_numbers contains only integers
             if not contains_only_integers(level_numbers):
-                raise ValueError("'level_numbers' contains non-integer values")
+                raise ValueError("'level_numbers' should contain only integer "
+                                 "values")
 
             # min(level_numbers) >= 0
             if min(level_numbers) < 0:
-                raise ValueError("'level_numbers' contains negative values")
+                raise ValueError("'level_numbers' should not contain negative "
+                                 "values")
 
             # max(level_numbers) < mesh.num_levels
             if max(level_numbers) >= self.num_levels:
-                raise ValueError("'level_numbers' contains values larger "
-                                 "maximum level number in mesh")
+                raise ValueError("'level_numbers' should only contain values "
+                                 "less than number of levels in the Mesh")
 
         # MeshVariable parameters are checked by MeshVariable.__init__():
         #   - location
@@ -389,7 +392,7 @@ class Mesh:
 
         if self.num_levels == 1:
             raise RuntimeError("The coarsest MeshLevel cannot be removed "
-                               "from Mesh.")
+                               "from Mesh")
 
         # --- Remove and return MeshLevel at highest level of refinement
 
