@@ -18,6 +18,7 @@ contained in the LICENSE file.
 # XYZ
 from .MeshBlock import MeshBlock
 from .MeshVariable import MeshVariable
+from ..utils import contains_only_integers
 
 
 # --- Constants
@@ -27,8 +28,8 @@ from .MeshVariable import MeshVariable
 
 class MeshLevel:
     """
-    A MeshLevel object represents a region of space is defined as the union
-    of a collection of logically rectangular regions with the same level of
+    A MeshLevel represents a region of space is defined as the union of a
+    collection of logically rectangular regions with the same level of
     refinement (relative to the coarsest level in Mesh).
     """
     # --- Properties
@@ -63,7 +64,7 @@ class MeshLevel:
 
     # --- Public methods
 
-    def __init__(self, level_number, blocks):
+    def __init__(self, level_number, boxes):
         """
         TODO
 
@@ -72,8 +73,13 @@ class MeshLevel:
         level_number: int
             level number in Mesh
 
-        blocks: MeshBlock object or list of MeshBlock objects
-            MeshBlocks in MeshLevel
+        boxes: Box or list of Boxes
+            boxes that define the index space covered by MeshLevel
+
+        geometry: Geometry
+            geometry of the logically rectangular region of space (not
+            necessarily coordinate space) covered by the bounding box of the
+            boxes in the 'boxes' parameter
 
         Examples
         --------
@@ -85,18 +91,19 @@ class MeshLevel:
         # TODO
 
         # level_number >= 0
-        # TODO
+        if level_number < 0:
+            raise ValueError("'level_number' should be a positive number")
 
         # blocks
         if not isinstance(blocks, (MeshBlock, list, tuple)):
-            raise ValueError("'blocks' is not a MeshBlock object or a list "
-                             "of MeshBlock objects")
+            raise ValueError("'blocks' should be a MeshBlock or a list of "
+                             "MeshBlocks")
 
         if isinstance(blocks, (list, tuple)):
             for block in blocks:
                 if not isinstance(block, MeshBlock):
-                    raise ValueError("'blocks' contains a non-MeshBlock "
-                                     "object")
+                    raise ValueError("'blocks' should not contain "
+                                     "non-MeshBlock items")
         else:
             # Ensure that blocks is a list
             blocks = [blocks]
@@ -118,7 +125,7 @@ class MeshLevel:
 
         Parameters
         ----------
-        variable: MeshVariable object
+        variable: MeshVariable
             variable to add to MeshLevel
 
         Return value
@@ -127,9 +134,9 @@ class MeshLevel:
         """
         # --- Check arguments
 
-        # 'variable' is a MeshVariable object
+        # 'variable' is a MeshVariable
         if not isinstance(variable, MeshVariable):
-            raise ValueError("'variable' is not a MeshVariable object")
+            raise ValueError("'variable' should be a MeshVariable")
 
         # --- Add MeshVariable to MeshLevel
 

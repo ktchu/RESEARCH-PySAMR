@@ -22,8 +22,8 @@ import numpy
 
 # XYZ
 import samr
-from .utils import array_is_empty
-from .utils import contains_only_integers
+from ..utils import array_is_empty
+from ..utils import contains_only_integers
 
 
 # --- Class definition
