@@ -58,9 +58,16 @@ class GeometryTests(unittest.TestCase):
         """
         # --- Exercise functionality and check results
 
-        # num_dimensions not an int
+        # num_dimensions not a numeric value
         with pytest.raises(ValueError) as exc_info:
-            _ = Geometry(num_dimensions='not an int')
+            _ = Geometry(num_dimensions='not numeric')
+
+        expected_error = "'num_dimensions' should be a numeric value"
+        assert expected_error in str(exc_info)
+
+        # num_dimensions not an integer value
+        with pytest.raises(ValueError) as exc_info:
+            _ = Geometry(num_dimensions=3.5)
 
         expected_error = "'num_dimensions' should be an integer"
         assert expected_error in str(exc_info)

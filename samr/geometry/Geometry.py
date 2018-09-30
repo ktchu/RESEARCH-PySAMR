@@ -60,10 +60,15 @@ class Geometry(ABC):
         """
         # --- Check arguments
 
-        # num_dimensions
-        if not isinstance(num_dimensions, int):
+        # num_dimensions is numeric
+        if not isinstance(num_dimensions, (int, float)):
+            raise ValueError("'num_dimensions' should be a numeric value")
+
+        # num_dimensions is an integer value
+        if num_dimensions % 1 != 0:
             raise ValueError("'num_dimensions' should be an integer")
 
+        # num_dimensions > 0
         if num_dimensions <= 0:
             raise ValueError("'num_dimensions' should be a positive value")
 
