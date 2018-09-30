@@ -16,7 +16,9 @@ contained in the LICENSE file.
 # Standard library
 
 # XYZ
-from .MeshBlock import MeshBlock
+from samr.geometry import Geometry
+
+from .Box import Box
 from .MeshVariable import MeshVariable
 from ..utils import contains_only_integers
 
@@ -64,7 +66,7 @@ class MeshLevel:
 
     # --- Public methods
 
-    def __init__(self, level_number, boxes):
+    def __init__(self, level_number, boxes, geometry):
         """
         TODO
 
@@ -88,25 +90,37 @@ class MeshLevel:
         # --- Check arguments
 
         # level_number is integer
-        # TODO
+        if not isinstance(level_number, (int, float)):
+            raise ValueError("'level_number' should be a numeric value")
+
+        # level_number is an integer value
+        if level_number % 1 != 0:
+            raise ValueError("'level_number' should be an integer")
 
         # level_number >= 0
         if level_number < 0:
-            raise ValueError("'level_number' should be a positive number")
+            raise ValueError("'level_number' should be a non-negative number")
 
-        # blocks
-        if not isinstance(blocks, (MeshBlock, list, tuple)):
-            raise ValueError("'blocks' should be a MeshBlock or a list of "
-                             "MeshBlocks")
+        # boxes
+        if not isinstance(boxes, (Box, list, tuple)):
+            raise ValueError("'boxes' should be a Box or a list of Boxes")
 
-        if isinstance(blocks, (list, tuple)):
-            for block in blocks:
-                if not isinstance(block, MeshBlock):
-                    raise ValueError("'blocks' should not contain "
-                                     "non-MeshBlock items")
+        if isinstance(boxes, (list, tuple)):
+            if not boxes:
+                raise ValueError("'boxes' should not be empty")
+
+            for box in boxes:
+                if not isinstance(box, Box):
+                    raise ValueError("'boxes' should not contain non-Box "
+                                     "items")
+
         else:
-            # Ensure that blocks is a list
-            blocks = [blocks]
+            # Ensure that boxes is a list
+            boxes = [boxes]
+
+        # geometry
+        if not isinstance(geometry, Geometry):
+            raise ValueError("'geometry' should be a Geometry")
 
         # --- Initialize property and attribute values
 
