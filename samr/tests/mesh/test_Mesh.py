@@ -214,7 +214,7 @@ class MeshTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Mesh(domain='invalid domain', geometry=self.geometry)
 
-        expected_error = "'domain' is not a Box or a list of Boxes"
+        expected_error = "'domain' should be a Box or a list of Boxes"
         assert expected_error in str(exc_info)
 
         # empty domain
@@ -229,7 +229,7 @@ class MeshTests(unittest.TestCase):
             _ = Mesh(domain=self.domain + ['not a Box'],
                      geometry=self.geometry)
 
-        expected_error = "'domain' contains a non-Box item"
+        expected_error = "'domain' should not contain non-Box items"
         assert expected_error in str(exc_info)
 
     def test_init_4(self):
@@ -241,7 +241,7 @@ class MeshTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Mesh(self.domain, geometry='not a Geometry')
 
-        expected_error = "'geometry' is not a Geometry"
+        expected_error = "'geometry' should be a Geometry"
         assert expected_error in str(exc_info)
 
     def test_create_variable(self):
