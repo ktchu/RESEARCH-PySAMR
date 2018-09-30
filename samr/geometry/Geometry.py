@@ -70,7 +70,7 @@ class Geometry(ABC):
 
         # num_dimensions > 0
         if num_dimensions <= 0:
-            raise ValueError("'num_dimensions' should be a positive value")
+            raise ValueError("'num_dimensions' should be a positive number")
 
         # --- Initialize property and attribute values
 

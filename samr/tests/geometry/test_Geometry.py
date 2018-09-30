@@ -76,14 +76,14 @@ class GeometryTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Geometry(num_dimensions=0)
 
-        expected_error = "'num_dimensions' should be a positive value"
+        expected_error = "'num_dimensions' should be a positive number"
         assert expected_error in str(exc_info)
 
         # num_dimensions < 0
         with pytest.raises(ValueError) as exc_info:
             _ = Geometry(num_dimensions=-1)
 
-        expected_error = "'num_dimensions' should be a positive value"
+        expected_error = "'num_dimensions' should be a positive number"
         assert expected_error in str(exc_info)
 
     @staticmethod
