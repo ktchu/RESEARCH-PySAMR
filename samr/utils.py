@@ -52,7 +52,7 @@ def is_scalar(value, include_complex=False):
     True
     >>> is_scalar([1, 2, 3])
     False
-    >>> is_scalar(numpy.array([1.1])
+    >>> is_scalar(numpy.array([1.1]))
     False
     """
     if include_complex:
@@ -61,7 +61,7 @@ def is_scalar(value, include_complex=False):
     return isinstance(value, (int, float))
 
 
-def is_array(array):
+def is_array(array, exclude_numpy_ndarray=False):
     """
     Return whether 'array' is a non-string array type.
 
@@ -69,6 +69,11 @@ def is_array(array):
     ----------
     array: object
         object to evaluate
+
+    exclude_numpy_ndarray: bool
+        when 'exclude_numpy_ndarray' is True, numpy.ndarrays are not
+        considered to be arrays. Otherwise, numpy.ndarrays are considered
+        to be arrays.
 
     Return value
     ------------
@@ -82,9 +87,14 @@ def is_array(array):
     True
     >>> is_array(numpy.array([1.1, 1.2, 1.3, 1.4]))
     True
+    >>> is_array(numpy.array([1.1, 1.2, 1.3, 1.4]), exclude_numpy_ndarray=True)
+    False
     >>> is_array('string value')
     False
     """
+    if exclude_numpy_ndarray:
+        return isinstance(array, Sequence) and not isinstance(array, str)
+
     return isinstance(array, (Sequence, numpy.ndarray)) and \
         not isinstance(array, str)
 
