@@ -19,9 +19,9 @@ contained in the LICENSE file.
 import numpy
 
 # XYZ
-from ..utils import is_array
 from ..utils import array_is_empty
 from ..utils import contains_only_integers
+from ..utils import is_array
 
 
 # --- Class definition
