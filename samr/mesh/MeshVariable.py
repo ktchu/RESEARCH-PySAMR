@@ -22,7 +22,10 @@ import numpy
 
 # XYZ
 import samr
+
 from ..utils import array_is_empty
+from ..utils import is_array
+from ..utils import is_scalar
 from ..utils import contains_only_integers
 
 
@@ -143,13 +146,9 @@ class MeshVariable:
         if location not in MeshVariable.Location:
             raise ValueError("'location' is not a valid Location value")
 
-        # max_stencil_width has a valid type
-        if not isinstance(max_stencil_width,
-                          (int, float, list, tuple, numpy.ndarray)):
-            raise ValueError("'max_stencil_width' should be a scalar, list, "
-                             "tuple, or numpy.ndarray")
+        # max_stencil_width
+        if is_array(max_stencil_width):
 
-        if isinstance(max_stencil_width, (list, tuple, numpy.ndarray)):
             # max_stencil_width is not empty
             if array_is_empty(max_stencil_width):
                 raise ValueError("'max_stencil_width' should not be empty")
@@ -159,8 +158,12 @@ class MeshVariable:
                 raise ValueError("'max_stencil_width' should contain only "
                                  "integer values")
 
+        elif not is_scalar(max_stencil_width):
+            raise ValueError("'max_stencil_width' should be a scalar or "
+                             "non-string Sequence")
+
         # depth
-        if not isinstance(depth, (int, float)):
+        if not is_scalar(depth):
             raise ValueError("'depth' should be a numeric value")
 
         # depth is an integer value
@@ -179,7 +182,7 @@ class MeshVariable:
         # variable properties
         self._location = location
 
-        if isinstance(max_stencil_width, (int, float)):
+        if is_scalar(max_stencil_width):
             max_stencil_width = [max_stencil_width] * mesh.num_dimensions
 
         self._max_stencil_width = numpy.array(max_stencil_width, dtype='int64')
