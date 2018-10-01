@@ -27,4 +27,3 @@ def test_attributes():
     assert mesh.MeshBlock
     assert mesh.MeshLevel
     assert mesh.MeshVariable
-    assert mesh.utils

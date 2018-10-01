@@ -17,7 +17,7 @@ import samr
 
 # --- Tests
 
-def test_attributes():
+def test_package_info_attributes():
     """
    Test for expected package attributes.
     """
@@ -31,9 +31,13 @@ def test_attributes():
     assert not hasattr(samr, '_PKG_INFO')
 
 
-def test_subpackages():
+def test_packages_and_modules():
     """
-   Test for expected sub-packages.
+   Test for expected packages and modules.
     """
+    # Packages
     assert samr.geometry
     assert samr.mesh
+
+    # Modules
+    assert samr.utils
