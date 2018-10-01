@@ -19,6 +19,7 @@ contained in the LICENSE file.
 import numpy
 
 # XYZ
+from ..utils import is_array
 from ..utils import array_is_empty
 from ..utils import contains_only_integers
 
@@ -107,8 +108,8 @@ class Box:
         # --- Check arguments
 
         # lower not a valid type
-        if not isinstance(lower, (list, tuple, numpy.ndarray)):
-            raise ValueError("'lower' should be a list, tuple, or "
+        if not is_array(lower):
+            raise ValueError("'lower' should be a non-string Sequence or a "
                              "numpy.ndarray")
 
         # lower is not empty
@@ -120,8 +121,8 @@ class Box:
             raise ValueError("'lower' should contain only integer values")
 
         # upper not a valid type
-        if not isinstance(upper, (list, tuple, numpy.ndarray)):
-            raise ValueError("'upper' should be a list, tuple, or "
+        if not is_array(upper):
+            raise ValueError("'upper' should be a non-string Sequence or a "
                              "numpy.ndarray")
 
         # upper is not empty
@@ -178,7 +179,7 @@ class Box:
         # --- Check arguments
 
         # boxes
-        if not isinstance(boxes, (list, tuple)):
+        if not is_array(boxes, exclude_numpy_ndarray=True):
             raise ValueError("'boxes' should be a list of Boxes")
 
         for box in boxes:
