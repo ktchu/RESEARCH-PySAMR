@@ -22,14 +22,53 @@ import numpy
 
 # --- Public module functions
 
+def is_scalar(value, include_complex=False):
+    """
+    Return whether 'value' is a real-valued scalar.
+
+    Parameters
+    ----------
+    value: object
+        object to evaluate
+
+    include_complex: bool
+        when 'include_complex' is True, complex numbers are considered
+        to be scalars. Otherwise, complex numbers are not considered to
+        be scalars.
+
+    Return value
+    ------------
+    bool: True if 'value' is a real-valued scalar; False otherwise
+
+    Examples
+    --------
+    >>> is_scalar(1)
+    True
+    >>> is_scalar(1.3)
+    True
+    >>> is_scalar(1 + 1j)
+    False
+    >>> is_scalar(1 + 1j, include_complex=True)
+    True
+    >>> is_scalar([1, 2, 3])
+    False
+    >>> is_scalar(numpy.array([1.1])
+    False
+    """
+    if include_complex:
+        return isinstance(value, (int, float, complex))
+
+    return isinstance(value, (int, float))
+
+
 def is_array(array):
     """
     Return whether 'array' is a non-string array type.
 
     Parameters
     ----------
-    array: non-string Sequence or numpy.array
-        array of values to evaluate
+    array: object
+        object to evaluate
 
     Return value
     ------------
