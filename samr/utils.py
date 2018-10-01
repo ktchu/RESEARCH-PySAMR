@@ -127,8 +127,8 @@ def array_is_empty(array):
 
     # 'array' is sequence-like but is not a string
     if not is_array(array):
-        raise ValueError("'array' is not non-string Sequence or "
-                         "a numpy.ndarray")
+        raise ValueError("'array' should be a non-string Sequence or a "
+                         "numpy.ndarray")
 
     # --- Determine if array is empty
 
@@ -171,8 +171,8 @@ def contains_only_integers(array):
 
     # 'array' is sequence-like but is not a string
     if not is_array(array):
-        raise ValueError("'array' is not non-string Sequence or "
-                         "a numpy.ndarray")
+        raise ValueError("'array' should be a non-string Sequence or a "
+                         "numpy.ndarray")
 
     # contents of 'array' can be converted numeric values
     try:
