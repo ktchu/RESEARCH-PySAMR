@@ -1,5 +1,5 @@
 """
-Unit tests for mesh.utils module
+Unit tests for samr.utils module
 
 ------------------------------------------------------------------------------
 COPYRIGHT/LICENSE.  This file is part of the XYZ package.  It is subject
@@ -21,14 +21,14 @@ import numpy
 import pytest
 
 # XYZ
-from samr.mesh import utils
+from samr import utils
 
 
 # --- Tests
 
-class mesh_utils_Tests(unittest.TestCase):
+class utils_Tests(unittest.TestCase):
     """
-    Unit tests for mesh.utils module
+    Unit tests for samr.utils module
     """
     # --- Test cases
 
@@ -61,8 +61,6 @@ class mesh_utils_Tests(unittest.TestCase):
 
         assert utils.contains_only_integers([1, 2, 3])
         assert not utils.contains_only_integers([1, 2, 3.4])
-        assert utils.contains_only_integers(1)
-        assert not utils.contains_only_integers(1.5)
 
     @staticmethod
     def test_contains_only_integers_2():
@@ -71,12 +69,20 @@ class mesh_utils_Tests(unittest.TestCase):
         """
         # --- Exercise functionality and check results
 
-        # 'array' is not a scalar or array-like
+        # 'array' is a string
         with pytest.raises(ValueError) as exc_info:
             utils.contains_only_integers('invalid array')
 
-        expected_error = "'array' is not a scalar, list, tuple, or " \
-                         "numpy.ndarray"
+        expected_error = "'array' is not non-string Sequence or " \
+                         "a numpy.ndarray"
+        assert expected_error in str(exc_info)
+
+        # 'array' is a scalar
+        with pytest.raises(ValueError) as exc_info:
+            utils.contains_only_integers(1)
+
+        expected_error = "'array' is not non-string Sequence or " \
+                         "a numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # 'array' contains values that cannot be converted to a numeric value

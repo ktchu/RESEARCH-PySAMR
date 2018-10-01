@@ -13,11 +13,42 @@ contained in the LICENSE file.
 
 # --- Imports
 
+# Standard library
+from collections.abc import Sequence
+
 # External packages
 import numpy
 
 
 # --- Public module functions
+
+def is_array(array):
+    """
+    Return whether 'array' is a non-string array type.
+
+    Parameters
+    ----------
+    array: non-string Sequence or numpy.array
+        array of values to evaluate
+
+    Return value
+    ------------
+    bool: True if 'array' is a non-string array type; False otherwise
+
+    Examples
+    --------
+    >>> is_array([1, 2, 3])
+    True
+    >>> is_array(tuple([1, 2, 3]))
+    True
+    >>> is_array(numpy.array([1.1, 1.2, 1.3, 1.4]))
+    True
+    >>> is_array('string value')
+    False
+    """
+    return isinstance(array, (Sequence, numpy.ndarray)) and \
+        not isinstance(array, str)
+
 
 def array_is_empty(array):
     """
@@ -25,7 +56,7 @@ def array_is_empty(array):
 
     Parameters
     ----------
-    array: list, tuple, or numpy.array
+    array: non-string Sequence or numpy.array
         array of values to evaluate
 
     Return value
@@ -45,8 +76,10 @@ def array_is_empty(array):
     """
     # --- Check arguments
 
-    if not isinstance(array, (list, tuple, numpy.ndarray)):
-        raise ValueError("'array' is not a list, tuple, or numpy.ndarray")
+    # 'array' is sequence-like but is not a string
+    if not is_array(array):
+        raise ValueError("'array' is not non-string Sequence or "
+                         "a numpy.ndarray")
 
     # --- Determine if array is empty
 
@@ -54,7 +87,7 @@ def array_is_empty(array):
     if isinstance(array, numpy.ndarray):
         return array.size == 0
 
-    # 'array' is a list or tuple
+    # 'array' is a Sequence
     return not array
 
 
@@ -64,7 +97,7 @@ def contains_only_integers(array):
 
     Parameters
     ----------
-    array: scalar (int or float) or array-like (list, tuple, or numpy.array)
+    array: non-string Sequence or numpy.array
         array of values to evaluate
 
     Return value
@@ -76,41 +109,33 @@ def contains_only_integers(array):
     --------
     >>> contains_only_integers([0, 1, 2])
     True
-    >>> contains_only_integers(3)
-    True
     >>> contains_only_integers(numpy.array([0, 1, 2]))
     True
-    >>> contains_only_integers([0.0, 1.0, 2.0])
+    >>> contains_only_integers(tuple([0.0, 1.0, 2.0]))
     True
     >>> contains_only_integers([0.5, 1.0, 2.0])
-    False
-    >>> contains_only_integers(3.5)
     False
     >>> contains_only_integers([])
     False
     """
     # --- Check arguments
 
-    if not isinstance(array, (int, float, list, tuple, numpy.ndarray)):
-        raise ValueError("'array' is not a scalar, list, tuple, or "
-                         "numpy.ndarray")
+    # 'array' is sequence-like but is not a string
+    if not is_array(array):
+        raise ValueError("'array' is not non-string Sequence or "
+                         "a numpy.ndarray")
 
-    if isinstance(array, (list, tuple, numpy.ndarray)):
-        try:
-            _ = numpy.array(array, dtype=float)
+    # contents of 'array' can be converted numeric values
+    try:
+        _ = numpy.array(array, dtype=float)
 
-        except Exception:
-            raise ValueError("Unable to convert 'array' to an array of "
-                             "numeric values")
+    except Exception:
+        raise ValueError("Unable to convert 'array' to an array of "
+                         "numeric values")
 
-        # Return False if 'array' is empty
-        if isinstance(array, (list, tuple)):
-            if not array:
-                return False
-
-        elif isinstance(array, numpy.ndarray):
-            if array.size == 0:
-                return False
+    # Return False if 'array' is empty
+    if array_is_empty(array):
+        return False
 
     # --- Determine whether all entries of 'array' are integers
 
