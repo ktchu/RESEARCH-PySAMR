@@ -84,16 +84,16 @@ class utils_Tests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             utils.contains_only_integers('invalid array')
 
-        expected_error = "'array' is not non-string Sequence or " \
-                         "a numpy.ndarray"
+        expected_error = "'array' should be a non-string Sequence or a " \
+                         "numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # 'array' is a scalar
         with pytest.raises(ValueError) as exc_info:
             utils.contains_only_integers(1)
 
-        expected_error = "'array' is not non-string Sequence or " \
-                         "a numpy.ndarray"
+        expected_error = "'array' should be a non-string Sequence or a " \
+                         "numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # 'array' contains values that cannot be converted to a numeric value
