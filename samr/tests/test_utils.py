@@ -65,6 +65,17 @@ class utils_Tests(unittest.TestCase):
     @staticmethod
     def test_contains_only_integers_2():
         """
+        Test contains_only_integers(): empty 'array'
+        """
+        # --- Exercise functionality and check results
+
+        assert not utils.contains_only_integers([])
+        assert not utils.contains_only_integers(tuple([]))
+        assert not utils.contains_only_integers(numpy.array([]))
+
+    @staticmethod
+    def test_contains_only_integers_3():
+        """
         Test contains_only_integers(): invalid 'array'
         """
         # --- Exercise functionality and check results
@@ -93,14 +104,3 @@ class utils_Tests(unittest.TestCase):
         expected_error = "Unable to convert 'array' to an array of " \
                          "numeric values"
         assert expected_error in str(exc_info)
-
-    @staticmethod
-    def test_contains_only_integers_3():
-        """
-        Test contains_only_integers(): empty 'array'
-        """
-        # --- Exercise functionality and check results
-
-        assert not utils.contains_only_integers([])
-        assert not utils.contains_only_integers(tuple([]))
-        assert not utils.contains_only_integers(numpy.array([]))
