@@ -17,7 +17,7 @@ contained in the LICENSE file.
 from abc import ABC
 
 # XYZ
-from samr import utils
+from ..utils import is_scalar
 
 
 # --- Class definition
@@ -65,7 +65,7 @@ class Geometry(ABC):
         # --- Check arguments
 
         # num_dimensions is a real-valued scalar
-        if not utils.is_scalar(num_dimensions):
+        if not is_scalar(num_dimensions):
             raise ValueError("'num_dimensions' should be a numeric value")
 
         # num_dimensions is an integer value
