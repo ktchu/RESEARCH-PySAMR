@@ -18,6 +18,8 @@ import numpy
 
 # XYZ
 from samr.mesh import Box  # pylint: disable=unused-import
+from samr import utils
+
 from .Geometry import Geometry
 
 
@@ -96,12 +98,12 @@ class CartesianGeometry(Geometry):
         # --- Check arguments
 
         # x_lower
-        if not isinstance(x_lower, (list, tuple, numpy.ndarray)):
+        if not utils.is_array(x_lower):
             raise ValueError("'x_lower' should be a list, tuple, or "
                              "numpy.ndarray")
 
         # x_upper
-        if not isinstance(x_upper, (list, tuple, numpy.ndarray)):
+        if not utils.is_array(x_upper):
             raise ValueError("'x_upper' should be a list, tuple, or "
                              "numpy.ndarray")
 
