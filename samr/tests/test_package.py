@@ -13,6 +13,10 @@ contained in the LICENSE file.
 
 # XYZ
 import samr
+import samr.box
+import samr.geometry
+import samr.mesh
+import samr.utils
 
 
 # --- Tests
@@ -36,6 +40,7 @@ def test_packages_and_modules():
    Test for expected packages and modules.
     """
     # Packages
+    assert samr.box
     assert samr.geometry
     assert samr.mesh
 
