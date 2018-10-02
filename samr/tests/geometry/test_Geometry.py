@@ -24,7 +24,7 @@ from samr.box import Box
 from samr.geometry import Geometry
 
 
-# --- NonAbstractGeometry
+# --- NonAbstractGeometry class (for testing)
 
 class NonAbstractGeometry(Geometry):
     """
