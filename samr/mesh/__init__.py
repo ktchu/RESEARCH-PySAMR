@@ -10,7 +10,6 @@ contained in the LICENSE file.
 ------------------------------------------------------------------------------
 """
 # Package types
-from .Box import Box
 from .Mesh import Mesh
 from .MeshBlock import MeshBlock
 from .MeshLevel import MeshLevel
@@ -18,7 +17,6 @@ from .MeshVariable import MeshVariable
 
 # Exported packages and modules
 __all__ = [
-    'Box',
     'Mesh',
     'MeshBlock',
     'MeshLevel',
