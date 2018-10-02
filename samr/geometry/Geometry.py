@@ -59,10 +59,6 @@ class Geometry(abc.ABC):
         ----------
         num_dimensions: int
             number of spatial dimensions
-
-        Examples
-        --------
-        >>> geometry = Geometry(num_dimensions=3)
         """
         # --- Check arguments
 
@@ -125,12 +121,6 @@ class Geometry(abc.ABC):
         Return value
         ------------
         str: unambiguous string representation of object
-
-        Examples
-        --------
-        >>> geometry = Geometry(8)
-        >>> print(geometry)
-        Geometry(8)
         """
         return "Geometry({})".format(self.num_dimensions)
 
@@ -146,15 +136,6 @@ class Geometry(abc.ABC):
         Return value
         ------------
         bool: True if 'other' is an equivalent object; False otherwise
-
-        Examples
-        --------
-        >>> geometry = Geometry(8)
-        >>> equivalent_geometry = Geometry(8)
-        >>> geometry == equivalent_geometry
-        True
-        >>> geometry is equivalent_geometry
-        False
         """
         if isinstance(other, self.__class__):
             return self.num_dimensions == other.num_dimensions
