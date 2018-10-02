@@ -14,7 +14,7 @@ contained in the LICENSE file.
 # --- Imports
 
 # Standard library
-from abc import ABC
+import abc
 
 # XYZ
 from ..utils import is_scalar
@@ -22,7 +22,7 @@ from ..utils import is_scalar
 
 # --- Class definition
 
-class Geometry(ABC):
+class Geometry(abc.ABC):
     """
     A Geometry represents a region of coordinate space. It defines the
     relationship between a rectangular region of index space and a rectangular
@@ -79,6 +79,30 @@ class Geometry(ABC):
         # --- Initialize property and attribute values
 
         self._num_dimensions = num_dimensions
+
+    @abc.abstractmethod
+    def compute_geometry(self, target_box, reference_box, reference_geometry):
+        """
+        Compute geometry for target region of index space.
+
+        Parameters
+        ----------
+        target_box: Box
+            rectangular region of index space to compute geometry for
+
+        reference_geometry: Geometry
+            reference region of coordinate space used to compute geometry
+            of target region of coordinate space
+
+        reference_box: Box
+            reference region of index space used to compute geometry
+            of target region of coordinate space
+
+        Return values
+        -------------
+        Geometry: geometry for target region of index space
+        """
+        pass
 
     # --- Magic methods
 

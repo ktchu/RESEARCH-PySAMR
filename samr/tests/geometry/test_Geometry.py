@@ -23,6 +23,19 @@ import pytest
 from samr.geometry import Geometry
 
 
+# --- NonAbstractGeometry
+
+class NonAbstractGeometry(Geometry):
+    """
+    Concrete subclass of Geometry to use for testing purposes.
+    """
+    def compute_geometry(self, target_box, reference_box, reference_geometry):
+        """
+        Return reference_geometry.
+        """
+        return reference_geometry
+
+
 # --- Tests
 
 class GeometryTests(unittest.TestCase):
@@ -46,7 +59,7 @@ class GeometryTests(unittest.TestCase):
         """
         # Exercise functionality
         num_dimensions = 3
-        geometry = Geometry(num_dimensions)
+        geometry = NonAbstractGeometry(num_dimensions)
 
         # Check results
         assert geometry.num_dimensions == num_dimensions
@@ -60,28 +73,28 @@ class GeometryTests(unittest.TestCase):
 
         # num_dimensions not a numeric value
         with pytest.raises(ValueError) as exc_info:
-            _ = Geometry(num_dimensions='not numeric')
+            _ = NonAbstractGeometry(num_dimensions='not numeric')
 
         expected_error = "'num_dimensions' should be a numeric value"
         assert expected_error in str(exc_info)
 
         # num_dimensions not an integer value
         with pytest.raises(ValueError) as exc_info:
-            _ = Geometry(num_dimensions=3.5)
+            _ = NonAbstractGeometry(num_dimensions=3.5)
 
         expected_error = "'num_dimensions' should be an integer"
         assert expected_error in str(exc_info)
 
         # num_dimensions = 0
         with pytest.raises(ValueError) as exc_info:
-            _ = Geometry(num_dimensions=0)
+            _ = NonAbstractGeometry(num_dimensions=0)
 
         expected_error = "'num_dimensions' should be a positive number"
         assert expected_error in str(exc_info)
 
         # num_dimensions < 0
         with pytest.raises(ValueError) as exc_info:
-            _ = Geometry(num_dimensions=-1)
+            _ = NonAbstractGeometry(num_dimensions=-1)
 
         expected_error = "'num_dimensions' should be a positive number"
         assert expected_error in str(exc_info)
@@ -93,7 +106,7 @@ class GeometryTests(unittest.TestCase):
         """
         # --- Preparations
 
-        geometry = Geometry(3)
+        geometry = NonAbstractGeometry(3)
 
         # --- Exercise functionality and check results
 
@@ -109,18 +122,18 @@ class GeometryTests(unittest.TestCase):
         # --- Preparations
 
         num_dimensions = 100
-        geometry = Geometry(num_dimensions)
+        geometry = NonAbstractGeometry(num_dimensions)
 
         # --- Exercise functionality and check results
 
-        # Two distinct Geometry objects that are equivalent
-        equivalent_geometry = Geometry(num_dimensions)
+        # Two distinct NonAbstractGeometry objects that are equivalent
+        equivalent_geometry = NonAbstractGeometry(num_dimensions)
         assert geometry == equivalent_geometry
         assert geometry is not equivalent_geometry
 
-        # Two distinct Geometry objects that are not equivalent
-        different_geometry = Geometry(num_dimensions + 1)
+        # Two distinct NonAbstractGeometry objects that are not equivalent
+        different_geometry = NonAbstractGeometry(num_dimensions + 1)
         assert geometry != different_geometry
 
         # Comparison with non-Geometry object
-        assert geometry != 'not a Geometry object'
+        assert geometry != 'not a NonAbstractGeometry object'
