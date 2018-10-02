@@ -21,7 +21,7 @@ import numpy
 import pytest
 
 # XYZ
-from samr.mesh import Box
+from samr.box import Box
 
 
 # --- Tests
