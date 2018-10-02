@@ -215,6 +215,96 @@ class CartesianGeometryTests(unittest.TestCase):
         assert numpy.array_equal(dx, expected_dx)
 
     @staticmethod
+    def test_compute_geometry_1():
+        """
+        Test compute_geometry(): normal usage
+        """
+        # --- Preparations
+
+        num_dimensions = 3
+
+        # Construct reference box and geometry
+        reference_lower = [0] * num_dimensions
+        reference_upper = [99] * num_dimensions
+        reference_box = Box(reference_lower, reference_upper)
+
+        reference_x_lower = [-1] * num_dimensions
+        reference_x_upper = [1] * num_dimensions
+
+        reference_geometry = CartesianGeometry(reference_x_lower,
+                                               reference_x_upper)
+
+        # Construct target box
+        target_lower = [0] * num_dimensions
+        target_upper = [199] * num_dimensions
+        target_box = Box(target_lower, target_upper)
+
+        # --- Exercise functionality and check results
+
+        geometry = CartesianGeometry.compute_geometry(
+            target_box, reference_geometry, reference_box)
+
+        assert numpy.array_equal(geometry.x_lower, reference_geometry.x_lower)
+        assert numpy.array_equal(geometry.x_upper, [3] * num_dimensions)
+
+    @staticmethod
+    def test_compute_geometry_2():
+        """
+        Test compute_geometry(): invalid parameters
+        """
+        # --- Preparations
+
+        num_dimensions = 3
+
+        # Construct reference box and geometry
+        reference_lower = [0] * num_dimensions
+        reference_upper = [99] * num_dimensions
+        reference_box = Box(reference_lower, reference_upper)
+
+        reference_x_lower = [-1] * num_dimensions
+        reference_x_upper = [1] * num_dimensions
+
+        reference_geometry = CartesianGeometry(reference_x_lower,
+                                               reference_x_upper)
+
+        # Construct target box
+        target_lower = [0] * num_dimensions
+        target_upper = [199] * num_dimensions
+        target_box = Box(target_lower, target_upper)
+
+        # --- Exercise functionality and check results
+
+        # target_box not a Box
+        with pytest.raises(ValueError) as exc_info:
+            _ = CartesianGeometry.compute_geometry(
+                target_box='not a Box',
+                reference_geometry=reference_geometry,
+                reference_box=reference_box)
+
+        expected_error = "'target_box' should be a Box"
+        assert expected_error in str(exc_info)
+
+        # reference_geometry not a Geometry
+        with pytest.raises(ValueError) as exc_info:
+            _ = CartesianGeometry.compute_geometry(
+                target_box=target_box,
+                reference_geometry=3,
+                reference_box=reference_box)
+
+        expected_error = "'reference_geometry' should be a CartesianGeometry"
+        assert expected_error in str(exc_info)
+
+        # reference_box not a Box
+        with pytest.raises(ValueError) as exc_info:
+            _ = CartesianGeometry.compute_geometry(
+                target_box=target_box,
+                reference_geometry=reference_geometry,
+                reference_box=numpy.array([[0, 0], [9, 9]]))
+
+        expected_error = "'reference_box' should be a Box"
+        assert expected_error in str(exc_info)
+
+    @staticmethod
     def test_repr():
         """
         Test __repr__().

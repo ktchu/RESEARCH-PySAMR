@@ -152,6 +152,57 @@ class CartesianGeometry(Geometry):
         """
         return self.shape / box.shape
 
+    # --- Public static methods
+
+    @staticmethod
+    def compute_geometry(target_box, reference_geometry, reference_box):
+        """
+        Compute geometry for target region of index space.
+
+        Parameters
+        ----------
+        target_box: Box
+            rectangular region of index space to compute geometry for
+
+        reference_geometry: Geometry
+            reference region of coordinate space used to compute geometry
+            of target region of coordinate space
+
+        reference_box: Box
+            reference region of index space used to compute geometry
+            of target region of coordinate space
+
+        Return values
+        -------------
+        Geometry: geometry for target region of index space
+        """
+        # --- Check arguments
+
+        # target_box
+        if not isinstance(target_box, Box):
+            raise ValueError("'target_box' should be a Box")
+
+        # reference_geometry
+        if not isinstance(reference_geometry, CartesianGeometry):
+            raise ValueError("'reference_geometry' should be a "
+                             "CartesianGeometry")
+
+        # reference_box
+        if not isinstance(reference_box, Box):
+            raise ValueError("'reference_box' should be a Box")
+
+        # --- Compute geometry for target region of index space
+
+        dx = reference_geometry.compute_dx(reference_box)
+
+        x_lower = reference_geometry.x_lower + \
+            dx * (target_box.lower - reference_box.lower)
+
+        x_upper = reference_geometry.x_upper + \
+            dx * (target_box.upper - reference_box.upper)
+
+        return CartesianGeometry(x_lower, x_upper)
+
     # --- Magic methods
 
     def __repr__(self):
