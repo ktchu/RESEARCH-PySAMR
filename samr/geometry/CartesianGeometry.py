@@ -17,7 +17,7 @@ contained in the LICENSE file.
 import numpy
 
 # XYZ
-from samr.mesh import Box  # pylint: disable=unused-import
+from samr.box import Box  # pylint: disable=unused-import
 
 from ..utils import is_array
 from .Geometry import Geometry
@@ -130,6 +130,40 @@ class CartesianGeometry(Geometry):
         # shape
         self._shape = self.x_upper - self.x_lower
 
+    def compute_geometry(self, reference_box, box):
+        """
+        Compute geometry for region of coordinate space covered by 'box'.
+
+        Parameters
+        ----------
+        reference_box: Box
+            box representing rectangular region of index space associated
+            with 'self'
+
+        box: Box
+            box representing rectangular region of index space to compute
+            geometry of
+
+        Return values
+        -------------
+        Geometry: geometry of rectangular region of coordinate space covered
+            by 'box'
+        """
+        # --- Check arguments
+
+        # 'reference_box' and 'box' checked by Geometry.compute_geometry()
+        super().compute_geometry(reference_box, box)
+
+        # --- Compute geometry of region covered by 'box'
+
+        dx = self.compute_dx(reference_box)
+
+        x_lower = self.x_lower + dx * (box.lower - reference_box.lower)
+
+        x_upper = self.x_upper + dx * (box.upper - reference_box.upper)
+
+        return CartesianGeometry(x_lower, x_upper)
+
     def compute_dx(self, box):
         """
         Compute grid spacing.
@@ -151,57 +185,6 @@ class CartesianGeometry(Geometry):
         array([0.1, 0.1])
         """
         return self.shape / box.shape
-
-    # --- Public static methods
-
-    @staticmethod
-    def compute_geometry(target_box, reference_geometry, reference_box):
-        """
-        Compute geometry for target region of index space.
-
-        Parameters
-        ----------
-        target_box: Box
-            rectangular region of index space to compute geometry for
-
-        reference_geometry: Geometry
-            reference region of coordinate space used to compute geometry
-            of target region of coordinate space
-
-        reference_box: Box
-            reference region of index space used to compute geometry
-            of target region of coordinate space
-
-        Return values
-        -------------
-        Geometry: geometry for target region of index space
-        """
-        # --- Check arguments
-
-        # target_box
-        if not isinstance(target_box, Box):
-            raise ValueError("'target_box' should be a Box")
-
-        # reference_geometry
-        if not isinstance(reference_geometry, CartesianGeometry):
-            raise ValueError("'reference_geometry' should be a "
-                             "CartesianGeometry")
-
-        # reference_box
-        if not isinstance(reference_box, Box):
-            raise ValueError("'reference_box' should be a Box")
-
-        # --- Compute geometry for target region of index space
-
-        dx = reference_geometry.compute_dx(reference_box)
-
-        x_lower = reference_geometry.x_lower + \
-            dx * (target_box.lower - reference_box.lower)
-
-        x_upper = reference_geometry.x_upper + \
-            dx * (target_box.upper - reference_box.upper)
-
-        return CartesianGeometry(x_lower, x_upper)
 
     # --- Magic methods
 
