@@ -17,17 +17,6 @@ contained in the LICENSE file.
 import os.path
 from pkg_resources import get_distribution, DistributionNotFound
 
-# XYZ
-from . import geometry
-from . import mesh
-
-# --- Exported packages and modules
-
-__all__ = [
-    geometry,
-    mesh,
-]
-
 
 # --- Package information
 
