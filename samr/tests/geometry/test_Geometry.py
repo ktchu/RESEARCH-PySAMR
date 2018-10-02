@@ -29,7 +29,7 @@ class NonAbstractGeometry(Geometry):
     """
     Concrete subclass of Geometry to use for testing purposes.
     """
-    def compute_geometry(self, target_box, reference_box, reference_geometry):
+    def compute_geometry(self, target_box, reference_geometry, reference_box):
         """
         Return reference_geometry.
         """

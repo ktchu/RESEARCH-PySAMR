@@ -81,7 +81,7 @@ class Geometry(abc.ABC):
         self._num_dimensions = num_dimensions
 
     @abc.abstractmethod
-    def compute_geometry(self, target_box, reference_box, reference_geometry):
+    def compute_geometry(self, target_box, reference_geometry, reference_box):
         """
         Compute geometry for target region of index space.
 
