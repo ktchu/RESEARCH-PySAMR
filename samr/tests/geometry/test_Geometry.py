@@ -14,12 +14,13 @@ contained in the LICENSE file.
 # --- Imports
 
 # Standard library
-import unittest
+import copy
 
 # External packages
 import pytest
 
 # XYZ
+from samr.box import Box
 from samr.geometry import Geometry
 
 
@@ -29,16 +30,17 @@ class NonAbstractGeometry(Geometry):
     """
     Concrete subclass of Geometry to use for testing purposes.
     """
-    def compute_geometry(self, target_box, reference_geometry, reference_box):
+    def compute_geometry(self, reference_box, box):
         """
         Return reference_geometry.
         """
-        return reference_geometry
+        super().compute_geometry(reference_box, box)
+        return copy.deepcopy(self)
 
 
 # --- Tests
 
-class GeometryTests(unittest.TestCase):
+class GeometryTests:
     """
     Unit tests for Geometry class.
     """
@@ -113,6 +115,45 @@ class GeometryTests(unittest.TestCase):
         expected_repr = "Geometry(3)"
         assert repr(geometry) == expected_repr
         assert str(geometry) == expected_repr
+
+    @staticmethod
+    def test_compute_geometry():
+        """
+        Test compute_geometry(): invalid parametres
+        """
+        # --- Preparations
+
+        num_dimensions = 3
+
+        # Construct reference box and reference geometry
+        reference_lower = [0] * num_dimensions
+        reference_upper = [99] * num_dimensions
+        reference_box = Box(reference_lower, reference_upper)
+
+        reference_geometry = NonAbstractGeometry(num_dimensions)
+
+        # Construct target box
+        lower = [0] * num_dimensions
+        upper = [199] * num_dimensions
+        box = Box(lower, upper)
+
+        # --- Exercise functionality and check results
+
+        # 'reference_box' not a Box
+        with pytest.raises(ValueError) as exc_info:
+            _ = reference_geometry.compute_geometry(
+                reference_box='not a Box', box=box)
+
+        expected_error = "'reference_box' should be a Box"
+        assert expected_error in str(exc_info)
+
+        # 'box' not a Box
+        with pytest.raises(ValueError) as exc_info:
+            _ = reference_geometry.compute_geometry(
+                reference_box=reference_box, box=[box])
+
+        expected_error = "'box' should be a Box"
+        assert expected_error in str(exc_info)
 
     @staticmethod
     def test_eq():

@@ -17,6 +17,8 @@ contained in the LICENSE file.
 import abc
 
 # XYZ
+from samr.box import Box
+
 from ..utils import is_scalar
 
 
@@ -81,28 +83,34 @@ class Geometry(abc.ABC):
         self._num_dimensions = num_dimensions
 
     @abc.abstractmethod
-    def compute_geometry(self, target_box, reference_geometry, reference_box):
+    def compute_geometry(self, reference_box, box):
         """
-        Compute geometry for target region of index space.
+        Compute geometry for region of coordinate space covered by 'box'.
 
         Parameters
         ----------
-        target_box: Box
-            rectangular region of index space to compute geometry for
-
-        reference_geometry: Geometry
-            reference region of coordinate space used to compute geometry
-            of target region of coordinate space
-
         reference_box: Box
-            reference region of index space used to compute geometry
-            of target region of coordinate space
+            box representing rectangular region of index space associated
+            with 'self'
+
+        box: Box
+            box representing rectangular region of index space to compute
+            geometry of
 
         Return values
         -------------
-        Geometry: geometry for target region of index space
+        Geometry: geometry of rectangular region of coordinate space covered
+            by 'box'
         """
-        pass
+        # --- Check arguments
+
+        # reference_box
+        if not isinstance(reference_box, Box):
+            raise ValueError("'reference_box' should be a Box")
+
+        # box
+        if not isinstance(box, Box):
+            raise ValueError("'box' should be a Box")
 
     # --- Magic methods
 
