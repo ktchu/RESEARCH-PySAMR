@@ -21,8 +21,8 @@ import numpy
 import pytest
 
 # XYZ
+from samr.box import Box
 from samr.geometry import CartesianGeometry
-from samr.mesh import Box
 from samr.mesh import MeshLevel
 
 
