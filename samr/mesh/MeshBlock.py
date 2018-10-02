@@ -20,9 +20,10 @@ import copy
 import numpy
 
 # XYZ
+from samr.box import Box
 from samr.geometry import CartesianGeometry  # pylint: disable=unused-import
 from samr.geometry import Geometry
-from .Box import Box
+
 from .MeshVariable import MeshVariable
 
 
@@ -156,7 +157,7 @@ class MeshBlock:
         """
         # --- Check arguments
 
-        # 'variable' is a MeshVariable
+        # variable is a MeshVariable
         if not isinstance(variable, MeshVariable):
             raise ValueError("'variable' should be a MeshVariable")
 
@@ -201,11 +202,11 @@ class MeshBlock:
 
         # --- Check arguments
 
-        # 'variable' is a MeshVariable
+        # variable is a MeshVariable
         if not isinstance(variable, MeshVariable):
             raise ValueError("'variable' should be a MeshVariable")
 
-        # 'variable' is in data
+        # variable is in self.data
         variable_id = id(variable)
         if variable_id not in self._data:
             error_message = "'variable' (={}) is not defined on MeshBlock". \

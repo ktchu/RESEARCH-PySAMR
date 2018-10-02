@@ -151,7 +151,7 @@ class CartesianGeometry(Geometry):
         """
         # --- Check arguments
 
-        # 'reference_box' and 'box' checked by Geometry.compute_geometry()
+        # reference_box and box checked by Geometry.compute_geometry()
         super().compute_geometry(reference_box, box)
 
         # --- Compute geometry of region covered by 'box'
