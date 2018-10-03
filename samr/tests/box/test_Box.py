@@ -109,8 +109,7 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=3, upper=upper)
 
-        expected_error = "'lower' should be a non-string Sequence or " \
-                         "a numpy.ndarray"
+        expected_error = "'lower' should be list-like or a numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # lower is empty
@@ -151,8 +150,7 @@ class BoxTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = Box(lower=lower, upper='not a valid array type')
 
-        expected_error = "'upper' should be a non-string Sequence or " \
-                         "a numpy.ndarray"
+        expected_error = "'upper' should be list-like or a numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # upper is empty

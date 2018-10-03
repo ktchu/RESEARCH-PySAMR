@@ -115,7 +115,7 @@ class CartesianGeometryTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = CartesianGeometry(x_lower=3, x_upper=x_upper)
 
-        expected_error = "'x_lower' should be a list, tuple, or numpy.ndarray"
+        expected_error = "'x_lower' should be list-like or a numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # len(x_lower) != len(x_upper)
@@ -144,7 +144,7 @@ class CartesianGeometryTests(unittest.TestCase):
             _ = CartesianGeometry(x_lower=x_lower,
                                   x_upper='not a numpy.ndarray')
 
-        expected_error = "'x_upper' should be a list, tuple, or numpy.ndarray"
+        expected_error = "'x_upper' should be list-like or a numpy.ndarray"
         assert expected_error in str(exc_info)
 
         # len(x_lower) != len(x_upper)

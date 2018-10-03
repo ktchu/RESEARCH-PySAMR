@@ -87,10 +87,10 @@ class Box:
 
         Parameters
         ----------
-        lower: list, tuple, or numpy.ndarray
+        lower: list-like (e.g., list, tuple) or numpy.ndarray
             lower corner of index space covered by Box
 
-        upper: list, tuple, or numpy.ndarray
+        upper: list-like (e.g., list, tuple) or numpy.ndarray
             upper corner of index space covered by Box
 
         Examples
@@ -109,8 +109,7 @@ class Box:
 
         # lower not a valid type
         if not is_array(lower):
-            raise ValueError("'lower' should be a non-string Sequence or a "
-                             "numpy.ndarray")
+            raise ValueError("'lower' should be list-like or a numpy.ndarray")
 
         # lower is not empty
         if array_is_empty(lower):
@@ -122,8 +121,7 @@ class Box:
 
         # upper not a valid type
         if not is_array(upper):
-            raise ValueError("'upper' should be a non-string Sequence or a "
-                             "numpy.ndarray")
+            raise ValueError("'upper' should be list-like or a numpy.ndarray")
 
         # upper is not empty
         if array_is_empty(upper):

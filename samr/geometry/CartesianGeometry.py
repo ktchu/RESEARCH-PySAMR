@@ -99,12 +99,12 @@ class CartesianGeometry(Geometry):
 
         # x_lower
         if not is_array(x_lower):
-            raise ValueError("'x_lower' should be a list, tuple, or "
+            raise ValueError("'x_lower' should be list-like or a "
                              "numpy.ndarray")
 
         # x_upper
         if not is_array(x_upper):
-            raise ValueError("'x_upper' should be a list, tuple, or "
+            raise ValueError("'x_upper' should be list-like or a "
                              "numpy.ndarray")
 
         # len(x_lower) == len(x_upper)
