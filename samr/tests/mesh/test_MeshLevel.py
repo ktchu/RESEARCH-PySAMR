@@ -17,14 +17,12 @@ contained in the LICENSE file.
 import unittest
 
 # External packages
-import numpy
 import pytest
 
 # XYZ
 from samr.box import Box
 from samr.geometry import CartesianGeometry
 from samr.mesh import MeshLevel
-from samr.mesh.MeshLevel import _generate_blocks
 
 
 # --- Tests
@@ -204,9 +202,11 @@ class MeshLevelTests(unittest.TestCase):
         """
         Test _generate_blocks(): normal usage
         """
+        # pylint: disable=protected-access
+
         # --- Preparations
 
-        blocks = _generate_blocks(
+        blocks = MeshLevel._generate_blocks(
             boxes=self.boxes, first_box_geometry=self.first_box_geometry)
 
         # --- Exercise functionality and check results
@@ -228,35 +228,39 @@ class MeshLevelTests(unittest.TestCase):
         """
         Test _generate_blocks(): invalid parameters
         """
+        # pylint: disable=protected-access
+
         # --- Exercise functionality and check results
 
         # boxes is not list-like
         with pytest.raises(ValueError) as exc_info:
-            _generate_blocks(boxes='not a list of boxes',
-                             first_box_geometry=self.first_box_geometry)
+            MeshLevel._generate_blocks(
+                boxes='not a list of boxes',
+                first_box_geometry=self.first_box_geometry)
 
         expected_error = "'boxes' should be a list of Boxes"
         assert expected_error in str(exc_info)
 
         # boxes is empty
         with pytest.raises(ValueError) as exc_info:
-            _generate_blocks(boxes=[],
-                             first_box_geometry=self.first_box_geometry)
+            MeshLevel._generate_blocks(
+                boxes=[], first_box_geometry=self.first_box_geometry)
 
         expected_error = "'boxes' should not be empty"
         assert expected_error in str(exc_info)
 
         # boxes contains non-Box items
         with pytest.raises(ValueError) as exc_info:
-            _generate_blocks(boxes=self.boxes + ['not a Box'],
-                             first_box_geometry=self.first_box_geometry)
+            MeshLevel._generate_blocks(
+                boxes=self.boxes + ['not a Box'],
+                first_box_geometry=self.first_box_geometry)
 
         expected_error = "'boxes' should not contain non-Box items"
         assert expected_error in str(exc_info)
 
         # first_box_geometry not a Geometry
         with pytest.raises(ValueError) as exc_info:
-            _generate_blocks(boxes=self.boxes, first_box_geometry=1)
+            MeshLevel._generate_blocks(boxes=self.boxes, first_box_geometry=1)
 
         expected_error = "'first_box_geometry' should be a Geometry"
         assert expected_error in str(exc_info)
