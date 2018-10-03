@@ -16,11 +16,14 @@ contained in the LICENSE file.
 # Standard library
 
 # XYZ
+from samr.box import Box
 from samr.geometry import Geometry
 
-from .Box import Box
+from .MeshBlock import MeshBlock
 from .MeshVariable import MeshVariable
-from ..utils import contains_only_integers
+
+from ..utils import is_array
+from ..utils import is_scalar
 
 
 # --- Constants
@@ -66,7 +69,7 @@ class MeshLevel:
 
     # --- Public methods
 
-    def __init__(self, level_number, boxes, geometry):
+    def __init__(self, level_number, boxes, first_box_geometry):
         """
         TODO
 
@@ -78,10 +81,10 @@ class MeshLevel:
         boxes: Box or list of Boxes
             boxes that define the index space covered by MeshLevel
 
-        geometry: Geometry
+        first_box_geometry: Geometry
             geometry of the logically rectangular region of space (not
-            necessarily coordinate space) covered by the bounding box of the
-            boxes in the 'boxes' parameter
+            necessarily coordinate space) covered by the first box in the
+            'boxes' parameter
 
         Examples
         --------
@@ -90,7 +93,7 @@ class MeshLevel:
         # --- Check arguments
 
         # level_number is integer
-        if not isinstance(level_number, (int, float)):
+        if not is_scalar(level_number):
             raise ValueError("'level_number' should be a numeric value")
 
         # level_number is an integer value
@@ -102,36 +105,29 @@ class MeshLevel:
             raise ValueError("'level_number' should be a non-negative number")
 
         # boxes
-        if not isinstance(boxes, (Box, list, tuple)):
-            raise ValueError("'boxes' should be a Box or a list of Boxes")
-
-        if isinstance(boxes, (list, tuple)):
-            if not boxes:
-                raise ValueError("'boxes' should not be empty")
-
-            for box in boxes:
-                if not isinstance(box, Box):
-                    raise ValueError("'boxes' should not contain non-Box "
-                                     "items")
-
-        else:
+        #
+        # Note: _generate_blocks() performs additional check on boxes
+        if isinstance(boxes, Box):
             # Ensure that boxes is a list
             boxes = [boxes]
 
-        # geometry
-        if not isinstance(geometry, Geometry):
-            raise ValueError("'geometry' should be a Geometry")
+        elif not is_array(boxes, exclude_numpy_ndarray=True):
+            raise ValueError("'boxes' should be a Box or a list of Boxes")
+
+        # first_box_geometry
+        if not isinstance(first_box_geometry, Geometry):
+            raise ValueError("'first_box_geometry' should be a Geometry")
 
         # --- Initialize property and attribute values
 
         # level number
         self._level_number = level_number
 
-        # blocks
-        self._blocks = blocks
-
         # variables
         self._variables = []
+
+        # blocks
+        self._blocks = MeshLevel._generate_blocks(boxes, first_box_geometry)
 
     def add_variable(self, variable):
         """
@@ -148,19 +144,68 @@ class MeshLevel:
         """
         # --- Check arguments
 
-        # 'variable' is a MeshVariable
+        # variable is a MeshVariable
         if not isinstance(variable, MeshVariable):
             raise ValueError("'variable' should be a MeshVariable")
 
         # --- Add MeshVariable to MeshLevel
 
-        # Add 'variable' to variable list
+        # Add variable to self.variables
         if variable not in self.variables:
             self._variables.append(variable)
 
-        # Add 'variable' to all MeshBlocks
+        # Add variable to all MeshBlocks
         for block in self.blocks:
             block.add_variable(variable)
+
+    # --- Private helper methods
+
+    @staticmethod
+    def _generate_blocks(boxes, first_box_geometry):
+        """
+        Generate MeshBlocks for MeshLevel.
+
+        Parameters
+        ----------
+        boxes: list of Boxes
+            boxes that define the index spaces of the MeshBlocks to generate
+
+        first_box_geometry: Geometry
+            geometry of the logically rectangular region of space (not
+            necessarily coordinate space) covered by the first box in the
+            'boxes' parameter
+
+        Return value
+        ------------
+        list of MeshBlocks
+        """
+        # --- Check arguments
+
+        # boxes is list-like
+        if not is_array(boxes, exclude_numpy_ndarray=True):
+            raise ValueError("'boxes' should be a list of Boxes")
+
+        # boxes is not empty
+        if not boxes:
+            raise ValueError("'boxes' should not be empty")
+
+        # boxes contains only Boxes
+        for box in boxes:
+            if not isinstance(box, Box):
+                raise ValueError("'boxes' should not contain non-Box items")
+
+        # first_box_geometry
+        if not isinstance(first_box_geometry, Geometry):
+            raise ValueError("'first_box_geometry' should be a Geometry")
+
+        # --- Generate blocks
+
+        blocks = [MeshBlock(boxes[0], first_box_geometry)]
+        for box in boxes[1:]:
+            geometry = first_box_geometry.compute_geometry(boxes[0], box)
+            blocks.append(MeshBlock(box, geometry))
+
+        return blocks
 
     # --- Magic methods
 

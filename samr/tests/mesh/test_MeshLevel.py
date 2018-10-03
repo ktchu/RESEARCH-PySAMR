@@ -24,6 +24,7 @@ import pytest
 from samr.box import Box
 from samr.geometry import CartesianGeometry
 from samr.mesh import MeshLevel
+from samr.mesh.MeshLevel import _generate_blocks
 
 
 # --- Tests
@@ -45,8 +46,8 @@ class MeshLevelTests(unittest.TestCase):
         ]
 
         self.x_lower = [0.0, 0.0]
-        self.x_upper = [4.0, 3.0]
-        self.geometry = CartesianGeometry(self.x_lower, self.x_upper)
+        self.x_upper = [1.0, 1.0]
+        self.first_box_geometry = CartesianGeometry(self.x_lower, self.x_upper)
 
     # --- Test cases
 
@@ -61,7 +62,6 @@ class MeshLevelTests(unittest.TestCase):
         assert hasattr(MeshLevel, 'num_blocks')
         assert hasattr(MeshLevel, 'variables')
 
-    @unittest.skip('')
     def test_init_1(self):
         """
         Test construction of MeshLevel with default parameters.
@@ -70,17 +70,27 @@ class MeshLevelTests(unittest.TestCase):
 
         level = MeshLevel(level_number=0,
                           boxes=self.boxes,
-                          geometry=self.geometry)
+                          first_box_geometry=self.first_box_geometry)
 
         # --- Check results
 
         # level number
         assert level.level_number == 0
 
-        # blocks
-        # TODO
-        # for idx, block in enumerate(level.blocks):
-        #     assert block.box == self.boxes[idx]
+        # block boxes
+        for idx, block in enumerate(level.blocks):
+            # Check that boxes are equivalent but not the same object
+            assert block.box == self.boxes[idx]
+            assert block.box is not self.boxes[idx]
+
+        # block geometries
+        assert level.blocks[0].geometry == self.first_box_geometry
+        assert level.blocks[0].geometry is not self.first_box_geometry
+
+        assert level.blocks[1].geometry == \
+            CartesianGeometry([1.0, 0.5], [2.0, 1.5])
+        assert level.blocks[2].geometry == \
+            CartesianGeometry([0.0, 1.0], [0.5, 1.5])
 
         # variables
         assert isinstance(level.variables, tuple)
@@ -94,7 +104,7 @@ class MeshLevelTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = MeshLevel(level_number='not numeric',
                           boxes=self.boxes,
-                          geometry=self.geometry)
+                          first_box_geometry=self.first_box_geometry)
 
         expected_error = "'level_number' should be a numeric value"
         assert expected_error in str(exc_info)
@@ -103,7 +113,7 @@ class MeshLevelTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = MeshLevel(level_number=3.5,
                           boxes=self.boxes,
-                          geometry=self.geometry)
+                          first_box_geometry=self.first_box_geometry)
 
         expected_error = "'level_number' should be an integer"
         assert expected_error in str(exc_info)
@@ -112,7 +122,7 @@ class MeshLevelTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = MeshLevel(level_number=-1,
                           boxes=self.boxes,
-                          geometry=self.geometry)
+                          first_box_geometry=self.first_box_geometry)
 
         expected_error = "'level_number' should be a non-negative number"
         assert expected_error in str(exc_info)
@@ -127,7 +137,7 @@ class MeshLevelTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = MeshLevel(level_number=0,
                           boxes='invalid boxes',
-                          geometry=self.geometry)
+                          first_box_geometry=self.first_box_geometry)
 
         expected_error = "'boxes' should be a Box or a list of Boxes"
         assert expected_error in str(exc_info)
@@ -136,7 +146,7 @@ class MeshLevelTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = MeshLevel(level_number=0,
                           boxes=tuple(),
-                          geometry=self.geometry)
+                          first_box_geometry=self.first_box_geometry)
 
         expected_error = "'boxes' should not be empty"
         assert expected_error in str(exc_info)
@@ -145,20 +155,108 @@ class MeshLevelTests(unittest.TestCase):
         with pytest.raises(ValueError) as exc_info:
             _ = MeshLevel(level_number=0,
                           boxes=self.boxes + ['not a Box'],
-                          geometry=self.geometry)
+                          first_box_geometry=self.first_box_geometry)
 
         expected_error = "'boxes' should not contain non-Box items"
         assert expected_error in str(exc_info)
 
     def test_init_4(self):
         """
-        Test construction of MeshLevel: invalid 'geometry'
+        Test construction of MeshLevel: invalid 'first_box_geometry'
         """
-        # geometry not a Geometry
+        # first_box_geometry not a Geometry
         with pytest.raises(ValueError) as exc_info:
             _ = MeshLevel(level_number=3,
                           boxes=self.boxes,
-                          geometry='not a Geometry')
+                          first_box_geometry='not a Geometry')
 
-        expected_error = "'geometry' should be a Geometry"
+        expected_error = "'first_box_geometry' should be a Geometry"
+        assert expected_error in str(exc_info)
+
+    @unittest.skip('TODO')
+    def test_add_variable_1(self):
+        """
+        Test add_variable(): normal usage
+        """
+        # TODO
+        pass
+
+    def test_add_variable_2(self):
+        """
+        Test add_variable(): invalid 'variable'
+        """
+        # --- Preparations
+
+        level = MeshLevel(level_number=0,
+                          boxes=self.boxes,
+                          first_box_geometry=self.first_box_geometry)
+
+        # --- Exercise functionality and check results
+
+        # first_box_geometry not a Geometry
+        with pytest.raises(ValueError) as exc_info:
+            level.add_variable('not a MeshVariable')
+
+        expected_error = "'variable' should be a MeshVariable"
+        assert expected_error in str(exc_info)
+
+    def test_generate_blocks_1(self):
+        """
+        Test _generate_blocks(): normal usage
+        """
+        # --- Preparations
+
+        blocks = _generate_blocks(
+            boxes=self.boxes, first_box_geometry=self.first_box_geometry)
+
+        # --- Exercise functionality and check results
+
+        # block boxes
+        for idx, block in enumerate(blocks):
+            # Check that boxes are equivalent but not the same object
+            assert block.box == self.boxes[idx]
+            assert block.box is not self.boxes[idx]
+
+        # block Geometries
+        assert blocks[0].geometry == self.first_box_geometry
+        assert blocks[0].geometry is not self.first_box_geometry
+
+        assert blocks[1].geometry == CartesianGeometry([1.0, 0.5], [2.0, 1.5])
+        assert blocks[2].geometry == CartesianGeometry([0.0, 1.0], [0.5, 1.5])
+
+    def test_generate_blocks_2(self):
+        """
+        Test _generate_blocks(): invalid parameters
+        """
+        # --- Exercise functionality and check results
+
+        # boxes is not list-like
+        with pytest.raises(ValueError) as exc_info:
+            _generate_blocks(boxes='not a list of boxes',
+                             first_box_geometry=self.first_box_geometry)
+
+        expected_error = "'boxes' should be a list of Boxes"
+        assert expected_error in str(exc_info)
+
+        # boxes is empty
+        with pytest.raises(ValueError) as exc_info:
+            _generate_blocks(boxes=[],
+                             first_box_geometry=self.first_box_geometry)
+
+        expected_error = "'boxes' should not be empty"
+        assert expected_error in str(exc_info)
+
+        # boxes contains non-Box items
+        with pytest.raises(ValueError) as exc_info:
+            _generate_blocks(boxes=self.boxes + ['not a Box'],
+                             first_box_geometry=self.first_box_geometry)
+
+        expected_error = "'boxes' should not contain non-Box items"
+        assert expected_error in str(exc_info)
+
+        # first_box_geometry not a Geometry
+        with pytest.raises(ValueError) as exc_info:
+            _generate_blocks(boxes=self.boxes, first_box_geometry=1)
+
+        expected_error = "'first_box_geometry' should be a Geometry"
         assert expected_error in str(exc_info)
