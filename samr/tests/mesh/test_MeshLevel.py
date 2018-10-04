@@ -200,7 +200,7 @@ class MeshLevelTests(unittest.TestCase):
 
         # --- Exercise functionality and check results
 
-        # first_box_geometry not a Geometry
+        # 'variable' not a MeshVariable
         with pytest.raises(ValueError) as exc_info:
             level.add_variable('not a MeshVariable')
 
