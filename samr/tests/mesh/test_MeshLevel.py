@@ -67,9 +67,7 @@ class MeshLevelTests(unittest.TestCase):
         """
         # --- Exercise functionality
 
-        level = MeshLevel(level_number=0,
-                          boxes=self.boxes,
-                          first_box_geometry=self.first_box_geometry)
+        level = MeshLevel(0, self.boxes, self.first_box_geometry)
 
         # --- Check results
 
@@ -178,14 +176,11 @@ class MeshLevelTests(unittest.TestCase):
         """
         # --- Preparations
 
-        mesh = Mesh(domain=self.boxes,
-                    first_box_geometry=self.first_box_geometry)
+        mesh = Mesh(self.boxes, self.first_box_geometry)
 
         variable = mesh.create_variable()
 
-        level = MeshLevel(level_number=0,
-                          boxes=self.boxes,
-                          first_box_geometry=self.first_box_geometry)
+        level = MeshLevel(0, self.boxes, self.first_box_geometry)
 
         # --- Exercise functionality and check results
 
@@ -201,9 +196,7 @@ class MeshLevelTests(unittest.TestCase):
         """
         # --- Preparations
 
-        level = MeshLevel(level_number=0,
-                          boxes=self.boxes,
-                          first_box_geometry=self.first_box_geometry)
+        level = MeshLevel(0, self.boxes, self.first_box_geometry)
 
         # --- Exercise functionality and check results
 
@@ -222,8 +215,8 @@ class MeshLevelTests(unittest.TestCase):
 
         # --- Preparations
 
-        blocks = MeshLevel._generate_blocks(
-            boxes=self.boxes, first_box_geometry=self.first_box_geometry)
+        blocks = \
+            MeshLevel._generate_blocks(self.boxes, self.first_box_geometry)
 
         # --- Exercise functionality and check results
 
@@ -287,14 +280,11 @@ class MeshLevelTests(unittest.TestCase):
         """
         # --- Preparations
 
-        mesh = Mesh(domain=self.boxes,
-                    first_box_geometry=self.first_box_geometry)
+        mesh = Mesh(self.boxes, self.first_box_geometry)
 
         variable = mesh.create_variable()
 
-        level = MeshLevel(level_number=0,
-                          boxes=self.boxes,
-                          first_box_geometry=self.first_box_geometry)
+        level = MeshLevel(0, self.boxes, self.first_box_geometry)
 
         level.add_variable(variable)
 
