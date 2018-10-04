@@ -230,10 +230,6 @@ class MeshBlock:
         Return value
         ------------
         str: unambiguous string representation of object
-
-        Examples
-        --------
-        TODO
         """
         return "MeshBlock(box={}, geometry={}, variables={})".format(
             self.box, self.geometry, self.variables)
