@@ -232,4 +232,4 @@ class MeshBlock:
         str: unambiguous string representation of object
         """
         return "MeshBlock(box={}, geometry={}, variables={})".format(
-            self.box, self.geometry, self.variables)
+            self.box, self.geometry, list(self.variables))
