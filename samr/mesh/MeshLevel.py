@@ -17,6 +17,7 @@ contained in the LICENSE file.
 
 # XYZ
 from samr.box import Box
+from samr.geometry import CartesianGeometry  # pylint: disable=unused-import
 from samr.geometry import Geometry
 
 from .MeshBlock import MeshBlock
@@ -71,7 +72,7 @@ class MeshLevel:
 
     def __init__(self, level_number, boxes, first_box_geometry):
         """
-        TODO
+        Initialize MeshLevel.
 
         Parameters
         ----------
@@ -88,7 +89,10 @@ class MeshLevel:
 
         Examples
         --------
-        TODO
+        >>> level_number = 1
+        >>> boxes = [Box([0, 0], [9, 9]), Box([0, 10], [9, 19])]
+        >>> first_box_geometry = CartesianGeometry([0, 0], [1, 1])
+        >>> level = MeshLevel(level_number, boxes, first_box_geometry)
         """
         # --- Check arguments
 
@@ -220,9 +224,7 @@ class MeshLevel:
         Return value
         ------------
         str: unambiguous string representation of object
-
-        Examples
-        --------
-        TODO
         """
-        return "TODO"
+        return "MeshLevel(level_number={}, blocks={}, variables={})". \
+               format(self.level_number, list(self.blocks),
+                      list(self.variables))

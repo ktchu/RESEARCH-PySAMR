@@ -280,3 +280,28 @@ class MeshLevelTests(unittest.TestCase):
 
         expected_error = "'first_box_geometry' should be a Geometry"
         assert expected_error in str(exc_info)
+
+    def test_repr(self):
+        """
+        Test __repr__().
+        """
+        # --- Preparations
+
+        mesh = Mesh(domain=self.boxes,
+                    first_box_geometry=self.first_box_geometry)
+
+        variable = mesh.create_variable()
+
+        level = MeshLevel(level_number=0,
+                          boxes=self.boxes,
+                          first_box_geometry=self.first_box_geometry)
+
+        level.add_variable(variable)
+
+        # --- Exercise functionality and check results
+
+        expected_repr = "MeshLevel(level_number=0, blocks={}, variables={})". \
+            format(list(level.blocks), list(mesh.variables))
+
+        assert repr(level) == expected_repr
+        assert str(level) == expected_repr
