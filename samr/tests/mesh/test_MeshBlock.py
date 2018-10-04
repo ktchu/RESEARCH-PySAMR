@@ -23,6 +23,7 @@ import pytest
 # XYZ
 from samr.box import Box
 from samr.geometry import CartesianGeometry
+from samr.mesh import Mesh
 from samr.mesh import MeshBlock
 
 
@@ -157,20 +158,59 @@ class MeshBlockTests(unittest.TestCase):
                          "number of dimensions"
         assert expected_error in str(exc_info)
 
-    @unittest.skip('TODO')
     def test_add_variable_1(self):
         """
         Test add_variable(): normal usage
         """
-        # Preparations
+        # --- Preparations
+
+        mesh = Mesh(self.box, self.geometry)
+
+        variable_1 = mesh.create_variable()
+        variable_2 = mesh.create_variable()
+
         block = MeshBlock(self.box, self.geometry)
 
-        # Exercise functionality
-        # TODO
+        # --- Exercise functionality and check results
 
-        # Check results
-        # TODO
-        # variables
+        # Add variable_1
+        block.add_variable(variable_1)
+
+        assert variable_1 in block.variables
+        assert len(block.variables) == 1
+        assert id(variable_1) \
+            in block._data  # pylint: disable=protected-access
+
+        # Add variable_2
+        block.add_variable(variable_2)
+
+        assert variable_2 in block.variables
+        assert len(block.variables) == 2
+        assert id(variable_2) \
+            in block._data  # pylint: disable=protected-access
+
+        # Re-add variable_2
+        block.add_variable(variable_2)
+
+        assert len(block.variables) == 2
+        assert id(variable_2) \
+            in block._data  # pylint: disable=protected-access
+
+    def test_add_variable_2(self):
+        """
+        Test add_variable(): invalid 'variable'
+        """
+        # --- Preparations
+
+        block = MeshBlock(self.box, self.geometry)
+
+        # --- Exercise functionality and check results
+
+        with pytest.raises(ValueError) as exc_info:
+            block.add_variable('Not a MeshVariable')
+
+        expected_error = "'variable' should be a MeshVariable"
+        assert expected_error in str(exc_info)
 
     @unittest.skip('TODO')
     def test_data(self):
@@ -192,7 +232,12 @@ class MeshBlockTests(unittest.TestCase):
         """
         # --- Preparations
 
+        mesh = Mesh(self.box, self.geometry)
+
+        variable = mesh.create_variable()
+
         block = MeshBlock(self.box, self.geometry)
+        block.add_variable(variable)
 
         # --- Exercise functionality and check results
 
@@ -200,6 +245,6 @@ class MeshBlockTests(unittest.TestCase):
                         "box=Box([1, 1, 1], [100, 100, 100]), " \
                         "geometry=CartesianGeometry([0.0, 0.0, 0.0], " \
                         "[1.0, 1.0, 1.0]), " \
-                        "variables=())"
+                        "variables={})".format(list(block.variables))
         assert repr(block) == expected_repr
         assert str(block) == expected_repr
