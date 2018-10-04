@@ -17,14 +17,15 @@ contained in the LICENSE file.
 import copy
 
 # XYZ
+from samr.box import Box
 from samr.geometry import Geometry
 
-from .Box import Box
-from .MeshBlock import MeshBlock
 from .MeshLevel import MeshLevel
 from .MeshVariable import MeshVariable
 
 from ..utils import array_is_empty
+from ..utils import is_array
+from ..utils import is_scalar
 from ..utils import contains_only_integers
 
 
@@ -50,14 +51,14 @@ class Mesh:
     @property
     def bounding_box(self):
         """
-        Box: smallest Box on coarsest level of mesh that covers domain
+        Box: smallest Box on coarsest level of Mesh that covers domain
         """
         return self._bounding_box
 
     @property
     def geometry(self):
         """
-        Geometry: geometry for Mesh on the coarsest level
+        Geometry: geometry of bounding box of domain
         """
         return self._geometry
 
@@ -153,7 +154,7 @@ class Mesh:
 
     # --- Public methods
 
-    def __init__(self, domain, geometry, single_level=False):
+    def __init__(self, domain, first_box_geometry, single_level=False):
         """
         Initialize Mesh.
 
@@ -163,10 +164,10 @@ class Mesh:
             boxes that define the index space covered by Mesh on the coarsest
             level
 
-        geometry: Geometry
+        first_box_geometry: Geometry
             geometry of the logically rectangular region of space (not
-            necessarily coordinate space) covered by the bounding box of the
-            boxes in the 'domain' parameter
+            necessarily coordinate space) covered by the first box in the
+            'domain' parameter
 
         single_level: boolean
             True if Mesh will contain at most one level; False otherwise
@@ -178,25 +179,28 @@ class Mesh:
         # --- Check arguments
 
         # domain
-        if not isinstance(domain, (Box, list, tuple)):
-            raise ValueError("'domain' should be a Box or a list of Boxes")
+        if isinstance(domain, Box):
+            # Ensure that domain is a list
+            domain = [domain]
 
-        if isinstance(domain, (list, tuple)):
+        elif is_array(domain, exclude_numpy_ndarray=True):
+
+            # domain should not be empty
             if not domain:
                 raise ValueError("'domain' should not be empty")
 
+            # domain should not contain non-Box items
             for box in domain:
                 if not isinstance(box, Box):
                     raise ValueError("'domain' should not contain non-Box "
                                      "items")
 
         else:
-            # Ensure that domain is a list
-            domain = [domain]
+            raise ValueError("'domain' should be a Box or a list of Boxes")
 
-        # geometry
-        if not isinstance(geometry, Geometry):
-            raise ValueError("'geometry' should be a Geometry")
+        # first_box_geometry
+        if not isinstance(first_box_geometry, Geometry):
+            raise ValueError("'first_box_geometry' should be a Geometry")
 
         # --- Initialize property and attribute values
 
@@ -205,7 +209,8 @@ class Mesh:
         self._bounding_box = Box.compute_bounding_box(self.domain)
 
         # geometry
-        self._geometry = copy.deepcopy(geometry)
+        self._geometry = first_box_geometry.compute_geometry(
+            domain[0], self.bounding_box)
 
         # refinement levels
         self._levels = []
@@ -223,14 +228,7 @@ class Mesh:
 
         # --- Initialize coarsest MeshLevel
 
-        blocks = []
-        for box in domain:
-            # TODO: fix computation of geometry for block
-            block_geometry = self.geometry
-            blocks.append(MeshBlock(box, block_geometry))
-
-        level = MeshLevel(level_number=0, blocks=blocks)
-        self._levels.append(level)
+        self.create_level(domain, first_box_geometry)
 
     def create_variable(self,
                         location=None, max_stencil_width=None,
@@ -267,17 +265,20 @@ class Mesh:
 
         # level_numbers
         if level_numbers is not None:
-            if not isinstance(level_numbers, (int, float, list, tuple)):
-                raise ValueError("'level_numbers' should be a scalar or a "
-                                 "list of integers")
 
-            # level_numbers is not empty
-            if isinstance(level_numbers, (list, tuple)):
+            # level_numbers is not an empty array
+            if is_array(level_numbers):
                 if array_is_empty(level_numbers):
                     raise ValueError("'level_numbers' should not be empty")
-            else:
+
+            elif is_scalar(level_numbers):
                 # Ensure that level_numbers is a list
                 level_numbers = [level_numbers]
+
+            else:
+                raise ValueError("'level_numbers' should be a scalar, a "
+                                 "list-like collection of integers, or a "
+                                 "numpy.ndarray")
 
             # level_numbers contains only integers
             if not contains_only_integers(level_numbers):
@@ -333,14 +334,19 @@ class Mesh:
 
         return variable
 
-    def add_level(self, blocks):
+    def create_level(self, boxes, first_box_geometry):
         """
-        Add a MeshLevel to Mesh.
+        Create new MeshLevel in Mesh with level number set to 'num_levels'.
 
         Parameters
         ----------
-        blocks: MeshBlock or list of MeshBlocks
-            blocks that make up new refinement level
+        boxes: Box or list of Boxes
+            boxes that define the index space covered by MeshLevel
+
+        first_box_geometry: Geometry
+            geometry of the logically rectangular region of space (not
+            necessarily coordinate space) covered by the first box in the
+            'boxes' parameter
 
         Return value
         ------------
@@ -353,12 +359,13 @@ class Mesh:
         # --- Check arguments
 
         # MeshLevel parameters are checked by MeshLevel.__init__():
-        #   - blocks
+        #   - boxes
+        #   - first_box_geometry
 
         # --- Create and set up new MeshLevel
 
         # Create MeshLevel
-        level = MeshLevel(level_number=self.num_levels, blocks=blocks)
+        level = MeshLevel(self.num_levels, boxes, first_box_geometry)
 
         # Add new MeshLevel to Mesh
         self._levels.append(level)
@@ -426,13 +433,13 @@ class Mesh:
             raise RuntimeError("Mesh is not single-block. "
                                "'data' is unavailable")
 
-        # 'variable' is a MeshVariable
+        # variable is a MeshVariable
         if not isinstance(variable, MeshVariable):
-            raise ValueError("'variable' is not a MeshVariable")
+            raise ValueError("'variable' should be a MeshVariable")
 
-        # 'variable' is not in variable list for Mesh
+        # variable is not in variable list for Mesh
         if variable not in self.variables:
-            raise ValueError("'variable' is in variable list for Mesh")
+            raise ValueError("'variable' is not in the variable list for Mesh")
 
         # --- Retrieve data array
 
@@ -452,8 +459,8 @@ class Mesh:
         ------------
         str: unambiguous string representation of object
         """
-        return "Mesh(domain={}, geometry={}, variables={}, " \
+        return "Mesh(domain={}, levels={}, variables={}, " \
                "single_level={}, single_block={})". \
-               format(list(self.domain), self.geometry,
+               format(list(self.domain), list(self.levels),
                       list(self.variables),
                       self.is_single_level, self.is_single_block)

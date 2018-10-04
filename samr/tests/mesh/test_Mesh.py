@@ -21,8 +21,8 @@ import numpy
 import pytest
 
 # XYZ
+from samr.box import Box
 from samr.geometry import CartesianGeometry
-from samr.mesh import Box
 from samr.mesh import Mesh
 from samr.mesh import MeshVariable
 
@@ -46,8 +46,10 @@ class MeshTests(unittest.TestCase):
         ]
 
         self.x_lower = [0.0, 0.0]
-        self.x_upper = [4.0, 3.0]
-        self.geometry = CartesianGeometry(self.x_lower, self.x_upper)
+        self.x_upper = [1.0, 1.0]
+        self.first_box_geometry = CartesianGeometry(self.x_lower, self.x_upper)
+
+        self.num_dimensions = self.first_box_geometry.num_dimensions
 
     # --- Test cases
 
@@ -67,6 +69,7 @@ class MeshTests(unittest.TestCase):
 
         assert hasattr(Mesh, 'blocks')
         assert hasattr(Mesh, 'num_blocks')
+        assert hasattr(Mesh, 'block')
 
         assert hasattr(Mesh, 'variables')
 
@@ -74,7 +77,9 @@ class MeshTests(unittest.TestCase):
         assert hasattr(Mesh, 'is_single_block')
 
         assert hasattr(Mesh, 'create_variable')
-        assert hasattr(Mesh, 'add_level')
+
+        assert hasattr(Mesh, 'create_level')
+        assert hasattr(Mesh, 'remove_level')
 
         assert hasattr(Mesh, 'data')
 
@@ -87,7 +92,7 @@ class MeshTests(unittest.TestCase):
         # ------ single-level Mesh
 
         # Create mesh
-        mesh = Mesh(self.domain, self.geometry, single_level=True)
+        mesh = Mesh(self.domain, self.first_box_geometry, single_level=True)
 
         # domain is equivalent and is a copy (not the same object)
         assert isinstance(mesh.domain, tuple)
@@ -103,11 +108,13 @@ class MeshTests(unittest.TestCase):
         expected_bounding_box = Box.compute_bounding_box(self.domain)
         assert mesh.bounding_box == expected_bounding_box
 
-        # geometry is equivalent and is a copy (not the same object)
-        assert mesh.geometry == self.geometry
-        assert mesh.geometry is not self.geometry
+        # geometry
+        x_lower = [0.0, 0.0]
+        x_upper = [2.0, 1.5]
+        assert mesh.geometry == CartesianGeometry(x_lower, x_upper)
 
-        assert mesh.num_dimensions == self.geometry.num_dimensions
+        # num_dimensions
+        assert mesh.num_dimensions == self.num_dimensions
 
         # levels
         assert isinstance(mesh.levels, tuple)
@@ -132,7 +139,7 @@ class MeshTests(unittest.TestCase):
         # ------ multi-level Mesh
 
         # Create mesh
-        mesh = Mesh(self.domain, self.geometry, single_level=False)
+        mesh = Mesh(self.domain, self.first_box_geometry, single_level=False)
 
         # is single-level
         assert not mesh.is_single_level
@@ -206,52 +213,48 @@ class MeshTests(unittest.TestCase):
 
     def test_init_3(self):
         """
-        Test __init__(): invalid 'domain'
+        Test __init__(): invalid parameters
         """
         # --- Exercise functionality and check results
 
         # domain is not a valid type
         with pytest.raises(ValueError) as exc_info:
-            _ = Mesh(domain='invalid domain', geometry=self.geometry)
+            _ = Mesh(domain='invalid domain',
+                     first_box_geometry=self.first_box_geometry)
 
         expected_error = "'domain' should be a Box or a list of Boxes"
         assert expected_error in str(exc_info)
 
         # empty domain
         with pytest.raises(ValueError) as exc_info:
-            _ = Mesh(domain=[], geometry=self.geometry)
+            _ = Mesh(domain=[], first_box_geometry=self.first_box_geometry)
 
-        expected_error = "'domain' is empty"
+        expected_error = "'domain' should not be empty"
         assert expected_error in str(exc_info)
 
         # domain contains non-Box item
         with pytest.raises(ValueError) as exc_info:
             _ = Mesh(domain=self.domain + ['not a Box'],
-                     geometry=self.geometry)
+                     first_box_geometry=self.first_box_geometry)
 
         expected_error = "'domain' should not contain non-Box items"
         assert expected_error in str(exc_info)
 
-    def test_init_4(self):
-        """
-        Test __init__(): invalid 'geometry'
-        """
-        # --- Exercise functionality and check results
-
+        # invalid first_box_geometry
         with pytest.raises(ValueError) as exc_info:
-            _ = Mesh(self.domain, geometry='not a Geometry')
+            _ = Mesh(self.domain, first_box_geometry='not a Geometry')
 
-        expected_error = "'geometry' should be a Geometry"
+        expected_error = "'first_box_geometry' should be a Geometry"
         assert expected_error in str(exc_info)
 
-    def test_create_variable(self):
+    def test_create_variable_1(self):
         """
         Test create_variable(): normal usage
         """
         # ------ Preparations
 
         # Create mesh
-        mesh = Mesh(self.domain, self.geometry)
+        mesh = Mesh(self.domain, self.first_box_geometry)
 
         # Add levels to Mesh
         # TODO
@@ -333,15 +336,64 @@ class MeshTests(unittest.TestCase):
             for block in level.blocks:
                 assert variable in block.variables
 
-    @unittest.skip("TODO")
-    def test_add_level(self):
+    def test_create_variable_2(self):
         """
-        Test add_level(): normal usage
+        Test create_variables(): invalid parameters
+        """
+        # --- Preparations
+
+        # Create mesh
+        mesh = Mesh(self.domain, self.first_box_geometry)
+
+        # --- Exercise functionality and check results
+
+        # level_numbers is an empty array
+        with pytest.raises(ValueError) as exc_info:
+            mesh.create_variable(level_numbers=[])
+
+        expected_error = "'level_numbers' should not be empty"
+        assert expected_error in str(exc_info)
+
+        # level_numbers is not a scalar and not list-like
+        with pytest.raises(ValueError) as exc_info:
+            mesh.create_variable(level_numbers='invalid level_numbers')
+
+        expected_error = "'level_numbers' should be a scalar, a " \
+                         "list-like collection of integers, or a " \
+                         "numpy.ndarray"
+        assert expected_error in str(exc_info)
+
+        # level_numbers contains non-integer values
+        with pytest.raises(ValueError) as exc_info:
+            mesh.create_variable(level_numbers=[1, 2.5])
+
+        expected_error = "'level_numbers' should contain only integer values"
+        assert expected_error in str(exc_info)
+
+        # level_numbers contains negative values
+        with pytest.raises(ValueError) as exc_info:
+            mesh.create_variable(level_numbers=[-2, 0, 1])
+
+        expected_error = "'level_numbers' should not contain negative values"
+        assert expected_error in str(exc_info)
+
+        # level_numbers contains values that exceed (mesh.num_levels - 1)
+        with pytest.raises(ValueError) as exc_info:
+            mesh.create_variable(level_numbers=[0, mesh.num_levels])
+
+        expected_error = "'level_numbers' should only contain values " \
+                         "less than number of levels in the Mesh"
+        assert expected_error in str(exc_info)
+
+    @unittest.skip("TODO")
+    def test_create_level(self):
+        """
+        Test create_level(): normal usage
         """
         # ------ Preparations
 
         # Create mesh
-        mesh = Mesh(self.domain, self.geometry)
+        mesh = Mesh(self.domain, self.first_box_geometry)
 
         # Add levels to Mesh
         # TODO
@@ -358,7 +410,7 @@ class MeshTests(unittest.TestCase):
         # ------ Preparations
 
         # Create mesh
-        mesh = Mesh(self.domain, self.geometry)
+        mesh = Mesh(self.domain, self.first_box_geometry)
 
         # Add levels to Mesh
         # TODO
@@ -374,14 +426,14 @@ class MeshTests(unittest.TestCase):
         # ------ Preparations
 
         # Create mesh
-        mesh = Mesh(self.domain, self.geometry)
+        mesh = Mesh(self.domain, self.first_box_geometry)
 
         # --- Exercise functionality and check results
 
         with pytest.raises(RuntimeError) as exc_info:
             mesh.remove_level()
 
-        expected_error = "The coarsest MeshLevel cannot be removed from Mesh."
+        expected_error = "The coarsest MeshLevel cannot be removed from Mesh"
         assert expected_error in str(exc_info)
 
     def test_repr(self):
@@ -391,7 +443,7 @@ class MeshTests(unittest.TestCase):
         # ------ Preparations
 
         # Create mesh
-        mesh = Mesh(self.domain, self.geometry)
+        mesh = Mesh(self.domain, self.first_box_geometry)
 
         # Add levels to Mesh
         # TODO
@@ -401,12 +453,8 @@ class MeshTests(unittest.TestCase):
 
         # --- Exercise functionality and check results
 
-        expected_repr = "Mesh(" \
-            "domain=[Box([0, 0], [9, 9]), Box([10, 5], [19, 14]), " \
-            "Box([0, 10], [4, 14])], " \
-            "geometry=CartesianGeometry([0.0, 0.0], [4.0, 3.0]), " \
-            "variables=[], " \
-            "single_level=False, " \
-            "single_block=False)"
+        expected_repr = "Mesh(domain={}, levels={}, variables={}, " \
+            "single_level=False, single_block=False)".format(
+                list(mesh.domain), list(mesh.levels), list(mesh.variables))
         assert repr(mesh) == expected_repr
         assert str(mesh) == expected_repr
