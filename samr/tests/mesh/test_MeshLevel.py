@@ -22,6 +22,7 @@ import pytest
 # XYZ
 from samr.box import Box
 from samr.geometry import CartesianGeometry
+from samr.mesh import Mesh
 from samr.mesh import MeshLevel
 
 
@@ -171,13 +172,28 @@ class MeshLevelTests(unittest.TestCase):
         expected_error = "'first_box_geometry' should be a Geometry"
         assert expected_error in str(exc_info)
 
-    @unittest.skip('TODO')
     def test_add_variable_1(self):
         """
         Test add_variable(): normal usage
         """
-        # TODO
-        pass
+        # --- Preparations
+
+        mesh = Mesh(domain=self.boxes,
+                    first_box_geometry=self.first_box_geometry)
+
+        variable = mesh.create_variable()
+
+        level = MeshLevel(level_number=0,
+                          boxes=self.boxes,
+                          first_box_geometry=self.first_box_geometry)
+
+        # --- Exercise functionality and check results
+
+        level.add_variable(variable)
+
+        assert variable in level.variables
+        for block in level.blocks:
+            assert variable in block.variables
 
     def test_add_variable_2(self):
         """
