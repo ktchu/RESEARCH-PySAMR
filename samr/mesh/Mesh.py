@@ -228,7 +228,7 @@ class Mesh:
 
         # --- Initialize coarsest MeshLevel
 
-        self.create_level(domain, first_box_geometry)
+        self.add_level(domain, first_box_geometry)
 
     def create_variable(self,
                         location=None, max_stencil_width=None,
@@ -334,9 +334,9 @@ class Mesh:
 
         return variable
 
-    def create_level(self, boxes, first_box_geometry):
+    def add_level(self, boxes, first_box_geometry):
         """
-        Create new MeshLevel in Mesh with level number set to 'num_levels'.
+        Add new MeshLevel to Mesh with level number set to 'num_levels'.
 
         Parameters
         ----------
