@@ -78,7 +78,7 @@ class MeshTests(unittest.TestCase):
 
         assert hasattr(Mesh, 'create_variable')
 
-        assert hasattr(Mesh, 'create_level')
+        assert hasattr(Mesh, 'add_level')
         assert hasattr(Mesh, 'remove_level')
 
         assert hasattr(Mesh, 'data')
@@ -386,9 +386,9 @@ class MeshTests(unittest.TestCase):
         assert expected_error in str(exc_info)
 
     @unittest.skip("TODO")
-    def test_create_level(self):
+    def test_add_level(self):
         """
-        Test create_level(): normal usage
+        Test add_level()
         """
         # ------ Preparations
 
