@@ -138,31 +138,33 @@ class MeshVariable:
 
         # --- Check arguments
 
-        # mesh
+        # mesh has expected type
         if not isinstance(mesh, samr.mesh.Mesh):
             raise ValueError("'mesh' should be a Mesh")
 
-        # location
+        # location is a valid Location value
         if location not in MeshVariable.Location:
             raise ValueError("'location' is not a valid Location value")
 
-        # max_stencil_width
+        # check max_stencil_width parameter
         if is_array(max_stencil_width):
 
             # max_stencil_width is not empty
             if array_is_empty(max_stencil_width):
-                raise ValueError("'max_stencil_width' should not be empty")
+                raise ValueError("When 'max_stencil_width' is an array, "
+                                 "it should not be empty")
 
             # max_stencil_width contains only integer values
             if not contains_only_integers(max_stencil_width):
-                raise ValueError("'max_stencil_width' should contain only "
-                                 "integer values")
+                raise ValueError("When 'max_stencil_width' is an array, "
+                                 "it should contain only integer values")
 
         elif not is_scalar(max_stencil_width):
+            # max_stencil_width does not have a valid type
             raise ValueError("'max_stencil_width' should be a scalar or "
                              "non-string Sequence")
 
-        # depth
+        # depth has expected type
         if not is_scalar(depth):
             raise ValueError("'depth' should be a numeric value")
 
@@ -170,7 +172,7 @@ class MeshVariable:
         if depth % 1 != 0:
             raise ValueError("'depth' should be an integer")
 
-        # precision
+        # precision is a valid Precision value
         if precision not in MeshVariable.Precision:
             raise ValueError("'precision' not a valid Precision value")
 
@@ -218,13 +220,16 @@ class MeshVariable:
         # Case: 'block_or_mesh' is a single-block Mesh
         if isinstance(block_or_mesh, samr.mesh.Mesh):
 
-            # Check arguments
+            # --- Check arguments
+
+            # block_or_mesh is a single-block Mesh
             if not block_or_mesh.is_single_block:
                 raise ValueError("'block_or_mesh' is a multi-block Mesh. "
                                  "'data' is only available when a Mesh is "
                                  "a single-block Mesh.")
 
-            # Retrieve and return data array
+            # --- Retrieve and return data array
+
             return block_or_mesh.block.data(self)
 
         # Case: 'block_or_mesh' not a valid type

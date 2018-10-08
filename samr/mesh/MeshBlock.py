@@ -115,11 +115,11 @@ class MeshBlock:
         """
         # --- Check arguments
 
-        # box
+        # box has expected type
         if not isinstance(box, Box):
             raise ValueError("'box' should be a Box")
 
-        # geometry
+        # geometry has expected type
         if not isinstance(geometry, Geometry):
             raise ValueError("'geometry' should be a Geometry")
 
@@ -157,7 +157,7 @@ class MeshBlock:
         """
         # --- Check arguments
 
-        # variable is a MeshVariable
+        # variable has expected type
         if not isinstance(variable, MeshVariable):
             raise ValueError("'variable' should be a MeshVariable")
 
@@ -202,7 +202,7 @@ class MeshBlock:
 
         # --- Check arguments
 
-        # variable is a MeshVariable
+        # variable has expected type
         if not isinstance(variable, MeshVariable):
             raise ValueError("'variable' should be a MeshVariable")
 

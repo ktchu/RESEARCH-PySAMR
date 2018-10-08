@@ -178,27 +178,29 @@ class Mesh:
         """
         # --- Check arguments
 
-        # domain
+        # check domain parameter
         if isinstance(domain, Box):
-            # Ensure that domain is a list
+
+            # ensure that domain is a list
             domain = [domain]
 
         elif is_array(domain, exclude_numpy_ndarray=True):
 
-            # domain should not be empty
+            # domain is not empty
             if not domain:
                 raise ValueError("'domain' should not be empty")
 
-            # domain should not contain non-Box items
+            # domain contains only Box items
             for box in domain:
                 if not isinstance(box, Box):
                     raise ValueError("'domain' should not contain non-Box "
                                      "items")
 
         else:
+            # domain does not have a valid type
             raise ValueError("'domain' should be a Box or a list of Boxes")
 
-        # first_box_geometry
+        # first_box_geometry has expected type
         if not isinstance(first_box_geometry, Geometry):
             raise ValueError("'first_box_geometry' should be a Geometry")
 
@@ -263,19 +265,21 @@ class Mesh:
 
         # --- Check arguments
 
-        # level_numbers
+        # check level_numbers parameter
         if level_numbers is not None:
 
-            # level_numbers is not an empty array
+            # level_numbers is not empty
             if is_array(level_numbers):
                 if array_is_empty(level_numbers):
                     raise ValueError("'level_numbers' should not be empty")
 
             elif is_scalar(level_numbers):
-                # Ensure that level_numbers is a list
+
+                # ensure that level_numbers is a list
                 level_numbers = [level_numbers]
 
             else:
+                # level_numbers does not have a valid type
                 raise ValueError("'level_numbers' should be a scalar, a "
                                  "list-like collection of integers, or a "
                                  "numpy.ndarray")
@@ -397,6 +401,7 @@ class Mesh:
         """
         # --- Check arguments
 
+        # Mesh contains at least two levels
         if self.num_levels == 1:
             raise RuntimeError("The coarsest MeshLevel cannot be removed "
                                "from Mesh")
@@ -433,11 +438,11 @@ class Mesh:
             raise RuntimeError("Mesh is not single-block. "
                                "'data' is unavailable")
 
-        # variable is a MeshVariable
+        # variable has expected type
         if not isinstance(variable, MeshVariable):
             raise ValueError("'variable' should be a MeshVariable")
 
-        # variable is not in variable list for Mesh
+        # variable is in variable list for Mesh
         if variable not in self.variables:
             raise ValueError("'variable' is not in the variable list for Mesh")
 

@@ -97,12 +97,12 @@ class CartesianGeometry(Geometry):
         """
         # --- Check arguments
 
-        # x_lower has valid type
+        # x_lower has expected type
         if not is_array(x_lower):
             raise ValueError("'x_lower' should be list-like or a "
                              "numpy.ndarray")
 
-        # x_upper has valid type
+        # x_upper has expected type
         if not is_array(x_upper):
             raise ValueError("'x_upper' should be list-like or a "
                              "numpy.ndarray")

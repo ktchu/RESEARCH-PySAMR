@@ -62,7 +62,7 @@ class Geometry(abc.ABC):
         """
         # --- Check arguments
 
-        # num_dimensions is a real-valued scalar
+        # num_dimensions has expected type
         if not is_scalar(num_dimensions):
             raise ValueError("'num_dimensions' should be a numeric value")
 
@@ -100,11 +100,11 @@ class Geometry(abc.ABC):
         """
         # --- Check arguments
 
-        # reference_box has valid type
+        # reference_box has expected type
         if not isinstance(reference_box, Box):
             raise ValueError("'reference_box' should be a Box")
 
-        # box has valid type
+        # box has expected type
         if not isinstance(box, Box):
             raise ValueError("'box' should be a Box")
 

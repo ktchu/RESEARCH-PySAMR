@@ -96,7 +96,7 @@ class MeshLevel:
         """
         # --- Check arguments
 
-        # level_number is integer
+        # level_number has expected type
         if not is_scalar(level_number):
             raise ValueError("'level_number' should be a numeric value")
 
@@ -112,13 +112,15 @@ class MeshLevel:
         #
         # Note: _generate_blocks() performs additional check on boxes
         if isinstance(boxes, Box):
-            # Ensure that boxes is a list
+
+            # ensure that boxes is a list
             boxes = [boxes]
 
         elif not is_array(boxes, exclude_numpy_ndarray=True):
+            # boxes does not have a valid type
             raise ValueError("'boxes' should be a Box or a list of Boxes")
 
-        # first_box_geometry
+        # first_box_geometry has expected type
         if not isinstance(first_box_geometry, Geometry):
             raise ValueError("'first_box_geometry' should be a Geometry")
 
@@ -148,7 +150,7 @@ class MeshLevel:
         """
         # --- Check arguments
 
-        # variable is a MeshVariable
+        # variable has expected type
         if not isinstance(variable, MeshVariable):
             raise ValueError("'variable' should be a MeshVariable")
 
@@ -185,7 +187,7 @@ class MeshLevel:
         """
         # --- Check arguments
 
-        # boxes is list-like
+        # boxes has expected type
         if not is_array(boxes, exclude_numpy_ndarray=True):
             raise ValueError("'boxes' should be a list of Boxes")
 
@@ -198,7 +200,7 @@ class MeshLevel:
             if not isinstance(box, Box):
                 raise ValueError("'boxes' should not contain non-Box items")
 
-        # first_box_geometry
+        # first_box_geometry has expected type
         if not isinstance(first_box_geometry, Geometry):
             raise ValueError("'first_box_geometry' should be a Geometry")
 
