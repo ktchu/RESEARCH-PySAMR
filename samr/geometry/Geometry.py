@@ -100,11 +100,11 @@ class Geometry(abc.ABC):
         """
         # --- Check arguments
 
-        # reference_box
+        # reference_box has valid type
         if not isinstance(reference_box, Box):
             raise ValueError("'reference_box' should be a Box")
 
-        # box
+        # box has valid type
         if not isinstance(box, Box):
             raise ValueError("'box' should be a Box")
 
