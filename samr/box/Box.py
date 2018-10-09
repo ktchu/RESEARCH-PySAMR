@@ -22,6 +22,7 @@ import numpy
 from ..utils import array_is_empty
 from ..utils import contains_only_integers
 from ..utils import is_array
+from ..utils import is_scalar
 
 
 # --- Class definition
@@ -59,7 +60,7 @@ class Box:
         """
         int: dimensionality of Box
         """
-        return len(self.lower)
+        return self._num_dimensions
 
     @property
     def shape(self):
@@ -107,7 +108,7 @@ class Box:
         """
         # --- Check arguments
 
-        # lower not a valid type
+        # lower has expected_type
         if not is_array(lower):
             raise ValueError("'lower' should be list-like or a numpy.ndarray")
 
@@ -119,7 +120,7 @@ class Box:
         if not contains_only_integers(lower):
             raise ValueError("'lower' should contain only integer values")
 
-        # upper not a valid type
+        # upper has expected_type
         if not is_array(upper):
             raise ValueError("'upper' should be list-like or a numpy.ndarray")
 
@@ -147,12 +148,17 @@ class Box:
         self._lower = numpy.array(lower, dtype='int64')
         self._upper = numpy.array(upper, dtype='int64')
 
+        # num_dimensions
+        self._num_dimensions = len(self.lower)
+
         # shape
         self._shape = self.upper - self.lower + \
             numpy.ones(self.num_dimensions, dtype='int64')
 
         # size
         self._size = numpy.product(self.shape)
+
+    # --- Public static methods
 
     @staticmethod
     def compute_bounding_box(boxes):
@@ -176,10 +182,11 @@ class Box:
         """
         # --- Check arguments
 
-        # boxes
+        # boxes has expected type
         if not is_array(boxes, exclude_numpy_ndarray=True):
             raise ValueError("'boxes' should be a list of Boxes")
 
+        # boxes contains only Box items
         for box in boxes:
             if not isinstance(box, Box):
                 raise ValueError("'boxes' should not contain non-Box items")
@@ -190,6 +197,194 @@ class Box:
         bounding_box_upper = numpy.max([box.upper for box in boxes], axis=0)
 
         return Box(bounding_box_lower, bounding_box_upper)
+
+    @staticmethod
+    def refine_boxes(boxes, factor):
+        """
+        Refine boxes by specified factor.
+
+        Parameters
+        ----------
+        boxes: Box or list of Boxes
+            boxes to refine
+
+        factor: int, list-like (e.g., list, tuple), or numpy.ndarray
+            factor to refine boxes by in each coordinate direction
+
+        Return value
+        ------------
+        list of Boxes: list of refined boxes
+
+        Examples
+        --------
+        >>> boxes = [Box([0, 0], [9, 9]), Box([0, 10], [9, 19])]
+        >>> Box.refine_boxes(boxes, [3, 2])
+        [Box([0, 0], [29, 19]), Box([0, 20], [29, 39])]
+
+        >>> Box.refine_boxes(Box([0, 0], [4, 4]), 4)
+        [Box([0, 0], [19, 19])]
+        """
+        # pylint: disable=too-many-branches
+
+        # --- Check arguments
+
+        # check boxes parameter
+        if isinstance(boxes, Box):
+
+            # ensure that boxes is a list
+            boxes = [boxes]
+
+        elif not is_array(boxes, exclude_numpy_ndarray=True):
+            # boxes does not have a valid type
+            raise ValueError("'boxes' should be a Box or list of Boxes")
+
+        # boxes contains only Box items
+        for box in boxes:
+            if not isinstance(box, Box):
+                raise ValueError("'boxes' should not contain non-Box items")
+
+        # boxes all have the same dimensionality
+        num_dimensions = boxes[0].num_dimensions
+        for box in boxes[1:]:
+            if box.num_dimensions != num_dimensions:
+                raise ValueError("All Box objects in 'boxes' should have "
+                                 "the same 'num_dimensions' value")
+
+        # check factor parameter
+        if is_scalar(factor):
+            # factor is an integer value
+            if factor % 1 != 0:
+                raise ValueError("When 'factor' is a scalar, it should be an "
+                                 "integer")
+
+        elif is_array(factor):
+            # factor is not empty
+            if array_is_empty(factor):
+                raise ValueError("When 'factor' is an array, it should not "
+                                 "be empty")
+
+            # factor contains only integer values
+            if not contains_only_integers(factor):
+                raise ValueError("When 'factor' is an array, it should "
+                                 "contain only integer values")
+
+            # len(factor) == num_dimensions
+            if len(factor) != num_dimensions:
+                raise ValueError("When 'factor' is an array, its length "
+                                 "should be equal to the dimensionality of "
+                                 "the Box items in 'boxes'")
+        else:
+            # factor does not have a valid type
+            raise ValueError("'factor' should be an int, list-like, or a "
+                             "numpy.ndarray")
+
+        # --- Preparations
+
+        # Convert factor to numpy.ndarray
+        factor = factor * numpy.ones(num_dimensions, dtype='int')
+
+        # --- Refine boxes
+
+        refined_boxes = []
+        for box in boxes:
+            refined_boxes.append(Box(box.lower * factor,
+                                     (box.upper + 1) * factor - 1))
+
+        return refined_boxes
+
+    @staticmethod
+    def coarsen_boxes(boxes, factor):
+        """
+        Coarsen boxes by specified factor.
+
+        Parameters
+        ----------
+        boxes: list of Boxes
+            boxes to coarsen
+
+        factor: int, list-like (e.g., list, tuple), or numpy.ndarray
+            factor to coarsen boxes by in each coordinate direction
+
+        Return value
+        ------------
+        list of Boxes: list of coarsened boxes
+
+        Examples
+        --------
+        >>> boxes = [Box([0, 0], [9, 9]), Box([0, 10], [9, 19])]
+        >>> Box.coarsen_boxes(boxes, [3, 2])
+        [Box([0, 0], [3, 4]), Box([0, 5], [3, 9])]
+
+        >>> Box.coarsen_boxes(Box([0, 0], [19, 19]), 4)
+        [Box([0, 0], [4, 4])]
+        """
+        # pylint: disable=too-many-branches
+
+        # --- Check arguments
+
+        # check boxes parameter
+        if isinstance(boxes, Box):
+
+            # ensure that boxes is a list
+            boxes = [boxes]
+
+        elif not is_array(boxes, exclude_numpy_ndarray=True):
+            # boxes does not have a valid type
+            raise ValueError("'boxes' should be a Box or list of Boxes")
+
+        # boxes contains only Box items
+        for box in boxes:
+            if not isinstance(box, Box):
+                raise ValueError("'boxes' should not contain non-Box items")
+
+        # boxes all have the same dimensionality
+        num_dimensions = boxes[0].num_dimensions
+        for box in boxes[1:]:
+            if box.num_dimensions != num_dimensions:
+                raise ValueError("All Box objects in 'boxes' should have "
+                                 "the same 'num_dimensions' value")
+
+        # check factor parameter
+        if is_scalar(factor):
+            # factor is an integer value
+            if factor % 1 != 0:
+                raise ValueError("When 'factor' is a scalar, it should be an "
+                                 "integer")
+
+        elif is_array(factor):
+            # factor is not empty
+            if array_is_empty(factor):
+                raise ValueError("When 'factor' is an array, it should not "
+                                 "be empty")
+
+            # factor contains only integer values
+            if not contains_only_integers(factor):
+                raise ValueError("When 'factor' is an array, it should "
+                                 "contain only integer values")
+
+            # len(factor) == num_dimensions
+            if len(factor) != num_dimensions:
+                raise ValueError("When 'factor' is an array, its length "
+                                 "should be equal to the dimensionality of "
+                                 "the Box items in 'boxes'")
+        else:
+            # factor does not have a valid type
+            raise ValueError("'factor' should be an int, list-like, or a "
+                             "numpy.ndarray")
+
+        # --- Preparations
+
+        # Convert factor to numpy.ndarray
+        factor = factor * numpy.ones(num_dimensions, dtype='int')
+
+        # --- Coarsen boxes
+
+        coarsened_boxes = []
+        for box in boxes:
+            coarsened_boxes.append(Box(box.lower // factor,
+                                       box.upper // factor))
+
+        return coarsened_boxes
 
     # --- Magic methods
 
