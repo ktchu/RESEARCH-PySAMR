@@ -139,24 +139,6 @@ class MeshLevelTests(unittest.TestCase):
         expected_error = "'boxes' should be a Box or a list of Boxes"
         assert expected_error in str(exc_info)
 
-        # empty boxes
-        with pytest.raises(ValueError) as exc_info:
-            _ = MeshLevel(level_number=0,
-                          boxes=tuple(),
-                          first_box_geometry=self.first_box_geometry)
-
-        expected_error = "'boxes' should not be empty"
-        assert expected_error in str(exc_info)
-
-        # boxes contains non-Box item
-        with pytest.raises(ValueError) as exc_info:
-            _ = MeshLevel(level_number=0,
-                          boxes=self.boxes + ['not a Box'],
-                          first_box_geometry=self.first_box_geometry)
-
-        expected_error = "'boxes' should not contain non-Box items"
-        assert expected_error in str(exc_info)
-
     def test_init_4(self):
         """
         Test construction of MeshLevel: invalid 'first_box_geometry'

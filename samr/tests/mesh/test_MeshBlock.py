@@ -113,22 +113,18 @@ class MeshBlockTests(unittest.TestCase):
 
     def test_init_2(self):
         """
-        Test __init__(): invalid 'box'
+        Test __init__(): invalid parameters
         """
         # --- Exercise functionality and check results
 
+        # 'box' is not a Box
         with pytest.raises(ValueError) as exc_info:
             _ = MeshBlock(box='not a Box', geometry=self.geometry)
 
         expected_error = "'box' should be a Box"
         assert expected_error in str(exc_info)
 
-    def test_init_3(self):
-        """
-        Test __init__(): invalid 'geometry'
-        """
-        # --- Exercise functionality and check results
-
+        # 'geometry' is not a Geometry
         with pytest.raises(ValueError) as exc_info:
             _ = MeshBlock(self.box, geometry='not a Geometry')
 
@@ -136,7 +132,7 @@ class MeshBlockTests(unittest.TestCase):
         assert expected_error in str(exc_info)
 
     @staticmethod
-    def test_init_4():
+    def test_init_3():
         """
         Test __init__(): incompatible 'box' and 'geometry'
         """
