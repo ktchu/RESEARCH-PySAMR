@@ -32,7 +32,7 @@ class NonAbstractGeometry(Geometry):
     """
     def compute_geometry(self, reference_box, box):
         """
-        Return reference_geometry.
+        Return copy of self.
         """
         super().compute_geometry(reference_box, box)
         return copy.deepcopy(self)
