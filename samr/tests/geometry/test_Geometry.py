@@ -15,6 +15,7 @@ contained in the LICENSE file.
 
 # Standard library
 import copy
+import unittest
 
 # External packages
 import pytest
@@ -40,7 +41,7 @@ class NonAbstractGeometry(Geometry):
 
 # --- Tests
 
-class GeometryTests:
+class GeometryTests(unittest.TestCase):
     """
     Unit tests for Geometry class.
     """
