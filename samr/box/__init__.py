@@ -9,10 +9,14 @@ copied, modified, propagated, or distributed except according to the terms
 contained in the LICENSE file.
 ------------------------------------------------------------------------------
 """
+# --- Imports
+
 # Package types
 from .Box import Box
 
-# Exported packages and modules
+
+# --- Exports
+
 __all__ = [
     'Box',
 ]

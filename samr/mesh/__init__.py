@@ -9,13 +9,17 @@ copied, modified, propagated, or distributed except according to the terms
 contained in the LICENSE file.
 ------------------------------------------------------------------------------
 """
+# --- Imports
+
 # Package types
 from .Mesh import Mesh
 from .MeshBlock import MeshBlock
 from .MeshLevel import MeshLevel
 from .MeshVariable import MeshVariable
 
-# Exported packages and modules
+
+# --- Exports
+
 __all__ = [
     'Mesh',
     'MeshBlock',

@@ -9,11 +9,15 @@ copied, modified, propagated, or distributed except according to the terms
 contained in the LICENSE file.
 ------------------------------------------------------------------------------
 """
+# --- Imports
+
 # Package types
 from .Geometry import Geometry
 from .CartesianGeometry import CartesianGeometry
 
-# Exported packages and modules
+
+# --- Exports
+
 __all__ = [
     'Geometry',
     'CartesianGeometry',
