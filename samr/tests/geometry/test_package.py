@@ -22,4 +22,6 @@ def test_types():
     Test for expected types.
     """
     assert geometry.Geometry
+    assert isinstance(geometry.Geometry, type)
     assert geometry.CartesianGeometry
+    assert isinstance(geometry.CartesianGeometry, type)

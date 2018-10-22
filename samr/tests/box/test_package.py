@@ -22,3 +22,4 @@ def test_types():
     Test for expected types.
     """
     assert box.Box
+    assert isinstance(box.Box, type)

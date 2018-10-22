@@ -22,6 +22,9 @@ def test_types():
     Test for expected types.
     """
     assert mesh.Mesh
+    assert isinstance(mesh.Mesh, type)
     assert mesh.MeshBlock
+    assert isinstance(mesh.MeshBlock, type)
     assert mesh.MeshLevel
+    assert isinstance(mesh.MeshLevel, type)
     assert mesh.MeshVariable
