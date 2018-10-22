@@ -17,10 +17,9 @@ from samr import geometry
 
 # --- Tests
 
-def test_attributes():
+def test_types():
     """
-   Test for expected package attributes.
+    Test for expected types.
     """
-    # Package information
     assert geometry.Geometry
     assert geometry.CartesianGeometry

@@ -17,11 +17,10 @@ from samr import mesh
 
 # --- Tests
 
-def test_attributes():
+def test_types():
     """
-   Test for expected package attributes.
+    Test for expected types.
     """
-    # Package information
     assert mesh.Mesh
     assert mesh.MeshBlock
     assert mesh.MeshLevel

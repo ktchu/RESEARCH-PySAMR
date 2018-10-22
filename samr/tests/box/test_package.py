@@ -17,9 +17,8 @@ from samr import box
 
 # --- Tests
 
-def test_attributes():
+def test_types():
     """
-   Test for expected package attributes.
+    Test for expected types.
     """
-    # Package information
     assert box.Box

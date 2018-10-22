@@ -21,11 +21,10 @@ import samr.utils
 
 # --- Tests
 
-def test_package_info_attributes():
+def test_package_info():
     """
-   Test for expected package attributes.
+    Test for expected package info.
     """
-    # Package information
     assert samr.__version__
     assert hasattr(samr, '__author__')
     assert hasattr(samr, '__author_email__')
@@ -37,7 +36,7 @@ def test_package_info_attributes():
 
 def test_packages_and_modules():
     """
-   Test for expected packages and modules.
+    Test for expected packages and modules.
     """
     # Packages
     assert samr.box
