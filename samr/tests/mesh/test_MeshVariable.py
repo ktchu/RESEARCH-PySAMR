@@ -49,10 +49,12 @@ class MeshVariableTests(unittest.TestCase):
         """
         Test construction of MeshVariable with default parameters.
         """
-        # Exercise functionality
+        # --- Exercise functionality
+
         mesh_variable = MeshVariable()
 
-        # Check results
+        # --- Check results
+
         assert mesh_variable.dtype == numpy.float64
 
     @unittest.skip('')
