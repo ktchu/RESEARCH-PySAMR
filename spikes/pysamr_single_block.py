@@ -22,7 +22,7 @@ x_upper = [1] * num_dimensions
 geometry = CartesianGeometry(x_lower, x_upper)
 
 # Construct mesh
-mesh = Mesh(domain, geometry, single_level=True)
+mesh = Mesh(domain, geometry)
 
 # Create variables
 u = mesh.create_variable()
