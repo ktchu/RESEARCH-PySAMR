@@ -40,7 +40,7 @@ class MeshBlock:
     @property
     def box(self):
         """
-        int: dimensionality of index space
+        Box: index space of MeshBlock
         """
         return self._box
 
@@ -171,8 +171,7 @@ class MeshBlock:
         self._variables.append(variable)
 
         # Construct shape for data array
-        # TODO: construct shape as a function of location, stencil_width, depth
-        data_shape = self.shape
+        data_shape = variable.shape(self)
 
         # Construct data array for variable
         data = numpy.zeros(data_shape, dtype=variable.dtype)
