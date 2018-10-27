@@ -156,7 +156,7 @@ class CartesianGeometry(Geometry):
 
         # --- Compute geometry of region covered by 'box'
 
-        dx = self.compute_dx(reference_box)
+        dx = self.dx(reference_box)
 
         x_lower = self.x_lower + dx * (box.lower - reference_box.lower)
 
@@ -164,7 +164,7 @@ class CartesianGeometry(Geometry):
 
         return CartesianGeometry(x_lower, x_upper)
 
-    def compute_dx(self, box):
+    def dx(self, box):
         """
         Compute grid spacing.
 
@@ -181,7 +181,7 @@ class CartesianGeometry(Geometry):
         --------
         >>> geometry = CartesianGeometry([0, 0], [10, 10])
         >>> box = Box([0, 0], [99, 99])
-        >>> geometry.compute_dx(box)
+        >>> geometry.dx(box)
         array([0.1, 0.1])
         """
         return self.shape / box.shape

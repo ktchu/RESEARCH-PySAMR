@@ -267,9 +267,9 @@ class CartesianGeometryTests(unittest.TestCase):
         assert expected_error in str(exc_info)
 
     @staticmethod
-    def test_compute_dx():
+    def test_dx():
         """
-        Test compute_dx().
+        Test dx().
         """
         # --- Preparations
 
@@ -285,7 +285,7 @@ class CartesianGeometryTests(unittest.TestCase):
 
         # --- Exercise functionality and check results
 
-        dx = geometry.compute_dx(box)
+        dx = geometry.dx(box)
         expected_dx = [0.02] * num_dimensions
         assert numpy.array_equal(dx, expected_dx)
 
