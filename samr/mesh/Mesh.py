@@ -141,20 +141,21 @@ class Mesh:
     @property
     def is_single_level(self):
         """
-        boolean: True if Mesh is single-level; False otherwise
+        boolean: True if Mesh contains only one MeshLevel; False otherwise
         """
-        return self._is_single_level
+        return self.num_levels == 1
 
     @property
     def is_single_block(self):
         """
-        boolean: True if Mesh is single-block; False otherwise
+        boolean: True if Mesh is single-level and domain contains only one
+            Box; False otherwise
         """
-        return self._is_single_block
+        return self.is_single_level and len(self._domain) == 1
 
     # --- Public methods
 
-    def __init__(self, domain, first_box_geometry, single_level=False):
+    def __init__(self, domain, first_box_geometry):
         """
         Initialize Mesh.
 
@@ -168,9 +169,6 @@ class Mesh:
             geometry of the logically rectangular region of space (not
             necessarily coordinate space) covered by the first box in the
             'domain' parameter
-
-        single_level: boolean
-            True if Mesh will contain at most one level; False otherwise
 
         Examples
         --------
@@ -219,14 +217,6 @@ class Mesh:
 
         # variables
         self._variables = []
-
-        # mesh type
-        self._is_single_level = single_level
-
-        if self.is_single_level:
-            self._is_single_block = len(self._domain) == 1
-        else:
-            self._is_single_block = False
 
         # --- Initialize coarsest MeshLevel
 

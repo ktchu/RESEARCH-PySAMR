@@ -89,10 +89,8 @@ class MeshTests(unittest.TestCase):
         """
         # --- Exercise functionality and check results
 
-        # ------ single-level Mesh
-
         # Create mesh
-        mesh = Mesh(self.domain, self.first_box_geometry, single_level=True)
+        mesh = Mesh(self.domain, self.first_box_geometry)
 
         # domain is equivalent and is a copy (not the same object)
         assert isinstance(mesh.domain, tuple)
@@ -136,17 +134,6 @@ class MeshTests(unittest.TestCase):
         # is not single-block
         assert not mesh.is_single_block
 
-        # ------ multi-level Mesh
-
-        # Create mesh
-        mesh = Mesh(self.domain, self.first_box_geometry, single_level=False)
-
-        # is single-level
-        assert not mesh.is_single_level
-
-        # is single-block
-        assert not mesh.is_single_block
-
     @staticmethod
     def test_init_2():
         """
@@ -168,7 +155,7 @@ class MeshTests(unittest.TestCase):
         # ------ single-level Mesh
 
         # Create mesh
-        mesh = Mesh(domain, geometry, single_level=True)
+        mesh = Mesh(domain, geometry)
 
         # domain is equivalent and is a copy (not the same object)
         assert mesh.domain == tuple([domain])
@@ -199,17 +186,6 @@ class MeshTests(unittest.TestCase):
 
         # is single-block
         assert mesh.is_single_block
-
-        # ------ multi-level Mesh
-
-        # Create mesh
-        mesh = Mesh(domain, geometry, single_level=False)
-
-        # is single-level
-        assert not mesh.is_single_level
-
-        # is single-block
-        assert not mesh.is_single_block
 
     def test_init_3(self):
         """
@@ -454,7 +430,7 @@ class MeshTests(unittest.TestCase):
         # --- Exercise functionality and check results
 
         expected_repr = "Mesh(domain={}, levels={}, variables={}, " \
-            "single_level=False, single_block=False)".format(
+            "single_level=True, single_block=False)".format(
                 list(mesh.domain), list(mesh.levels), list(mesh.variables))
         assert repr(mesh) == expected_repr
         assert str(mesh) == expected_repr
