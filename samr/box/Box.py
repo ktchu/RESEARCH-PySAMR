@@ -167,8 +167,8 @@ class Box:
 
         Parameters
         ----------
-        boxes: list of Boxes
-            list of boxes to compute bounding box for
+        boxes: list of Boxes or Box
+            boxes to compute bounding box for
 
         Return value
         ------------
@@ -179,17 +179,27 @@ class Box:
         >>> boxes = [Box([0, 0, 0], [2, 2, 2]), Box([-2, -2, 0], [1, 1, 3])]
         >>> Box.compute_bounding_box(boxes)
         Box([-2, -2, 0], [2, 2, 3])
+
+        >>> box = Box([0, 0], [9, 9])
+        >>> Box.compute_bounding_box(boxes)
+        Box([0, 0], [9, 9])
         """
         # --- Check arguments
 
         # boxes has expected type
-        if not is_array(boxes, exclude_numpy_ndarray=True):
-            raise ValueError("'boxes' should be a list of Boxes")
+        if is_array(boxes, exclude_numpy_ndarray=True):
+            # boxes contains only Box items
+            for box in boxes:
+                if not isinstance(box, Box):
+                    raise ValueError("'boxes' should not contain non-Box "
+                                     "items")
 
-        # boxes contains only Box items
-        for box in boxes:
-            if not isinstance(box, Box):
-                raise ValueError("'boxes' should not contain non-Box items")
+        elif isinstance(boxes, Box):
+            # ensure that boxes is list-like
+            boxes = [boxes]
+
+        else:
+            raise ValueError("'boxes' should be a list of Boxes or a Box")
 
         # --- Compute bounding box
 

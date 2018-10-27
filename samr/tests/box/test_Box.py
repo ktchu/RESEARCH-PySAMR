@@ -227,6 +227,8 @@ class BoxTests(unittest.TestCase):
         """
         # --- Exercise functionality and check results
 
+        # ------ boxes is an array
+
         # Test case 1
         boxes = [Box([0, 0], [9, 9]),
                  Box([10, 0], [19, 9]),
@@ -258,6 +260,14 @@ class BoxTests(unittest.TestCase):
         expected_bounding_box = Box([-10, -10], [19, 19])
         assert Box.compute_bounding_box(boxes) == expected_bounding_box
 
+        # ------ boxes is a Box
+
+        # Test case 1
+        box = Box([0, 0, 0, 0], [9, 9, 9, 4])
+
+        expected_bounding_box = Box([0, 0, 0, 0], [9, 9, 9, 4])
+        assert Box.compute_bounding_box(box) == expected_bounding_box
+
     @staticmethod
     def test_compute_bounding_box_2():
         """
@@ -273,7 +283,7 @@ class BoxTests(unittest.TestCase):
         expected_error = "'boxes' should be a list of Boxes"
         assert expected_error in str(exc_info)
 
-        # 'boxes' is not list-like
+        # 'boxes' contains a non-Box item
         boxes = (Box([0, 0], [9, 9]), 'not a Box')
         with pytest.raises(ValueError) as exc_info:
             _ = Box.compute_bounding_box(boxes)
