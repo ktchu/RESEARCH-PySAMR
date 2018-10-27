@@ -43,9 +43,12 @@ class Mesh:
     @property
     def domain(self):
         """
-        tuple: boxes that define the index space covered by Mesh on the
-              coarsest level
+        tuple or Box: boxes that define the index space covered by Mesh on
+            the coarsest level
         """
+        if len(self._domain) == 1:
+            return self._domain[0]
+
         return tuple(self._domain)
 
     @property
