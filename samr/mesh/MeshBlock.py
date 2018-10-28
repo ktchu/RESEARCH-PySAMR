@@ -171,7 +171,7 @@ class MeshBlock:
         self._variables.append(variable)
 
         # Construct shape for data array
-        data_shape = variable.shape(self)
+        data_shape = variable.data_shape(self)
 
         # Construct data array for variable
         data = numpy.zeros(data_shape, dtype=variable.dtype)

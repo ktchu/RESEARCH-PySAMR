@@ -14,6 +14,7 @@ contained in the LICENSE file.
 # --- Imports
 
 # Standard library
+import copy
 import enum
 from enum import Enum
 
@@ -22,6 +23,7 @@ import numpy
 
 # XYZ
 import samr
+from samr.box import Box
 
 from ..utils import array_is_empty
 from ..utils import is_array
@@ -81,7 +83,8 @@ class MeshVariable:
     @property
     def max_stencil_width(self):
         """
-        numpy.ndarray: lower corner of index space covered by Box
+        numpy.ndarray: maximum number of mesh cells needed in each coordinate
+            direction to apply stencil
 
         Notes
         -----
@@ -153,7 +156,6 @@ class MeshVariable:
             if array_is_empty(max_stencil_width):
                 raise ValueError("When 'max_stencil_width' is an array, "
                                  "it should not be empty")
-
             # max_stencil_width contains only integer values
             if not contains_only_integers(max_stencil_width):
                 raise ValueError("When 'max_stencil_width' is an array, "
@@ -192,48 +194,179 @@ class MeshVariable:
         self._depth = depth
         self._dtype = precision.value
 
-    def data(self, block_or_mesh):
+    def data(self, block=None):
         """
-        Get data array for MeshVariable for specified MeshBlock.
+        Get data array(s) for MeshVariable on specified MeshBlock.
 
         Parameters
         ----------
-        block_or_mesh: MeshBlock or Mesh
-            MeshBlock or single-block Mesh to get data array from
+        block: MeshBlock
+            MeshBlock to get data array from
 
         Return value
         ------------
-        numpy.ndarray: data array from 'block' for MeshVariable
+        numpy.ndarray or list:
+            data array(s) for MeshVariable on 'block'
 
         Notes
         -----
-        * When 'block_or_mesh' is a Mesh , an error is raised if
-          'block_or_mesh' is not a single-block Mesh (i.e.,
-          Mesh.is_single_block is False).
+        * When 'block' is None, an error is raised if self.mesh is not
+          a single-block Mesh (i.e., self.mesh.is_single_block is False).
+
+        * When the depth of the MeshVariable is 1, the return value is an
+          numpy.ndarray. When the depth of the MeshVariable is greater than
+          1, the return value is a list of numpy.ndarray objects.
         """
-        # Case: 'block_or_mesh' is a MeshBlock
-        if isinstance(block_or_mesh, samr.mesh.MeshBlock):
+        # --- Check arguments
 
-            # Retrieve and return data array
-            return block_or_mesh.data(self)
+        # block has expected type
+        if block is not None:
+            if not isinstance(block, samr.mesh.MeshBlock):
+                raise ValueError("'block' should be a MeshBlock")
 
-        # Case: 'block_or_mesh' is a single-block Mesh
-        if isinstance(block_or_mesh, samr.mesh.Mesh):
+        elif not self.mesh.is_single_block:
+            # self.mesh is a single-block Mesh
+            raise ValueError("'block' is None, but self.mesh is a "
+                             "multi-block Mesh. 'data' is only available "
+                             "without specifying a 'block' when self.mesh "
+                             "is a single-block Mesh.")
 
-            # --- Check arguments
+        # --- Retrieve and return data array
 
-            # block_or_mesh is a single-block Mesh
-            if not block_or_mesh.is_single_block:
-                raise ValueError("'block_or_mesh' is a multi-block Mesh. "
-                                 "'data' is only available when a Mesh is "
-                                 "a single-block Mesh.")
+        if block:
+            return block.data(self)
 
-            # --- Retrieve and return data array
+        return self.mesh.data(self)
 
-            return block_or_mesh.block.data(self)
+    def data_shape(self, block=None):
+        """
+        Get shape of NumPy array for MeshVariable on specified MeshBlock.
 
-        # Case: 'block_or_mesh' not a valid type
-        raise ValueError("'block_or_mesh' should be a MeshBlock or Mesh")
+        Parameters
+        ----------
+        block: MeshBlock
+            MeshBlock to get shape of NumPy array for
+
+        Return value
+        ------------
+        tuple: shape of numpy.ndarray for MeshVariable on 'block'
+
+        Notes
+        -----
+        * When 'block' is None, an error is raised if self.mesh is not
+          a single-block Mesh (i.e., self.mesh.is_single_block is False).
+        """
+        # Compute shape of box for MeshVariable with halo on 'block'
+        shape = self.box(block, with_halo=True).shape
+
+        # Adjust shape for location of MeshVariable
+        if self.location == MeshVariable.Location.NODE:
+            shape += 1
+
+        elif self.location == MeshVariable.Location.FACE:
+            # TODO: figure out how to represent this
+            pass
+
+        # Adjust shape for depth
+        # TODO: add parameter to use first index for MeshVariable components
+        if self.location in \
+                [MeshVariable.Location.CELL, MeshVariable.Location.NODE] and \
+                self.depth > 1:
+            shape = numpy.array(list(shape) + [self.depth])
+
+        return shape
+
+    def box(self, block=None, with_halo=False):
+        """
+        Get box for MeshVariable on specified MeshBlock.
+
+        Parameters
+        ----------
+        block: MeshBlock
+            MeshBlock to get box for
+
+        with_halo: bool
+            True if box should include halo cells; False otherwise
+
+        Return value
+        ------------
+        Box: box for MeshVariable on 'block'
+
+        Notes
+        -----
+        * When 'block' is None, an error is raised if self.mesh is not
+          a single-block Mesh (i.e., self.mesh.is_single_block is False).
+        """
+        # --- Check arguments
+
+        # block has expected type
+        if block is not None:
+            if not isinstance(block, samr.mesh.MeshBlock):
+                raise ValueError("'block' should be a MeshBlock")
+
+        elif not self.mesh.is_single_block:
+            # self.mesh is a single-block Mesh
+            raise ValueError("'block' is None, but self.mesh is a "
+                             "multi-block Mesh. 'data' is only available "
+                             "without specifying a 'block' when self.mesh "
+                             "is a single-block Mesh.")
+
+        # --- Compute box for MeshVariable
+
+        if block:
+            if with_halo:
+                box = Box(block.lower - self.max_stencil_width,
+                          block.upper + self.max_stencil_width)
+            else:
+                box = copy.deepcopy(block.box)
+
+        else:
+            if with_halo:
+                box = Box(self.mesh.domain.lower - self.max_stencil_width,
+                          self.mesh.domain.upper + self.max_stencil_width)
+            else:
+                box = copy.deepcopy(self.mesh.domain)
+
+        return box
+
+    def geometry(self, block=None):
+        """
+        Get geometry for MeshVariable on specified MeshBlock.
+
+        Parameters
+        ----------
+        block: MeshBlock
+            MeshBlock to get box for
+
+        Return value
+        ------------
+        Geometry: geometry for MeshVariable on 'block'
+
+        Notes
+        -----
+        * When 'block' is None, an error is raised if self.mesh is not
+          a single-block Mesh (i.e., self.mesh.is_single_block is False).
+        """
+        # --- Check arguments
+
+        # block has expected type
+        if block is not None:
+            if not isinstance(block, samr.mesh.MeshBlock):
+                raise ValueError("'block' should be a MeshBlock")
+
+        elif not self.mesh.is_single_block:
+            # self.mesh is a single-block Mesh
+            raise ValueError("'block' is None, but self.mesh is a "
+                             "multi-block Mesh. 'data' is only available "
+                             "without specifying a 'block' when self.mesh "
+                             "is a single-block Mesh.")
+
+        # --- Retrieve and return data array
+
+        if block:
+            return block.geometry
+
+        return self.mesh.geometry
 
     # --- Magic methods
 
