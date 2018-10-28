@@ -158,11 +158,9 @@ class MeshTests(unittest.TestCase):
         mesh = Mesh(domain, geometry)
 
         # domain is equivalent and is a copy (not the same object)
-        assert mesh.domain == tuple([domain])
-
-        # domain box is equivalent and is a copy (not the same object)
-        assert mesh.domain[0] == domain
-        assert mesh.domain[0] is not domain
+        assert isinstance(mesh.domain, Box)
+        assert mesh.domain == domain
+        assert mesh.domain is not domain
 
         # bounding box
         assert mesh.bounding_box == domain
@@ -378,6 +376,12 @@ class MeshTests(unittest.TestCase):
 
         # TODO
 
+        # Test case is_single_level changes to False when second MeshLevel
+        # is added
+
+        # Test case that is_single_block is True when Mesh is created and
+        # changes to False when second MeshLevel is added
+
     @unittest.skip("TODO")
     def test_remove_level_1(self):
         """
@@ -394,6 +398,12 @@ class MeshTests(unittest.TestCase):
         # --- Exercise functionality and check results
 
         # TODO
+
+        # Test case is_single_level changes to True when only one MeshLevel
+        # remains in Mesh
+
+        # Test case is_single_block changes to True when only one MeshLevel
+        # remains in Mesh
 
     def test_remove_level_2(self):
         """
