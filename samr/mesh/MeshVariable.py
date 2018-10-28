@@ -196,17 +196,17 @@ class MeshVariable:
 
     def data(self, block=None):
         """
-        Get data array(s) for MeshVariable on specified MeshBlock.
+        Get data for MeshVariable on specified MeshBlock.
 
         Parameters
         ----------
         block: MeshBlock
-            MeshBlock to get data array from
+            MeshBlock to get data from
 
         Return value
         ------------
         numpy.ndarray or list:
-            data array(s) for MeshVariable on 'block'
+            data for MeshVariable on 'block'
 
         Notes
         -----
@@ -219,62 +219,14 @@ class MeshVariable:
         """
         # --- Check arguments
 
-        # block has expected type
-        if block is not None:
-            if not isinstance(block, samr.mesh.MeshBlock):
-                raise ValueError("'block' should be a MeshBlock")
+        self._perform_meshblock_accessor_parameter_checks(block)
 
-        elif not self.mesh.is_single_block:
-            # self.mesh is a single-block Mesh
-            raise ValueError("'block' is None, but self.mesh is a "
-                             "multi-block Mesh. 'data' is only available "
-                             "without specifying a 'block' when self.mesh "
-                             "is a single-block Mesh.")
-
-        # --- Retrieve and return data array
+        # --- Retrieve and return data
 
         if block:
             return block.data(self)
 
         return self.mesh.data(self)
-
-    def data_shape(self, block=None):
-        """
-        Get shape of NumPy array for MeshVariable on specified MeshBlock.
-
-        Parameters
-        ----------
-        block: MeshBlock
-            MeshBlock to get shape of NumPy array for
-
-        Return value
-        ------------
-        tuple: shape of numpy.ndarray for MeshVariable on 'block'
-
-        Notes
-        -----
-        * When 'block' is None, an error is raised if self.mesh is not
-          a single-block Mesh (i.e., self.mesh.is_single_block is False).
-        """
-        # Compute shape of box for MeshVariable with halo on 'block'
-        shape = self.box(block, with_halo=True).shape
-
-        # Adjust shape for location of MeshVariable
-        if self.location == MeshVariable.Location.NODE:
-            shape += 1
-
-        elif self.location == MeshVariable.Location.FACE:
-            # TODO: figure out how to represent this
-            pass
-
-        # Adjust shape for depth
-        # TODO: add parameter to use first index for MeshVariable components
-        if self.location in \
-                [MeshVariable.Location.CELL, MeshVariable.Location.NODE] and \
-                self.depth > 1:
-            shape = numpy.array(list(shape) + [self.depth])
-
-        return shape
 
     def box(self, block=None, with_halo=False):
         """
@@ -299,17 +251,7 @@ class MeshVariable:
         """
         # --- Check arguments
 
-        # block has expected type
-        if block is not None:
-            if not isinstance(block, samr.mesh.MeshBlock):
-                raise ValueError("'block' should be a MeshBlock")
-
-        elif not self.mesh.is_single_block:
-            # self.mesh is a single-block Mesh
-            raise ValueError("'block' is None, but self.mesh is a "
-                             "multi-block Mesh. 'data' is only available "
-                             "without specifying a 'block' when self.mesh "
-                             "is a single-block Mesh.")
+        self._perform_meshblock_accessor_parameter_checks(block)
 
         # --- Compute box for MeshVariable
 
@@ -349,6 +291,27 @@ class MeshVariable:
         """
         # --- Check arguments
 
+        self._perform_meshblock_accessor_parameter_checks(block)
+
+        # --- Retrieve and return geometry
+
+        if block:
+            return block.geometry
+
+        return self.mesh.geometry
+
+    # --- Private helper functions
+
+    def _perform_meshblock_accessor_parameter_checks(self, block=None):
+        """
+        Perform standard parameter checks for methods that retrieve Mesh
+        or MeshBlock properties.
+
+        Parameters
+        ----------
+        block: MeshBlock
+            MeshBlock to retrieve data for
+        """
         # block has expected type
         if block is not None:
             if not isinstance(block, samr.mesh.MeshBlock):
@@ -360,13 +323,6 @@ class MeshVariable:
                              "multi-block Mesh. 'data' is only available "
                              "without specifying a 'block' when self.mesh "
                              "is a single-block Mesh.")
-
-        # --- Retrieve and return data array
-
-        if block:
-            return block.geometry
-
-        return self.mesh.geometry
 
     # --- Magic methods
 
