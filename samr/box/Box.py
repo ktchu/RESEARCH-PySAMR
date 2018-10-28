@@ -181,7 +181,7 @@ class Box:
         Box([-2, -2, 0], [2, 2, 3])
 
         >>> box = Box([0, 0], [9, 9])
-        >>> Box.compute_bounding_box(boxes)
+        >>> Box.compute_bounding_box(box)
         Box([0, 0], [9, 9])
         """
         # --- Check arguments
