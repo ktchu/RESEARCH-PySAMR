@@ -33,7 +33,8 @@ class MeshBlock:
     """
     A MeshBlock represents a logically rectangular region of space (i.e., a
     deformed rectangle). It is defined by a rectangular region of index space
-    (Box) and its mapping to a coordinate space (Geometry).
+    (Box) and its mapping to a coordinate space (Geometry). It manages array
+    data for MeshVariables defined on the region of space.
     """
     # --- Properties
 
@@ -87,6 +88,15 @@ class MeshBlock:
         return self.box.size
 
     @property
+    def stores_vectors_contiguously(self):
+        """
+        bool: True if components of vector-valued MeshVariables are stored
+              contiguously in memory; False if each component of vector-valued
+              MeshVariables is individually stored as a slice in memory.
+        """
+        return self._stores_vectors_contiguously
+
+    @property
     def variables(self):
         """
         tuple: list of MeshVariables defined on MeshBlock
@@ -95,7 +105,8 @@ class MeshBlock:
 
     # --- Public methods
 
-    def __init__(self, box, geometry):
+    def __init__(self, box, geometry,
+                 stores_vectors_contiguously=True):
         """
         Initialize MeshBlock.
 
@@ -106,6 +117,13 @@ class MeshBlock:
 
         geometry: Geometry
             geometry of MeshBlock
+
+        stores_vectors_contiguously: bool
+            When set to True, store components of vector-valued MeshVariable
+            (i.e., depth > 1) contiguously in memory. When set to False, store
+            component of vector-valued MeshVariable as slices in memory (i.e.,
+            each component of MeshVariable is individually stored contiguously
+            in memory).
 
         Examples
         --------
@@ -139,6 +157,9 @@ class MeshBlock:
         # variables
         self._variables = []
 
+        # data storage properties
+        self._stores_vectors_contiguously = stores_vectors_contiguously
+
         # data
         self._data = {}
 
@@ -170,14 +191,8 @@ class MeshBlock:
         # Add 'variable' to variable list
         self._variables.append(variable)
 
-        # Construct shape for data array
-        data_shape = variable.data_shape(self)
-
-        # Construct data array for variable
-        data = numpy.zeros(data_shape, dtype=variable.dtype)
-
-        # Set data for variable
-        self._data[id(variable)] = data
+        # Construct data arrays for variable
+        self._data[id(variable)] = self._create_data(variable)
 
     def data(self, variable=None):
         """
@@ -215,6 +230,103 @@ class MeshBlock:
         # --- Return data
 
         return self._data[variable_id]
+
+    # --- Private helper methods
+
+    def _create_data(self, variable):
+        """
+        Create array data for MeshVariable.
+
+        Parameters
+        ----------
+        variable: MeshVariable
+            variable to create array data for
+
+        Return value
+        ------------
+        numpy.ndarray or list:
+            array data for MeshVariable on 'block'
+
+        Notes
+        -----
+        * When the depth of the MeshVariable is 1, the return value is an
+          numpy.ndarray. When the depth of the MeshVariable is greater than
+          1, the return value is a list of numpy.ndarray objects.
+        """
+        # pylint: disable=too-many-branches
+
+        # --- Check arguments
+
+        # 'variable' has expected type
+        if not isinstance(variable, MeshVariable):
+            raise ValueError("'variable' should be a MeshVariable")
+
+        # 'variable' is in variable list
+        if variable not in self.variables:
+            raise ValueError("'variable' should be in variable list for "
+                             "MeshBlock")
+
+        # --- Initialize data
+
+        data = None
+
+        # --- Create numpy.ndarrays for data
+
+        # Compute shape of box for MeshVariable with halo on 'block'
+        box_shape = variable.box(self, with_halo=True).shape
+
+        if variable.location in \
+                [MeshVariable.Location.CELL, MeshVariable.Location.NODE]:
+
+            # --- Case: self.location is CELL or NODE
+
+            # Compute shape of data
+            if variable.location is MeshVariable.Location.CELL:
+                data_shape = box_shape
+
+            elif variable.location is MeshVariable.Location.NODE:
+                data_shape = box_shape + 1
+
+            # Add dimension for vector-valued MeshVariables
+            if variable.depth > 1:
+                if self.stores_vectors_contiguously:
+                    data_shape = \
+                        numpy.array(list(data_shape) + [variable.depth])
+                else:
+                    data_shape = \
+                        numpy.array([variable.depth] + list(data_shape))
+
+            # Create data array
+            data = numpy.zeros(data_shape, dtype=variable.dtype)
+
+        elif variable.location == MeshVariable.Location.FACE:
+
+            # --- Case: MeshVariable values location is FACE
+
+            # Initialize data to be an empty list
+            data = []
+
+            # Loop over coordinate directions to construct data array
+            for i in range(self.num_dimensions):
+                # Compute shape of data
+                data_shape = copy.deepcopy(box_shape)
+                data_shape[i] += 1
+
+                # Add dimension for vector-valued MeshVariables
+                if variable.depth > 1:
+                    if self.stores_vectors_contiguously:
+                        data_shape = \
+                            numpy.array(list(data_shape) + [variable.depth])
+                    else:
+                        data_shape = \
+                            numpy.array([variable.depth] + list(data_shape))
+
+                # Create data array
+                data.append(numpy.zeros(data_shape, dtype=variable.dtype))
+
+        # --- Return newly created data objects
+
+        return data
 
     # --- Magic methods
 
