@@ -63,7 +63,7 @@ class MeshLevelTests(unittest.TestCase):
 
     def test_init_1(self):
         """
-        Test construction of MeshLevel with default parameters.
+        Test __init__(): valid parameters
         """
         # --- Exercise functionality
 
@@ -95,7 +95,7 @@ class MeshLevelTests(unittest.TestCase):
 
     def test_init_2(self):
         """
-        Test construction of MeshLevel: invalid 'level_number'
+        Test __init__(): invalid 'level_number'
         """
         # level_number not a numeric value
         with pytest.raises(ValueError) as exc_info:
@@ -126,7 +126,7 @@ class MeshLevelTests(unittest.TestCase):
 
     def test_init_3(self):
         """
-        Test construction of MeshLevel: invalid 'boxes'
+        Test __init__(): invalid 'boxes'
         """
         # --- Exercise functionality and check results
 
@@ -141,7 +141,7 @@ class MeshLevelTests(unittest.TestCase):
 
     def test_init_4(self):
         """
-        Test construction of MeshLevel: invalid 'first_box_geometry'
+        Test __init__(): invalid 'first_box_geometry'
         """
         # first_box_geometry not a Geometry
         with pytest.raises(ValueError) as exc_info:
