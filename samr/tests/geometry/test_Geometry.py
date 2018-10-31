@@ -70,7 +70,7 @@ class GeometryTests(unittest.TestCase):
     @staticmethod
     def test_init_2():
         """
-        Test __init__(): invalid 'num_dimensions'
+        Test __init__(): invalid parameters
         """
         # --- Exercise functionality and check results
 
@@ -120,7 +120,7 @@ class GeometryTests(unittest.TestCase):
     @staticmethod
     def test_compute_geometry():
         """
-        Test compute_geometry(): invalid parametres
+        Test compute_geometry(): invalid parameters
         """
         # --- Preparations
 
