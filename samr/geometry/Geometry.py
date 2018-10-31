@@ -18,8 +18,7 @@ import abc
 
 # XYZ
 from samr.box import Box
-
-from ..utils import is_scalar
+from samr.utils import is_scalar
 
 
 # --- Class definition

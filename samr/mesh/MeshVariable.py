@@ -24,11 +24,11 @@ import numpy
 # XYZ
 import samr
 from samr.box import Box
-
-from ..utils import array_is_empty
-from ..utils import is_array
-from ..utils import is_scalar
-from ..utils import contains_only_integers
+from samr.mesh import Mesh
+from samr.utils import array_is_empty
+from samr.utils import is_array
+from samr.utils import is_scalar
+from samr.utils import contains_only_integers
 
 
 # --- Class definition

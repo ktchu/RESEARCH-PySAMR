@@ -11,6 +11,8 @@ contained in the LICENSE file.
 """
 # pylint: disable=invalid-name
 
+# TODO: change upper to be excluded from index space
+
 # --- Imports
 
 # Standard library
@@ -19,10 +21,10 @@ contained in the LICENSE file.
 import numpy
 
 # XYZ
-from ..utils import array_is_empty
-from ..utils import contains_only_integers
-from ..utils import is_array
-from ..utils import is_scalar
+from samr.utils import array_is_empty
+from samr.utils import contains_only_integers
+from samr.utils import is_array
+from samr.utils import is_scalar
 
 
 # --- Class definition

@@ -23,8 +23,7 @@ import numpy
 from samr.box import Box
 from samr.geometry import CartesianGeometry  # pylint: disable=unused-import
 from samr.geometry import Geometry
-
-from .MeshVariable import MeshVariable
+from samr.mesh import MeshVariable
 
 
 # --- Class definition

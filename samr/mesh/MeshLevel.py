@@ -19,12 +19,10 @@ contained in the LICENSE file.
 from samr.box import Box
 from samr.geometry import CartesianGeometry  # pylint: disable=unused-import
 from samr.geometry import Geometry
-
-from .MeshBlock import MeshBlock
-from .MeshVariable import MeshVariable
-
-from ..utils import is_array
-from ..utils import is_scalar
+from samr.mesh import MeshBlock
+from samr.mesh import MeshVariable
+from samr.utils import is_array
+from samr.utils import is_scalar
 
 
 # --- Constants

@@ -18,9 +18,8 @@ import numpy
 
 # XYZ
 from samr.box import Box  # pylint: disable=unused-import
-
-from ..utils import is_array
-from .Geometry import Geometry
+from samr.geometry import Geometry
+from samr.utils import is_array
 
 
 # --- Class definition

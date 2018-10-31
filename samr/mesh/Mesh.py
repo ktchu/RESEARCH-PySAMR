@@ -19,14 +19,12 @@ import copy
 # XYZ
 from samr.box import Box
 from samr.geometry import Geometry
-
-from .MeshLevel import MeshLevel
-from .MeshVariable import MeshVariable
-
-from ..utils import array_is_empty
-from ..utils import is_array
-from ..utils import is_scalar
-from ..utils import contains_only_integers
+from samr.mesh import MeshLevel
+from samr.mesh import MeshVariable
+from samr.utils import array_is_empty
+from samr.utils import is_array
+from samr.utils import is_scalar
+from samr.utils import contains_only_integers
 
 
 # --- Class definition
