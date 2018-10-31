@@ -24,7 +24,6 @@ import numpy
 # XYZ
 import samr
 from samr.box import Box
-from samr.mesh import Mesh
 from samr.utils import array_is_empty
 from samr.utils import is_array
 from samr.utils import is_scalar
